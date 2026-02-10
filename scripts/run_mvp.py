@@ -71,7 +71,16 @@ def main():
         profile, axis = extract_profile(f)
         f.profile_curve = profile
         f.main_axis = axis
-        encode_profile(f)
+        for f in fragments:
+            print(f"\n===== 开始处理碎片: {f.id} =====")
+            # 轮廓提取
+            extract_profile(f)
+            # 轮廓编码（增加异常处理）
+            try:
+                encode_profile(f)
+            except Exception as e:
+                print(f"[处理碎片{f.id}] 轮廓编码失败：{str(e)}")
+                f.profile_feature = None
 
         # ===== 3.6 几何特征学习编码 =====
         if hasattr(f, "section_patch") and f.section_patch is not None:
