@@ -47,6 +47,7 @@ def detect_boundary(fragment, visualize=False, curvature_thresh=0.1):
     - 优先 mesh 拓扑
     - fallback 到点云几何
     - 最终筛选 rim 主边界
+    - 返回原始坐标系中的边界点
     """
     if fragment.point_cloud is None or len(fragment.point_cloud.points) == 0:
         print(f"[边界检测] 碎片{fragment.id}无有效点云数据")
@@ -76,17 +77,39 @@ def detect_boundary(fragment, visualize=False, curvature_thresh=0.1):
     # ========= 模式 2：点云几何 =========
     if boundary_pts is None or len(boundary_pts) == 0:
         print(f"[边界检测] 碎片{fragment.id}使用点云几何法")
-        pcd.estimate_normals(
-            search_param=o3d.geometry.KDTreeSearchParamKNN(knn=30)
-        )
+
+        # 优先使用原始点云进行边界检测，避免归一化导致的信息丢失
+        if hasattr(fragment, 'original_points') and fragment.original_points is not None:
+            # 使用原始点云
+            detection_pcd = o3d.geometry.PointCloud()
+            detection_pcd.points = o3d.utility.Vector3dVector(fragment.original_points)
+            detection_pcd.estimate_normals(
+                search_param=o3d.geometry.KDTreeSearchParamKNN(knn=30)
+            )
+            pts = np.asarray(detection_pcd.points)
+            normals = np.asarray(detection_pcd.normals)
+            print(f"  使用原始点云（{len(pts)} 个点）进行边界检测")
+        else:
+            # 使用归一化的点云
+            pcd.estimate_normals(
+                search_param=o3d.geometry.KDTreeSearchParamKNN(knn=30)
+            )
+            pts = np.asarray(pcd.points)
+            normals = np.asarray(pcd.normals)
+            print(f"  使用归一化点云（{len(pts)} 个点）进行边界检测")
 
         # Open3D 没有稳定曲率 API，用邻域法向变化近似
         pts = np.asarray(pcd.points)
         normals = np.asarray(pcd.normals)
 
-        tree = o3d.geometry.KDTreeFlann(pcd)
+        # 使用原始点云的KD树
+        detection_pcd = o3d.geometry.PointCloud()
+        detection_pcd.points = o3d.utility.Vector3dVector(pts)
+        tree = o3d.geometry.KDTreeFlann(detection_pcd)
         curvature = np.zeros(len(pts))
 
+        # 计算曲率
+        print(f"  计算曲率...")
         for i, pt in enumerate(pts):
             _, idx, _ = tree.search_knn_vector_3d(pt, 20)
             nbr_normals = normals[idx]
@@ -95,30 +118,72 @@ def detect_boundary(fragment, visualize=False, curvature_thresh=0.1):
                 np.linalg.norm(nbr_normals - mean_normal, axis=1)
             )
 
-        boundary_idx = np.where(curvature > curvature_thresh)[0]
-        if len(boundary_idx) == 0:
-            print(f"[边界检测] 碎片{fragment.id}未检测到边界")
-            return None, None
+        # 陶瓷碎片边界检测策略
+        # 选择曲率最低的点作为边界（陶瓷碎片边界通常曲率较低）
+        num_boundary = max(len(pts) // 20, 100)  # 至少100个点，或总数的5%
+        boundary_idx = np.argsort(curvature)[:num_boundary]
+        print(f"  选择最低曲率 {num_boundary} 个点作为候选边界")
 
         boundary_pts = pts[boundary_idx]
 
     # ========= 关键新增：rim 主边界筛选 =========
-    rim_pts = _select_rim_cluster(boundary_pts)
+    rim_pts_normalized = _select_rim_cluster(boundary_pts)
 
+    # ========= 坐标系转换：归一化坐标 -> 原始坐标 =========
+    if hasattr(fragment, 'original_points') and fragment.original_points is not None:
+        # 如果有保存的原始坐标，使用反归一化
+        scale = getattr(fragment, 'scale', 1.0)
+        centroid = getattr(fragment, 'centroid', np.zeros(3))
+        rim_pts_original = rim_pts_normalized * scale + centroid
+
+        print(f"[边界检测] 已将边界点从归一化坐标系转换回原始坐标系")
+        print(f"  归一化边界点范围: [{rim_pts_normalized.min():.3f}, {rim_pts_normalized.max():.3f}]")
+        print(f"  原始边界点范围: [{rim_pts_original.min():.3f}, {rim_pts_original.max():.3f}]")
+    else:
+        # 如果没有归一化，直接使用检测到的边界点
+        rim_pts_original = rim_pts_normalized
+
+    # 创建边界点云（使用原始坐标）
     boundary_pcd = o3d.geometry.PointCloud()
-    boundary_pcd.points = o3d.utility.Vector3dVector(rim_pts)
+    boundary_pcd.points = o3d.utility.Vector3dVector(rim_pts_original)
     boundary_pcd.paint_uniform_color([1, 0, 0])
 
+    # 可视化时显示原始点云（如果可用）
     if visualize:
-        o3d.visualization.draw_geometries(
-            [pcd, boundary_pcd],
-            window_name=f"碎片{fragment.id} - Rim 边界",
-            width=800,
-            height=600
-        )
+        if hasattr(fragment, 'original_points') and fragment.original_points is not None:
+            # 创建原始点云的可视化对象
+            original_pcd = o3d.geometry.PointCloud()
+            original_pcd.points = o3d.utility.Vector3dVector(fragment.original_points)
+            original_pcd.paint_uniform_color([0.7, 0.7, 0.7])  # 灰色
 
-    fragment.boundary_pts = rim_pts
+            # 如果有归一化的当前点云，也显示
+            if hasattr(fragment, 'point_cloud') and fragment.point_cloud is not None:
+                o3d.visualization.draw_geometries(
+                    [original_pcd, boundary_pcd],
+                    window_name=f"碎片{fragment.id} - Rim 边界（原始坐标系）",
+                    width=800,
+                    height=600,
+                    zoom=0.5
+                )
+            else:
+                o3d.visualization.draw_geometries(
+                    [original_pcd, boundary_pcd],
+                    window_name=f"碎片{fragment.id} - Rim 边界（原始坐标系）",
+                    width=800,
+                    height=600,
+                    zoom=0.5
+                )
+        else:
+            o3d.visualization.draw_geometries(
+                [pcd, boundary_pcd],
+                window_name=f"碎片{fragment.id} - Rim 边界",
+                width=800,
+                height=600
+            )
+
+    # 存储边界点（原始坐标系）
+    fragment.boundary_pts = rim_pts_original
     fragment.boundary_pcd = boundary_pcd
 
-    print(f"[边界检测] 碎片{fragment.id} rim 点数：{len(rim_pts)}")
-    return boundary_pcd, rim_pts
+    print(f"[边界检测] 碎片{fragment.id} rim 点数：{len(rim_pts_original)}")
+    return boundary_pcd, rim_pts_original
