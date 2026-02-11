@@ -38,3 +38,4 @@ class Fragment:
         self.profile_curve = None  # 整体轮廓曲线（np.ndarray | None）
         self.geo_embedding = None  # 128维几何特征嵌入向量（np.ndarray | None）
         self.profile_feature = None  # 轮廓特征向量（np.ndarray | None）
+        self.fpfh_feature = None  # 33维 FPFH 传统几何特征（fallback 匹配用）
