@@ -5,3 +5,4 @@ matplotlib
 pyyaml
 tqdm
 scikit-learn
+opencv-python
