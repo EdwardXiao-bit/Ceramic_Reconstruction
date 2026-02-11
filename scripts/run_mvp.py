@@ -15,18 +15,20 @@ from src.preprocessing.normalize import normalize_fragment
 from src.boundary.detect import detect_boundary
 from src.boundary.patch import extract_section_patch
 from src.boundary.rim import extract_rim_curve
+from src.boundary.normalize import normalize_patch
 
 from src.profile.extract import extract_profile
 from src.features.profile_feat import encode_profile
 
 # 几何特征学习
 from src.geometry_features.patch_encoder import PatchEncoder
+from src.geometry_features.traditional_feat import compute_patch_fpfh
 
 # 可视化
 from src.geometry_features.visualize import visualize_geo_embeddings
 
-# 匹配 & 装配（暂不动）
-from src.matching.coarse import coarse_match
+# 匹配 & 装配
+from src.matching.faiss_prescreen import faiss_prescreen
 from src.assembly.graph import assemble
 
 
@@ -64,6 +66,16 @@ def main():
         # 3.3 断面 patch
         extract_section_patch(f, visualize=True)
 
+        # ===== 3.3.1 质量检查：断面/边界点过少则跳过 rim/profile/特征编码 =====
+        n_patch = len(f.section_patch.points) if (hasattr(f, "section_patch") and f.section_patch is not None) else 0
+        n_boundary = len(f.boundary_pts) if (hasattr(f, "boundary_pts") and f.boundary_pts is not None) else 0
+        MIN_PATCH_POINTS = 50
+        MIN_BOUNDARY_POINTS = 20
+        if n_patch < MIN_PATCH_POINTS or n_boundary < MIN_BOUNDARY_POINTS:
+            print(f"[质量检查] 碎片{f.id} 断面点={n_patch}、边界点={n_boundary} 不足，跳过 rim/profile/几何编码（纯点云或低质量 mesh 常见）")
+            f.geo_embedding = None
+            continue
+
         # 3.4 rim 曲线
         extract_rim_curve(f, visualize=True)
 
@@ -71,28 +83,39 @@ def main():
         profile, axis = extract_profile(f)
         f.profile_curve = profile
         f.main_axis = axis
-        for f in fragments:
-            print(f"\n===== 开始处理碎片: {f.id} =====")
-            # 轮廓提取
-            extract_profile(f)
-            # 轮廓编码（增加异常处理）
-            try:
-                encode_profile(f)
-            except Exception as e:
-                print(f"[处理碎片{f.id}] 轮廓编码失败：{str(e)}")
-                f.profile_feature = None
+
+        # 轮廓编码（仅对当前碎片，增加异常处理）
+        try:
+            encode_profile(f)
+        except Exception as e:
+            print(f"[处理碎片{f.id}] 轮廓编码失败：{str(e)}")
+            f.profile_feature = None
+
+        # ===== 3.5.1 边界规范化（尺度/局部坐标系/重采样/法向一致）=====
+        normalize_patch(f, n_points=2048)
 
         # ===== 3.6 几何特征学习编码 =====
         if hasattr(f, "section_patch") and f.section_patch is not None:
+            # PointNet 深度特征
             geo_emb = geo_encoder.encode(f.section_patch)
             f.geo_embedding = geo_emb
+
+            # FPFH 传统特征（fallback）
+            fpfh = compute_patch_fpfh(f.section_patch)
+            f.fpfh_feature = fpfh
 
             np.save(
                 os.path.join(emb_dir, f"fragment_{f.id}_geo.npy"),
                 geo_emb
             )
+            if fpfh is not None:
+                np.save(
+                    os.path.join(emb_dir, f"fragment_{f.id}_fpfh.npy"),
+                    fpfh
+                )
 
-            print(f"[几何特征] 碎片 {f.id} embedding shape = {geo_emb.shape}")
+            fpfh_str = str(fpfh.shape) if fpfh is not None else "None"
+            print(f"[几何特征] 碎片 {f.id} geo_embedding={geo_emb.shape}, fpfh={fpfh_str}")
         else:
             print(f"[几何特征] 碎片 {f.id} 无断面 patch")
             f.geo_embedding = None
@@ -112,9 +135,10 @@ def main():
             method="pca"  # 或 "tsne"
         )
 
-    # ===== 5. 后续流程（暂不改）=====
-    print("\n===== 开始碎片匹配与装配 =====")
-    matches = coarse_match(fragments)
+    # ===== 5. 碎片匹配初筛（FAISS + 多模态相似度）& 装配 =====
+    print("\n===== 开始碎片匹配初筛与装配 =====")
+    matches = faiss_prescreen(fragments, top_m_geo=50, top_m_fpfh=50, top_k=10, alpha=0.7, beta=0.3)
+    print(f"[匹配初筛] 得到 {len(matches)} 个候选对")
     model = assemble(fragments, matches)
 
     if model is not None:
