@@ -22,6 +22,11 @@ ceramic_reconstruction/
     └── results/        # 匹配结果
 ```
 
+## 依赖安装
+```bash
+pip install -r requirements.txt
+```
+
 ## 运行方式
 
 ### 几何匹配
@@ -39,11 +44,6 @@ python scripts/run_advanced_texture_matching.py
 
 # 基于真实纹理贴图匹配
 python scripts/run_texture_based_matching.py
-```
-
-## 依赖安装
-```bash
-pip install -r requirements.txt
 ```
 
 ## 技术特点
