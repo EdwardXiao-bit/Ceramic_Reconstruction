@@ -68,12 +68,18 @@ def main():
     print(f"缓存目录: {args.cache_dir}")
     print()
     
+    # 解决PyCharm工作目录问题：使用相对于项目根目录的绝对路径
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    data_dir = os.path.join(project_root, args.data_dir.replace('/', os.sep))
+    
     # 加载碎片数据
     print("=== 数据加载 ===")
     try:
-        fragments = load_fragments(args.data_dir)
+        fragments = load_fragments(data_dir)
         if not fragments:
-            print(f"✗ 未在 {args.data_dir} 中找到有效碎片文件")
+            print(f"✗ 未在 {data_dir} 中找到有效碎片文件")
+            print(f"  当前工作目录: {os.getcwd()}")
+            print(f"  项目根目录: {project_root}")
             return 1
         
         print(f"✓ 成功加载 {len(fragments)} 个碎片:")
@@ -90,10 +96,13 @@ def main():
     print("=== 纹理匹配流水线 ===")
     print(f"SuperGlue使用状态: {'启用' if args.use_superglue else '禁用'}")
     try:
+        # 使用相对于项目根目录的输出路径
+        output_dir = os.path.join(project_root, args.output_dir.replace('/', os.sep))
+        
         report = run_texture_matching_pipeline(
             fragments=fragments,
             config_path=config_path,
-            output_dir=args.output_dir,
+            output_dir=output_dir,
             use_superglue=args.use_superglue  # 传递SuperGlue参数
         )
         print()
