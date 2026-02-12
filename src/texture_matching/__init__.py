@@ -3,13 +3,14 @@
 实现SuperGlue纹样匹配功能
 """
 
-from .superglue_integration import (
-    TextureMatcher,
-    PatternEncoder,
-    integrate_texture_matching,
-    check_superglue_availability,
-    get_texture_matching_fallback
-)
+# 注释掉缺失的模块导入
+# from .superglue_integration import (
+#     TextureMatcher,
+#     PatternEncoder,
+#     integrate_texture_matching,
+#     check_superglue_availability,
+#     get_texture_matching_fallback
+# )
 
 from .advanced_matching import (
     AdvancedTextureMatcher,
@@ -24,11 +25,11 @@ from .config import (
 )
 
 __all__ = [
-    'TextureMatcher',
-    'PatternEncoder', 
-    'integrate_texture_matching',
-    'check_superglue_availability',
-    'get_texture_matching_fallback',
+    # 'TextureMatcher',
+    # 'PatternEncoder', 
+    # 'integrate_texture_matching',
+    # 'check_superglue_availability',
+    # 'get_texture_matching_fallback',
     'AdvancedTextureMatcher',
     'TextureMatchingPipeline',
     'run_texture_matching_pipeline',

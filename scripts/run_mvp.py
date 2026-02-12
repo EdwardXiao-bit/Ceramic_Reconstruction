@@ -35,9 +35,12 @@ from src.assembly.graph import assemble
 
 def main():
     # ===== 1. 加载碎片 =====
-    fragments = load_fragments("data/demo")
+    # 使用相对于项目根目录的路径，确保在不同环境下都能正确找到数据
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    data_dir = os.path.join(project_root, "data", "demo")
+    fragments = load_fragments(data_dir)
     if not fragments:
-        print("未加载到任何碎片，请检查 data/demo")
+        print(f"未加载到任何碎片，请检查 {data_dir}")
         return
 
     # ===== 2. 初始化几何特征编码器 =====
