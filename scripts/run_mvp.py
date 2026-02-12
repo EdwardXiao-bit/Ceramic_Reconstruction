@@ -1,151 +1,255 @@
-# D:\ceramic_reconstruction\scripts\run_mvp.py
+# D:\Users\Lenovo\Documents\GitHub\Ceramic_Reconstruction\scripts\run_mvp.py
+
 import sys
 import os
-import numpy as np
+import json
+from pathlib import Path
 import open3d as o3d
+import numpy as np
 
-# 手动添加项目根目录
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(PROJECT_ROOT)
+PROJECT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
 
-# ===== 导入模块 =====
 from src.common.io import load_fragments
 from src.preprocessing.normalize import normalize_fragment
-
-from src.boundary.detect import detect_boundary
-from src.boundary.patch import extract_section_patch
-from src.boundary.rim import extract_rim_curve
-from src.boundary.normalize import normalize_patch
-
+from src.boundary import detect_boundary_robust, extract_section_patch, extract_rim_curve
 from src.profile.extract import extract_profile
 from src.features.profile_feat import encode_profile
-
-# 几何特征学习
-from src.geometry_features.patch_encoder import PatchEncoder
-from src.geometry_features.traditional_feat import compute_patch_fpfh
-
-# 可视化
-from src.geometry_features.visualize import visualize_geo_embeddings
-
-# 匹配 & 装配
-from src.matching.faiss_prescreen import faiss_prescreen
+from src.matching.coarse import coarse_match
 from src.assembly.graph import assemble
 
 
-def main():
-    # ===== 1. 加载碎片 =====
-    fragments = load_fragments("data/demo")
-    if not fragments:
-        print("未加载到任何碎片，请检查 data/demo")
+# ============================================================
+# 可视化配置
+# ============================================================
+class VisualizationMode:
+    NONE = 0
+    SAVE_ONLY = 1
+    INTERACTIVE = 2
+
+
+# 🔧 默认使用交互模式
+VIS_MODE = VisualizationMode.INTERACTIVE
+
+
+def visualize_step(geometry_list, window_name="Visualization", mode=VIS_MODE):
+    if mode == VisualizationMode.NONE:
+        return
+    if not isinstance(geometry_list, list):
+        geometry_list = [geometry_list]
+
+    if mode == VisualizationMode.INTERACTIVE:
+        o3d.visualization.draw_geometries(
+            geometry_list,
+            window_name=window_name,
+            width=1024,
+            height=768,
+            left=50,
+            top=50,
+            point_show_normal=False,
+        )
+    elif mode == VisualizationMode.SAVE_ONLY:
+        vis = o3d.visualization.Visualizer()
+        vis.create_window(
+            window_name=window_name,
+            width=1024,
+            height=768,
+            visible=False,
+        )
+        for geom in geometry_list:
+            vis.add_geometry(geom)
+        vis.poll_events()
+        vis.update_renderer()
+        output_dir = PROJECT_ROOT / "data" / "output" / "screenshots"
+        output_dir.mkdir(parents=True, exist_ok=True)
+        img_path = output_dir / f"{window_name.replace(' ', '_')}.png"
+        vis.capture_screen_image(str(img_path))
+        vis.destroy_window()
+        print(f"  📸 截图已保存: {img_path}")
+
+
+def visualize_boundary_extraction(fragment, mode=VIS_MODE):
+    if mode == VisualizationMode.NONE:
+        return
+    if not hasattr(fragment, "boundary_points") or fragment.boundary_points is None:
         return
 
-    # ===== 2. 初始化几何特征编码器 =====
-    geo_encoder = PatchEncoder()
+    geoms = []
+    if fragment.mesh:
+        vis_base = o3d.geometry.TriangleMesh(fragment.mesh)
+        vis_base.compute_vertex_normals()
+        vis_base.paint_uniform_color([0.8, 0.8, 0.8])
+    else:
+        vis_base = o3d.geometry.PointCloud(fragment.point_cloud)
+        vis_base.paint_uniform_color([0.8, 0.8, 0.8])
+    geoms.append(vis_base)
 
-    # embedding 存盘目录
-    emb_dir = "data/processed/geo_embeddings"
-    os.makedirs(emb_dir, exist_ok=True)
+    vis_boundary = o3d.geometry.PointCloud(fragment.boundary_points)
+    vis_boundary.paint_uniform_color([1.0, 0.0, 0.0])
 
-    # ===== 3. 逐碎片处理 =====
-    for f in fragments:
-        print(f"\n===== 开始处理碎片: {f.id} =====")
+    if vis_boundary.has_normals():
+        pts = np.asarray(vis_boundary.points)
+        nms = np.asarray(vis_boundary.normals)
+        vis_boundary.points = o3d.utility.Vector3dVector(pts + nms * 0.005)
 
-        if f.point_cloud is None:
-            print(f"碎片 {f.id} 无点云，跳过")
-            continue
+    geoms.append(vis_boundary)
+    visualize_step(
+        geoms, window_name=f"Boundary_Robust_{fragment.id}", mode=mode
+    )
 
-        # 3.1 归一化
-        normalized_pcd, meta = normalize_fragment(f)
-        if normalized_pcd is None:
-            print(f"碎片 {f.id} 归一化失败")
-            continue
 
-        # 3.2 边界检测
-        detect_boundary(f, visualize=True, curvature_thresh=0.1)
+def visualize_section_patch(fragment, mode=VIS_MODE):
+    if mode == VisualizationMode.NONE:
+        return
+    if not hasattr(fragment, "section_patch"):
+        return
 
-        # 3.3 断面 patch
-        extract_section_patch(f, visualize=True)
+    vis_base = o3d.geometry.PointCloud(fragment.point_cloud)
+    vis_base.paint_uniform_color([0.8, 0.8, 0.8])
 
-        # ===== 3.3.1 质量检查：断面/边界点过少则跳过 rim/profile/特征编码 =====
-        n_patch = len(f.section_patch.points) if (hasattr(f, "section_patch") and f.section_patch is not None) else 0
-        n_boundary = len(f.boundary_pts) if (hasattr(f, "boundary_pts") and f.boundary_pts is not None) else 0
-        MIN_PATCH_POINTS = 50
-        MIN_BOUNDARY_POINTS = 20
-        if n_patch < MIN_PATCH_POINTS or n_boundary < MIN_BOUNDARY_POINTS:
-            print(f"[质量检查] 碎片{f.id} 断面点={n_patch}、边界点={n_boundary} 不足，跳过 rim/profile/几何编码（纯点云或低质量 mesh 常见）")
-            f.geo_embedding = None
-            continue
+    vis_patch = o3d.geometry.PointCloud(fragment.section_patch)
+    vis_patch.paint_uniform_color([0.0, 0.4, 0.8])
 
-        # 3.4 rim 曲线
-        extract_rim_curve(f, visualize=True)
-
-        # 3.5 profile（旧流程，保留）
-        profile, axis = extract_profile(f)
-        f.profile_curve = profile
-        f.main_axis = axis
-
-        # 轮廓编码（仅对当前碎片，增加异常处理）
-        try:
-            encode_profile(f)
-        except Exception as e:
-            print(f"[处理碎片{f.id}] 轮廓编码失败：{str(e)}")
-            f.profile_feature = None
-
-        # ===== 3.5.1 边界规范化（尺度/局部坐标系/重采样/法向一致）=====
-        normalize_patch(f, n_points=2048)
-
-        # ===== 3.6 几何特征学习编码 =====
-        if hasattr(f, "section_patch") and f.section_patch is not None:
-            # PointNet 深度特征
-            geo_emb = geo_encoder.encode(f.section_patch)
-            f.geo_embedding = geo_emb
-
-            # FPFH 传统特征（fallback）
-            fpfh = compute_patch_fpfh(f.section_patch)
-            f.fpfh_feature = fpfh
-
-            np.save(
-                os.path.join(emb_dir, f"fragment_{f.id}_geo.npy"),
-                geo_emb
-            )
-            if fpfh is not None:
-                np.save(
-                    os.path.join(emb_dir, f"fragment_{f.id}_fpfh.npy"),
-                    fpfh
-                )
-
-            fpfh_str = str(fpfh.shape) if fpfh is not None else "None"
-            print(f"[几何特征] 碎片 {f.id} geo_embedding={geo_emb.shape}, fpfh={fpfh_str}")
-        else:
-            print(f"[几何特征] 碎片 {f.id} 无断面 patch")
-            f.geo_embedding = None
-
-    # ===== 4. embedding 可视化（PCA / t-SNE）=====
-    geo_embs = []
-    geo_ids = []
-    for f in fragments:
-        if hasattr(f, "geo_embedding") and f.geo_embedding is not None:
-            geo_embs.append(f.geo_embedding)
-            geo_ids.append(f.id)
-
-    if len(geo_embs) >= 2:
-        visualize_geo_embeddings(
-            geo_embs,
-            geo_ids,
-            method="pca"  # 或 "tsne"
+    if vis_patch.has_normals():
+        vis_patch.points = o3d.utility.Vector3dVector(
+            np.asarray(vis_patch.points) + np.asarray(vis_patch.normals) * 0.01
         )
 
-    # ===== 5. 碎片匹配初筛（FAISS + 多模态相似度）& 装配 =====
-    print("\n===== 开始碎片匹配初筛与装配 =====")
-    matches = faiss_prescreen(fragments, top_m_geo=50, top_m_fpfh=50, top_k=10, alpha=0.7, beta=0.3)
-    print(f"[匹配初筛] 得到 {len(matches)} 个候选对")
-    model = assemble(fragments, matches)
+    visualize_step(
+        [vis_base, vis_patch], window_name=f"Patch_{fragment.id}", mode=mode
+    )
 
-    if model is not None:
-        o3d.io.write_point_cloud("data/assembled_model.ply", model)
-        print("装配结果已保存")
 
-    print("\nMVP pipeline 执行完成！")
+def visualize_rim(fragment, mode=VIS_MODE, always_show=False):
+    if mode == VisualizationMode.NONE:
+        return
+    if not hasattr(fragment, "rim_curve"):
+        return
+
+    rim_curve = fragment.rim_curve
+    if len(rim_curve) < 10:
+        return
+
+    rim_pcd = o3d.geometry.PointCloud()
+    rim_pcd.points = o3d.utility.Vector3dVector(rim_curve)
+    rim_pcd.paint_uniform_color([0, 1, 0])
+
+    lines = [[i, (i + 1) % len(rim_curve)] for i in range(len(rim_curve))]
+    rim_lines = o3d.geometry.LineSet()
+    rim_lines.points = o3d.utility.Vector3dVector(rim_curve)
+    rim_lines.lines = o3d.utility.Vector2iVector(lines)
+    rim_lines.paint_uniform_color([0, 1, 0])
+
+    vis_geoms = [fragment.point_cloud, rim_pcd, rim_lines]
+    if always_show or (
+        mode == VisualizationMode.INTERACTIVE and len(vis_geoms) > 0
+    ):
+        visualize_step(
+            vis_geoms, window_name=f"Rim_{fragment.id}", mode=mode
+        )
+
+
+def main():
+    data_dir = PROJECT_ROOT / "data" / "eg1"
+    output_dir = PROJECT_ROOT / "data" / "output"
+
+    if not data_dir.exists():
+        raise FileNotFoundError(f"数据目录不存在: {data_dir}")
+
+    print("=" * 60)
+    print("开始重建流程 (Robust Version)")
+    print("=" * 60)
+
+    fragments = load_fragments(str(data_dir))
+    if not fragments:
+        print("成功加载 0 个碎片")
+        return
+
+    print(f"成功加载 {len(fragments)} 个碎片")
+
+    successful_fragments = []
+
+    for i, f in enumerate(fragments, 1):
+        print(f"\n--- 处理碎片 {f.id} ({i}/{len(fragments)}) ---")
+        try:
+            # 1. 归一化
+            print("→ 归一化...")
+            normalized_pcd, meta = normalize_fragment(f)
+            if normalized_pcd is None:
+                continue
+            f.point_cloud = normalized_pcd
+            f.norm_metadata = meta
+
+            # 2. 边界检测 (Robust)
+            print("→ 边界检测 (Robust Dual-Threshold)...")
+            detect_boundary_robust(
+                f,
+                smooth_iter=2,
+                angle_thresh=60.0,
+                low_angle_thresh=15.0,
+                min_cluster_size=50,
+                visualize=False,
+            )
+            visualize_boundary_extraction(f, mode=VIS_MODE)
+
+            # 3. 断面 Patch (Thickness-Based)
+            print("→ 提取断面 Patch (Thickness-Based)...")
+            extract_section_patch(
+                f,
+                thickness_ratio=0.3,
+                normal_to_surface_thresh=50.0,
+                visualize=True,
+            )
+            visualize_section_patch(f, mode=VIS_MODE)
+
+            # # 4. Rim 曲线
+            # print("→ 提取 Rim 曲线...")
+            # rim_curve, rim_pcd = extract_rim_curve(
+            #     fragment=f,
+            #     n_bins=100,
+            #     normalize=True,
+            #     use_arc_length=True,
+            #     visualize=(VIS_MODE == VisualizationMode.INTERACTIVE and i == 1),
+            # )
+            #
+            # if rim_curve is not None and len(rim_curve) > 0:
+            #     f.rim_curve = rim_curve
+            #     f.rim_pcd = rim_pcd
+            #     # ✅ 修复点：用 f，而不是 fragment！
+            #     visualize_rim(f, mode=VIS_MODE, always_show=False)
+            # else:
+            #     print(f"[Rim] 碎片{f.id} rim 提取失败或点数不足")
+            #
+            # # 5. 特征编码
+            # print("→ 特征编码...")
+            # profile, axis = extract_profile(f)
+            # f.profile_curve = profile
+            # f.main_axis = axis
+            # encode_profile(f)
+
+            successful_fragments.append(f)
+            print(f"✓ 碎片{f.id}处理完成")
+
+        except Exception as e:
+            print(f"❌ 碎片{f.id}处理异常: {e}")
+            import traceback
+            traceback.print_exc()
+            continue
+
+    print("\n" + "=" * 60)
+    print(f"装配阶段: 有效碎片 {len(successful_fragments)} 个")
+    if len(successful_fragments) >= 2:
+        # 假设 coarse_match 返回 4x4 位姿列表
+        poses = coarse_match(successful_fragments)
+        model = assemble(successful_fragments, poses)
+        if model:
+            o3d.io.write_point_cloud(
+                str(output_dir / "assembled.ply"), model
+            )
+            print("✓ 模型已保存")
+            visualize_step(
+                model, window_name="Assembled_Model", mode=VIS_MODE
+            )
 
 
 if __name__ == "__main__":

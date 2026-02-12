@@ -45,10 +45,8 @@ def extract_section_patch(fragment, k_neighbors=50, visualize=False):
 
     # 可视化（整体点云+红色边界+蓝色断面）
     if visualize:
+        # 仅可视化与当前 point_cloud 同坐标系的数据，避免 mesh/pcd 坐标系不一致导致错位
         vis_list = [pcd, fragment.boundary_pcd, section_patch]
-        # 有网格则加入可视化
-        if hasattr(fragment, "mesh") and fragment.mesh is not None:
-            vis_list.insert(0, fragment.mesh)
         o3d.visualization.draw_geometries(
             vis_list,
             window_name=f"碎片{fragment.id} - 断面patch提取结果",
