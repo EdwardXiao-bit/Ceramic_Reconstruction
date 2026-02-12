@@ -1,0 +1,32 @@
+{
+  "superpoint": {
+    "nms_radius": 4,
+    "keypoint_threshold": 0.005,
+    "max_keypoints": 1024
+  },
+  "superglue": {
+    "weights": "indoor",
+    "sinkhorn_iterations": 20,
+    "match_threshold": 0.2
+  },
+  "texture_processing": {
+    "image_resolution": [
+      512,
+      512
+    ],
+    "projection_method": "orthographic",
+    "segmentation_threshold": 0.7
+  },
+  "matching": {
+    "min_matches": 10,
+    "similarity_threshold": 0.3,
+    "top_k_candidates": 20,
+    "feature_weight": 0.7,
+    "embedding_weight": 0.3
+  },
+  "visualization": {
+    "show_texture_regions": true,
+    "show_matches": true,
+    "save_intermediate": true
+  }
+}
