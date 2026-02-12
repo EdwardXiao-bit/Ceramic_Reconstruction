@@ -127,6 +127,8 @@ def detect_boundary_robust(fragment,
 
     fragment.boundary_points = boundary_pcd
     fragment.boundary_indices = final_indices
+    # 兼容性：同时设置boundary_pts属性
+    fragment.boundary_pts = boundary_pts
     # 检查当前点云的点数是否与 Mesh 顶点数一致
     current_pcd_points = np.asarray(fragment.point_cloud.points) if fragment.point_cloud else []
 

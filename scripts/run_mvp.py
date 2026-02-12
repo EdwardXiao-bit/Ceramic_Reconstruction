@@ -12,7 +12,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.common.io import load_fragments
 from src.preprocessing.normalize import normalize_fragment
-from src.boundary import detect_boundary_robust, extract_section_patch, extract_rim_curve
+from src.boundary import detect_boundary_robust, extract_section_patch, extract_rim_curve, extract_geodesic_rim_curve
 from src.profile.extract import extract_profile
 from src.features.profile_feat import encode_profile
 from src.matching.coarse import coarse_match
@@ -101,7 +101,7 @@ def visualize_boundary_extraction(fragment, mode=VIS_MODE):
 def visualize_section_patch(fragment, mode=VIS_MODE):
     if mode == VisualizationMode.NONE:
         return
-    if not hasattr(fragment, "section_patch"):
+    if not hasattr(fragment, "section_patch") or fragment.section_patch is None:
         return
 
     vis_base = o3d.geometry.PointCloud(fragment.point_cloud)
@@ -157,7 +157,7 @@ def main():
         raise FileNotFoundError(f"数据目录不存在: {data_dir}")
 
     print("=" * 60)
-    print("开始重建流程 (Robust Version)")
+    print("开始重建流程 (Robust Version with Geodesic Rim)")
     print("=" * 60)
 
     fragments = load_fragments(str(data_dir))
@@ -192,40 +192,63 @@ def main():
             )
             visualize_boundary_extraction(f, mode=VIS_MODE)
 
-            # 3. 断面 Patch (Thickness-Based)
-            print("→ 提取断面 Patch (Thickness-Based)...")
-            extract_section_patch(
+            # 3. 断面 Patch - 添加容错处理
+            print("→ 提取断面 Patch...")
+            patch_result = extract_section_patch(
                 f,
-                thickness_ratio=0.3,
-                normal_to_surface_thresh=50.0,
+                k_neighbors=30,
                 visualize=True,
             )
+            
+            # 检查patch提取是否成功
+            if patch_result is None:
+                print(f"[警告] 碎片{f.id} patch提取失败，跳过rim提取")
+                continue
+                
             visualize_section_patch(f, mode=VIS_MODE)
 
-            # # 4. Rim 曲线
-            # print("→ 提取 Rim 曲线...")
-            # rim_curve, rim_pcd = extract_rim_curve(
-            #     fragment=f,
-            #     n_bins=100,
-            #     normalize=True,
-            #     use_arc_length=True,
-            #     visualize=(VIS_MODE == VisualizationMode.INTERACTIVE and i == 1),
-            # )
-            #
-            # if rim_curve is not None and len(rim_curve) > 0:
-            #     f.rim_curve = rim_curve
-            #     f.rim_pcd = rim_pcd
-            #     # ✅ 修复点：用 f，而不是 fragment！
-            #     visualize_rim(f, mode=VIS_MODE, always_show=False)
-            # else:
-            #     print(f"[Rim] 碎片{f.id} rim 提取失败或点数不足")
-            #
-            # # 5. 特征编码
-            # print("→ 特征编码...")
-            # profile, axis = extract_profile(f)
-            # f.profile_curve = profile
-            # f.main_axis = axis
-            # encode_profile(f)
+            # 4. Rim 曲线提取 - 使用测地线方法（符合技术文档要求）
+            print("→ 提取 Rim 曲线 (Geodesic Method)...")
+            rim_curve, rim_pcd = extract_geodesic_rim_curve(
+                fragment=f,
+                patch_pcd=None,  # 使用fragment.section_patch
+                n_samples=200,
+                visualize=(VIS_MODE == VisualizationMode.INTERACTIVE and i <= 2),  # 前两个碎片可视化
+            )
+
+            if rim_curve is not None and len(rim_curve) > 0:
+                f.rim_curve = rim_curve
+                f.rim_pcd = rim_pcd
+                # 显示几何属性信息
+                if hasattr(f, 'geodesic_attributes') and f.geodesic_attributes is not None:
+                    print(f"  ✓ Rim曲线提取成功，点数: {len(rim_curve)}")
+                    print(f"  ✓ 几何属性维度: {f.geodesic_attributes.shape}")
+                else:
+                    print(f"  ✓ Rim曲线提取成功，点数: {len(rim_curve)}")
+                visualize_rim(f, mode=VIS_MODE, always_show=False)
+            else:
+                print(f"[Rim] 碎片{f.id} rim 提取失败或点数不足")
+                # 降级到传统PCA方法
+                print("  → 尝试传统PCA方法...")
+                rim_curve, rim_pcd = extract_rim_curve(
+                    fragment=f,
+                    n_samples=200,
+                    visualize=False,
+                )
+                if rim_curve is not None and len(rim_curve) > 0:
+                    f.rim_curve = rim_curve
+                    f.rim_pcd = rim_pcd
+                    print(f"  ✓ 传统方法成功，点数: {len(rim_curve)}")
+                    visualize_rim(f, mode=VIS_MODE, always_show=False)
+                else:
+                    print(f"  ✗ 两种方法都失败")
+
+            # 5. 特征编码
+            print("→ 特征编码...")
+            profile, axis = extract_profile(f)
+            f.profile_curve = profile
+            f.main_axis = axis
+            encode_profile(f)
 
             successful_fragments.append(f)
             print(f"✓ 碎片{f.id}处理完成")
