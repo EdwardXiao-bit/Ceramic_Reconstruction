@@ -29,6 +29,7 @@ from src.geometry_features.visualize import visualize_geo_embeddings
 
 # 匹配 & 装配
 from src.matching.faiss_prescreen import faiss_prescreen
+from src.matching.results_saver import save_matching_results
 from src.assembly.graph import assemble
 
 
@@ -137,8 +138,32 @@ def main():
 
     # ===== 5. 碎片匹配初筛（FAISS + 多模态相似度）& 装配 =====
     print("\n===== 开始碎片匹配初筛与装配 =====")
-    matches = faiss_prescreen(fragments, top_m_geo=50, top_m_fpfh=50, top_k=10, alpha=0.7, beta=0.3)
+    
+    # 执行FAISS初筛并获取详细信息
+    matches, process_info = faiss_prescreen(
+        fragments, 
+        top_m_geo=50, 
+        top_m_fpfh=50, 
+        top_m_texture=30,  # 添加纹样特征支持
+        top_k=10, 
+        alpha=0.5,         # 调整权重以平衡三种特征
+        beta=0.2,
+        gamma=0.3
+    )
+    
     print(f"[匹配初筛] 得到 {len(matches)} 个候选对")
+    
+    # 保存详细的匹配结果
+    if matches:
+        print("\n===== 保存匹配结果 =====")
+        save_matching_results(
+            matches=matches,
+            fragments=fragments,
+            output_dir="results/matching",
+            detailed_info=process_info
+        )
+    
+    # 执行装配
     model = assemble(fragments, matches)
 
     if model is not None:
@@ -146,6 +171,16 @@ def main():
         print("装配结果已保存")
 
     print("\nMVP pipeline 执行完成！")
+    
+    # 显示匹配统计摘要
+    if matches and process_info:
+        print("\n===== 匹配统计摘要 =====")
+        print(f"总碎片数: {process_info.get('total_fragments', 'N/A')}")
+        print(f"有效碎片数: {process_info.get('valid_fragments', 'N/A')}")
+        print(f"使用的特征类型: {list(process_info.get('feature_types', {}).keys())}")
+        if 'similarity_stats' in process_info:
+            stats = process_info['similarity_stats']
+            print(f"相似度统计 - 平均: {stats['mean']:.4f}, 最高: {stats['max']:.4f}, 最低: {stats['min']:.4f}")
 
 
 if __name__ == "__main__":
