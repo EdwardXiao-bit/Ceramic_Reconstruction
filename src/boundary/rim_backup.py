@@ -10,7 +10,7 @@ def extract_rim_curve(fragment, n_samples=200, visualize=False):
     :param fragment: Fragment对象，需包含 boundary_pts
     :param n_samples: 重采样点数
     """
-    
+
     if fragment.boundary_pts is None or len(fragment.boundary_pts) < 50:
         print(f"[Rim提取] 碎片{fragment.id} rim 点不足")
         return None, None
@@ -179,28 +179,6 @@ def extract_centerline_rim_from_boundaries(fragment, n_samples=200, visualize=Fa
     print(f"[中心线Rim] 提取完成，中心线rim曲线点数: {len(ordered_centerline)}")
     return ordered_centerline, rim_pcd
 
-
-def _separate_boundary_lines(boundary_points, eps=0.02, min_samples=10):
-    """
-    使用DBSCAN聚类将边界点分离成不同的边界线
-    """
-    from sklearn.cluster import DBSCAN
-    
-    # 使用DBSCAN聚类
-    clustering = DBSCAN(eps=eps, min_samples=min_samples).fit(boundary_points)
-    labels = clustering.labels_
-    
-    # 分离不同簇的点
-    unique_labels = np.unique(labels)
-    boundary_lines = []
-    
-    for label in unique_labels:
-        if label != -1:  # -1表示噪声点
-            line_points = boundary_points[labels == label]
-            if len(line_points) > 5:  # 有效边界线：点数>5
-                boundary_lines.append(line_points)
-    
-    return boundary_lines
 
 
 def _find_boundary_correspondences(line1_pts, line2_pts, patch_pts, k_neighbors=10):
