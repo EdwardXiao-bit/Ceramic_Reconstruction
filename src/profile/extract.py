@@ -21,7 +21,18 @@ def extract_profile(fragment, n_bins=100):
     center = pts.mean(axis=0)
     pts -= center
 
-    _, _, Vt = np.linalg.svd(pts)
+    # 使用优化的SVD计算，避免内存溢出
+    try:
+        # 对于大矩阵，使用 economy-size SVD
+        if len(pts) > 10000:
+            _, _, Vt = np.linalg.svd(pts, full_matrices=False)
+        else:
+            _, _, Vt = np.linalg.svd(pts)
+    except MemoryError:
+        # 如果还是内存不足，使用随机SVD近似
+        print(f"[轮廓提取] 警告：内存不足，使用随机SVD近似")
+        from sklearn.utils.extmath import randomized_svd
+        _, _, Vt = randomized_svd(pts, n_components=3, random_state=42)
     axis = Vt[0]
 
     h = pts @ axis
