@@ -1,0 +1,17 @@
+{
+  "0": [],
+  "1": [
+    {
+      "matched_fragment": 2,
+      "similarity": 0.9946871655327933,
+      "fragment_name": "Mia_001094_HorseBowl_64k.obj"
+    }
+  ],
+  "2": [
+    {
+      "matched_fragment": 1,
+      "similarity": 0.9946871655327933,
+      "fragment_name": "Mia_001085_MinaiBowl_32k.obj"
+    }
+  ]
+}
