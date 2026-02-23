@@ -1,189 +1,169 @@
-# D:\ceramic_reconstruction\src\boundary\detect.py
 import numpy as np
 import open3d as o3d
 from collections import defaultdict
-from sklearn.cluster import DBSCAN
 
 
-def _select_rim_cluster(boundary_pts):
+def detect_boundary_robust(fragment,
+                           smooth_iter=5,
+                           angle_thresh=35.0,  # 主阈值（用于找强边界）
+                           low_angle_thresh=20.0,  # 副阈值（用于找圆润边界）
+                           min_cluster_size=20,
+                           visualize=False):
     """
-    从所有 boundary 点中，筛选最可能是 rim 的那一簇
-    判据：最大连通簇 + 最大空间跨度
+    【双阈值 + 连通生长版】
+    解决“一边锐利、一边圆润”导致只检出一半的问题。
     """
-    if len(boundary_pts) < 50:
-        return boundary_pts
-
-    # DBSCAN 聚类（rim 通常是一整圈，密度高、规模大）
-    clustering = DBSCAN(eps=0.01, min_samples=10).fit(boundary_pts)
-    labels = clustering.labels_
-
-    unique_labels = [l for l in np.unique(labels) if l != -1]
-    if len(unique_labels) == 0:
-        return boundary_pts
-
-    best_score = -1
-    best_cluster = None
-
-    for lb in unique_labels:
-        pts = boundary_pts[labels == lb]
-        if len(pts) < 30:
-            continue
-
-        # 空间跨度作为 rim 判据（rim 是最大的一圈）
-        bbox = pts.max(axis=0) - pts.min(axis=0)
-        span = np.linalg.norm(bbox)
-
-        score = span * len(pts)
-        if score > best_score:
-            best_score = score
-            best_cluster = pts
-
-    return best_cluster if best_cluster is not None else boundary_pts
-
-
-def detect_boundary(fragment, visualize=False, curvature_thresh=0.1):
-    """
-    陶瓷碎片 rim 边界检测：
-    - 优先 mesh 拓扑
-    - fallback 到点云几何
-    - 最终筛选 rim 主边界
-    - 返回原始坐标系中的边界点
-    """
-    if fragment.point_cloud is None or len(fragment.point_cloud.points) == 0:
-        print(f"[边界检测] 碎片{fragment.id}无有效点云数据")
+    if fragment.mesh is None:
         return None, None
 
-    pcd = fragment.point_cloud
-    boundary_pts = None
+    # 1. 预处理：轻微平滑 (不要平滑太多，否则圆润边更难找)
+    mesh_compute = o3d.geometry.TriangleMesh(fragment.mesh)
+    mesh_compute = mesh_compute.filter_smooth_laplacian(
+        number_of_iterations=smooth_iter, lambda_filter=0.5)
+    mesh_compute.compute_triangle_normals()
 
-    # ========= 模式 1：网格拓扑 =========
-    if fragment.mesh is not None and len(fragment.mesh.triangles) > 0:
-        print(f"[边界检测] 碎片{fragment.id}使用网格拓扑法")
-        mesh = fragment.mesh
-        vertices = np.asarray(mesh.vertices)
-        triangles = np.asarray(mesh.triangles)
+    triangles = np.asarray(mesh_compute.triangles)
+    triangle_normals = np.asarray(mesh_compute.triangle_normals)
+    vertices = np.asarray(mesh_compute.vertices)
 
-        edge_count = defaultdict(int)
-        for tri in triangles:
-            edges = [(tri[0], tri[1]), (tri[1], tri[2]), (tri[2], tri[0])]
-            for e in edges:
-                edge_count[tuple(sorted(e))] += 1
+    # 2. 计算所有边的“锐利度” (1 - dot_product)
+    # sharp_score 越高越锐利。范围 [0, 2]。
+    # 垂直时 dot=0 -> score=1.0; 钝角120度 dot=-0.5 -> score=1.5
+    edge_scores = {}
+    edge_to_triangles = defaultdict(list)
 
-        boundary_edges = [e for e, cnt in edge_count.items() if cnt == 1]
-        if len(boundary_edges) > 0:
-            idx = np.unique(np.array(boundary_edges).flatten())
-            boundary_pts = vertices[idx]
+    for i, tri in enumerate(triangles):
+        edges = [tuple(sorted((tri[0], tri[1]))), tuple(sorted((tri[1], tri[2]))), tuple(sorted((tri[2], tri[0])))]
+        for edge in edges:
+            edge_to_triangles[edge].append(i)
 
-    # ========= 模式 2：点云几何 =========
-    if boundary_pts is None or len(boundary_pts) == 0:
-        print(f"[边界检测] 碎片{fragment.id}使用点云几何法")
+    # 计算分数的阈值
+    high_score_thresh = 1.0 - np.cos(np.deg2rad(angle_thresh))
+    low_score_thresh = 1.0 - np.cos(np.deg2rad(low_angle_thresh))
 
-        # 优先使用原始点云进行边界检测，避免归一化导致的信息丢失
-        if hasattr(fragment, 'original_points') and fragment.original_points is not None:
-            # 使用原始点云
-            detection_pcd = o3d.geometry.PointCloud()
-            detection_pcd.points = o3d.utility.Vector3dVector(fragment.original_points)
-            detection_pcd.estimate_normals(
-                search_param=o3d.geometry.KDTreeSearchParamKNN(knn=30)
-            )
-            pts = np.asarray(detection_pcd.points)
-            normals = np.asarray(detection_pcd.normals)
-            print(f"  使用原始点云（{len(pts)} 个点）进行边界检测")
-        else:
-            # 使用归一化的点云
-            pcd.estimate_normals(
-                search_param=o3d.geometry.KDTreeSearchParamKNN(knn=30)
-            )
-            pts = np.asarray(pcd.points)
-            normals = np.asarray(pcd.normals)
-            print(f"  使用归一化点云（{len(pts)} 个点）进行边界检测")
+    strong_edges = set()
+    weak_edges = set()
 
-        # Open3D 没有稳定曲率 API，用邻域法向变化近似
-        pts = np.asarray(pcd.points)
-        normals = np.asarray(pcd.normals)
+    for edge, tri_indices in edge_to_triangles.items():
+        score = 0.0
+        if len(tri_indices) == 1:  # 边界边 (无限锐利)
+            score = 2.0
+        elif len(tri_indices) == 2:
+            n1 = triangle_normals[tri_indices[0]]
+            n2 = triangle_normals[tri_indices[1]]
+            dot = np.clip(np.dot(n1, n2), -1.0, 1.0)
+            score = 1.0 - dot
 
-        # 使用原始点云的KD树
-        detection_pcd = o3d.geometry.PointCloud()
-        detection_pcd.points = o3d.utility.Vector3dVector(pts)
-        tree = o3d.geometry.KDTreeFlann(detection_pcd)
-        curvature = np.zeros(len(pts))
+        if score >= high_score_thresh:
+            strong_edges.add(edge)
+        elif score >= low_score_thresh:
+            weak_edges.add(edge)
 
-        # 计算曲率
-        print(f"  计算曲率...")
-        for i, pt in enumerate(pts):
-            _, idx, _ = tree.search_knn_vector_3d(pt, 20)
-            nbr_normals = normals[idx]
-            mean_normal = nbr_normals.mean(axis=0)
-            curvature[i] = np.mean(
-                np.linalg.norm(nbr_normals - mean_normal, axis=1)
-            )
+    # 3. 结果合并：强边缘 + (连接到强边缘的)弱边缘
+    # 由于拓扑复杂，这里简化策略：
+    # 只要弱边缘点在空间上靠近强边缘点（断裂面厚度范围内），就保留。
 
-        # 陶瓷碎片边界检测策略
-        # 选择曲率最低的点作为边界（陶瓷碎片边界通常曲率较低）
-        num_boundary = max(len(pts) // 20, 100)  # 至少100个点，或总数的5%
-        boundary_idx = np.argsort(curvature)[:num_boundary]
-        print(f"  选择最低曲率 {num_boundary} 个点作为候选边界")
+    strong_indices = set()
+    for e in strong_edges:
+        strong_indices.add(e[0]);
+        strong_indices.add(e[1])
 
-        boundary_pts = pts[boundary_idx]
+    weak_indices = set()
+    for e in weak_edges:
+        weak_indices.add(e[0]);
+        weak_indices.add(e[1])
 
-    # ========= 关键新增：rim 主边界筛选 =========
-    rim_pts_normalized = _select_rim_cluster(boundary_pts)
-
-    # ========= 坐标系转换：归一化坐标 -> 原始坐标 =========
-    if hasattr(fragment, 'original_points') and fragment.original_points is not None:
-        # 如果有保存的原始坐标，使用反归一化
-        scale = getattr(fragment, 'scale', 1.0)
-        centroid = getattr(fragment, 'centroid', np.zeros(3))
-        rim_pts_original = rim_pts_normalized * scale + centroid
-
-        print(f"[边界检测] 已将边界点从归一化坐标系转换回原始坐标系")
-        print(f"  归一化边界点范围: [{rim_pts_normalized.min():.3f}, {rim_pts_normalized.max():.3f}]")
-        print(f"  原始边界点范围: [{rim_pts_original.min():.3f}, {rim_pts_original.max():.3f}]")
+    # 如果完全没找到强边缘，就降级用弱边缘
+    if len(strong_indices) == 0:
+        final_indices_set = weak_indices
     else:
-        # 如果没有归一化，直接使用检测到的边界点
-        rim_pts_original = rim_pts_normalized
+        # 这里用一种简单有效的策略：全盘接受弱边缘
+        # 因为我们后续有 DBSCAN 聚类去噪，孤立的弱边缘（表面噪点）会被去掉
+        # 而位于断裂面边缘的弱边缘（圆润边）通常会连成一片
+        final_indices_set = strong_indices.union(weak_indices)
 
-    # 创建边界点云（使用原始坐标）
+    if len(final_indices_set) == 0:
+        return None, None
+
+    candidate_indices = np.array(list(final_indices_set), dtype=int)
+
+    # 4. 强力去噪 (DBSCAN)
+    # 这里的关键是：真边界（无论是锐利还是圆润）是连贯的长线条
+    # 表面噪点是零散的
+    pcd_temp = o3d.geometry.PointCloud()
+    pcd_temp.points = o3d.utility.Vector3dVector(vertices[candidate_indices])
+
+    # 估算 eps: 平均边长的 2-3 倍
+    # 假设模型单位是 mm，且非常精细，这里可能需要手动调节
+    # 如果你知道模型的大致尺寸，可以直接写死，比如 0.5 或 1.0
+    avg_edge_len = np.linalg.norm(vertices[triangles[0][0]] - vertices[triangles[0][1]])
+    cluster_eps = avg_edge_len * 3.0
+
+    labels = np.array(pcd_temp.cluster_dbscan(eps=cluster_eps, min_points=10, print_progress=False))
+
+    if len(labels) == 0: return None, None
+
+    final_indices_list = []
+    max_label = labels.max()
+
+    for label in range(max_label + 1):
+        mask = (labels == label)
+        # 只要簇足够大，就保留
+        if np.sum(mask) > min_cluster_size:
+            final_indices_list.append(candidate_indices[mask])
+
+    if not final_indices_list:
+        return None, None
+
+    final_indices = np.concatenate(final_indices_list)
+
+    # 5. 构建结果
+    original_vertices = np.asarray(fragment.mesh.vertices)
+    boundary_pts = original_vertices[final_indices]
+
     boundary_pcd = o3d.geometry.PointCloud()
-    boundary_pcd.points = o3d.utility.Vector3dVector(rim_pts_original)
-    boundary_pcd.paint_uniform_color([1, 0, 0])
+    boundary_pcd.points = o3d.utility.Vector3dVector(boundary_pts)
+    boundary_pcd.paint_uniform_color([1.0, 0.0, 0.0])
 
-    # 可视化时显示原始点云（如果可用）
+    fragment.boundary_points = boundary_pcd
+    fragment.boundary_indices = final_indices
+    # 兼容性：同时设置boundary_pts属性
+    fragment.boundary_pts = boundary_pts
+    # 检查当前点云的点数是否与 Mesh 顶点数一致
+    current_pcd_points = np.asarray(fragment.point_cloud.points) if fragment.point_cloud else []
+
+    if len(original_vertices) != len(current_pcd_points):
+        print(f"[数据同步] Mesh顶点数({len(original_vertices)}) != 点云数({len(current_pcd_points)})。正在同步...")
+
+        # 用 Mesh 的顶点重新生成一个 PointCloud
+        new_pcd = o3d.geometry.PointCloud()
+        new_pcd.points = o3d.utility.Vector3dVector(original_vertices)
+
+        # 如果 Mesh 有法线，也同步过来（这对 Patch 提取很重要）
+        if fragment.mesh.has_vertex_normals():
+            new_pcd.normals = fragment.mesh.vertex_normals
+        elif fragment.mesh.has_triangle_normals():
+            fragment.mesh.compute_vertex_normals()
+            new_pcd.normals = fragment.mesh.vertex_normals
+
+        # 强制替换
+        fragment.point_cloud = new_pcd
+        print(f"[数据同步] Fragment点云已更新为 Mesh 顶点。")
+        print(f"[边界检测] 完成。去噪后剩余点数: {len(final_indices)}")
     if visualize:
-        if hasattr(fragment, 'original_points') and fragment.original_points is not None:
-            # 创建原始点云的可视化对象
-            original_pcd = o3d.geometry.PointCloud()
-            original_pcd.points = o3d.utility.Vector3dVector(fragment.original_points)
-            original_pcd.paint_uniform_color([0.7, 0.7, 0.7])  # 灰色
+        vis_mesh = o3d.geometry.TriangleMesh(fragment.mesh)
+        vis_mesh.compute_vertex_normals()
+        vis_mesh.paint_uniform_color([0.8, 0.8, 0.8])
+        o3d.visualization.draw_geometries([vis_mesh, boundary_pcd], window_name="Dual Threshold")
 
-            # 如果有归一化的当前点云，也显示
-            if hasattr(fragment, 'point_cloud') and fragment.point_cloud is not None:
-                o3d.visualization.draw_geometries(
-                    [original_pcd, boundary_pcd],
-                    window_name=f"碎片{fragment.id} - Rim 边界（原始坐标系）",
-                    width=800,
-                    height=600,
-                    zoom=0.5
-                )
-            else:
-                o3d.visualization.draw_geometries(
-                    [original_pcd, boundary_pcd],
-                    window_name=f"碎片{fragment.id} - Rim 边界（原始坐标系）",
-                    width=800,
-                    height=600,
-                    zoom=0.5
-                )
-        else:
-            o3d.visualization.draw_geometries(
-                [pcd, boundary_pcd],
-                window_name=f"碎片{fragment.id} - Rim 边界",
-                width=800,
-                height=600
-            )
+    return boundary_pcd, final_indices
 
-    # 存储边界点（原始坐标系）
-    fragment.boundary_pts = rim_pts_original
-    fragment.boundary_pcd = boundary_pcd
+# 为了兼容旧代码的导入，保留旧函数名，但你可以不用它们
+def detect_boundary(*args, **kwargs):
+    print("Warning: Calling deprecated detect_boundary")
+    return None, None
 
-    print(f"[边界检测] 碎片{fragment.id} rim 点数：{len(rim_pts_original)}")
-    return boundary_pcd, rim_pts_original
+
+def detect_sharp_edges(*args, **kwargs):
+    # 简单的转接，如果你不想改 run.py 的 import
+    return detect_boundary_robust(*args, **kwargs)
