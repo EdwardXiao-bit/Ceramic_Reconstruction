@@ -14,7 +14,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from src.common.io import load_fragments
 from src.preprocessing.normalize import normalize_fragment
 from src.boundary import detect_boundary_robust, extract_section_patch
-from src.boundary.rim import extract_centerline_rim_from_boundaries, extract_rim_curve
+from src.boundary.rim import extract_rim_curve
 from src.profile.extract import extract_profile
 from src.features.profile_feat import encode_profile
 from src.matching.coarse import coarse_match
@@ -459,35 +459,22 @@ def main():
             )
             visualize_section_patch(f, mode=VIS_MODE)
 
-            # 4. Rim 曲线（使用新的中心线提取方法）
-            print("→ 提取中心线 Rim 曲线...")
-            rim_curve, rim_pcd = extract_centerline_rim_from_boundaries(
+            # 4. Rim 曲线
+            print("→ 提取 Rim 曲线...")
+            rim_curve, rim_pcd = extract_rim_curve(
                 fragment=f,
-                n_samples=100,
+                n_samples=150,
                 visualize=(VIS_MODE == VisualizationMode.INTERACTIVE and i == 1),
+
             )
 
             if rim_curve is not None and len(rim_curve) > 0:
                 f.rim_curve = rim_curve
                 f.rim_pcd = rim_pcd
-                # ✅ 修复点：用 f，而不是 fragment！
                 visualize_rim(f, mode=VIS_MODE, always_show=False)
+                print(f"[Rim] 碎片{f.id} Rim 提取成功")
             else:
-                print(f"[Rim] 碎片{f.id} 中心线rim提取失败或点数不足")
-                # 降级到传统方法
-                print("→ 降级到传统Rim提取方法...")
-                rim_curve, rim_pcd = extract_rim_curve(
-                    fragment=f,
-                    n_samples=100,
-                    visualize=False,
-                )
-                if rim_curve is not None and len(rim_curve) > 0:
-                    f.rim_curve = rim_curve
-                    f.rim_pcd = rim_pcd
-                    visualize_rim(f, mode=VIS_MODE, always_show=False)
-                    print(f"[Rim] 碎片{f.id} 使用传统方法提取rim成功")
-                else:
-                    print(f"[Rim] 碎片{f.id} 传统方法也失败")
+                print(f"[Rim] 碎片{f.id} Rim 提取失败或点数不足")
 
             # 5. 多模态特征提取
             print("→ 多模态特征提取...")
