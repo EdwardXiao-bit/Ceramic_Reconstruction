@@ -10,6 +10,7 @@
 4. **FAISS高效匹配** - 基于向量检索的快速初筛匹配
 5. **SuperGlue纹理匹配** - 深度学习驱动的高精度纹理特征匹配
 6. **多尺度匹配策略** - 粗筛+精配的两阶段匹配流程
+7. **边界验证系统** - 完整的六步边界验证流水线（边界提取→特征匹配→互补性检查→局部对齐→碰撞检测→综合评分）
 
 ## 完整目录结构
 ```
@@ -26,6 +27,7 @@ ceramic_reconstruction/
 │   └── utils.py             # 工具函数
 ├── scripts/                  # 主要运行脚本
 │   ├── run_mvp.py           # MVP完整流程入口
+│   ├── test_boundary_validation.py # 边界验证测试脚本
 │   ├── run_texture_matching.py # 纹理匹配脚本
 │   └── run_advanced_texture_matching.py # 高级纹理匹配
 ├── src/                      # 核心源代码
@@ -34,6 +36,16 @@ ceramic_reconstruction/
 │   │   ├── patch.py         # 断面提取
 │   │   ├── rim.py           # Rim曲线提取
 │   │   └── dual_boundary_rim.py # 双边界Rim提取
+│   ├── boundary_validation/ # 边界验证模块
+│   │   ├── __init__.py      # 模块初始化
+│   │   ├── config.py        # 配置文件
+│   │   ├── validator.py     # 主验证器
+│   │   ├── boundary_extractor.py # 边界提取器
+│   │   ├── feature_matcher.py    # 特征匹配器
+│   │   ├── complementarity_checker.py # 互补性检查器
+│   │   ├── local_aligner.py # 局部对齐器
+│   │   ├── collision_detector.py # 碰撞检测器
+│   │   └── scoring_system.py # 评分系统
 │   ├── matching/            # 匹配模块
 │   │   ├── coarse_match.py  # 粗匹配
 │   │   ├── faiss_prescreen.py # FAISS初筛
@@ -47,6 +59,7 @@ ceramic_reconstruction/
 │       └── base.py          # 基础Fragment类
 └── results/                 # 输出结果
     ├── matching/            # 匹配结果
+    ├── boundary_validation/ # 边界验证结果
     ├── texture_matching/    # 纹理匹配结果
     └── logs/                # 运行日志
 ```
@@ -58,8 +71,8 @@ ceramic_reconstruction/
 # 安装基础依赖
 pip install -r requirements.txt
 
-# 安装SuperGlue相关依赖（可选）
-pip install torch==1.9.0 torchvision==0.10.0
+# 如果需要GPU加速，安装CUDA版本
+# pip install torch==1.9.0+cu111 torchvision==0.10.0+cu111 -f https://download.pytorch.org/whl/torch_stable.html
 ```
 
 ### 环境变量设置
@@ -76,16 +89,22 @@ export CUDA_VISIBLE_DEVICES=0
 ### 1. 主流程运行（推荐）
 ```bash
 # 运行完整的MVP流程（边界检测→特征提取→FAISS匹配）
-python scripts/run_mvp.py --data_dir data/demo/eg1
+python scripts/run_mvp.py
 
-# 指定输出目录
-python scripts/run_mvp.py --data_dir data/demo/eg1 --output_dir results/my_experiment
-
-# 调整匹配参数
-python scripts/run_mvp.py --top_m_geo 50 --top_m_fpfh 50 --top_k 20
+# 每次运行会自动创建时间戳文件夹保存结果
+# 结果保存在: data/output/run_YYYYMMDD_HHMMSS/
 ```
 
-### 2. 单独模块运行
+### 2. 边界验证测试
+```bash
+# 运行边界验证测试（基于最新的run_mvp.py结果）
+python scripts/test_boundary_validation.py
+
+# 测试会自动加载最新的边界数据和匹配结果
+# 结果保存在: results/boundary_validation_test.json
+```
+
+### 3. 单独模块运行
 ```bash
 # 仅运行纹理匹配
 python scripts/run_texture_matching.py --data_dir data/demo/eg1
@@ -97,11 +116,11 @@ python scripts/run_advanced_texture_matching.py --data_dir data/demo/eg1
 python scripts/run_texture_based_matching.py --data_dir data/demo/eg1
 ```
 
-### 3. 参数说明
+### 4. 参数说明
 | 参数 | 默认值 | 说明 |
 |------|--------|------|
-| `--data_dir` | `data/demo` | 碎片数据目录 |
-| `--output_dir` | `results/matching` | 结果输出目录 |
+| `--data_dir` | `data/eg1` | 碎片数据目录 |
+| `--output_dir` | `data/output` | 结果输出目录 |
 | `--top_m_geo` | 30 | 几何特征候选数 |
 | `--top_m_fpfh` | 30 | FPFH特征候选数 |
 | `--top_m_texture` | 20 | 纹理特征候选数 |
@@ -120,7 +139,8 @@ graph TD
     C --> D[多模态特征提取]
     D --> E[FAISS初筛匹配]
     E --> F[SuperGlue精匹配]
-    F --> G[匹配结果输出]
+    F --> G[边界验证系统]
+    G --> H[最终匹配结果]
     
     subgraph 特征提取
         D1[几何特征PointNet]
@@ -137,6 +157,21 @@ graph TD
         E --> E1
         E --> E2
     end
+    
+    subgraph 边界验证
+        G1[边界区域提取]
+        G2[特征匹配验证]
+        G3[互补性检查]
+        G4[局部对齐精化]
+        G5[碰撞检测]
+        G6[综合评分]
+        G --> G1
+        G --> G2
+        G --> G3
+        G --> G4
+        G --> G5
+        G --> G6
+    end
 ```
 
 ### 技术特点
@@ -144,8 +179,10 @@ graph TD
 - **智能降级**: SuperGlue不可用时自动降级到传统特征匹配
 - **高效检索**: 集成FAISS向量检索引擎，支持百万级碎片快速匹配
 - **特征融合**: 几何+FPFH+纹理三重特征融合匹配策略
+- **边界验证**: 完整的六步边界验证流水线，科学评估匹配质量
 - **可视化友好**: 完善的结果可视化和调试功能
 - **模块化设计**: 各功能模块独立，便于扩展和维护
+- **时间戳管理**: 每次运行自动创建独立文件夹，避免结果混淆
 
 ### 性能指标
 - **处理速度**: 单个碎片特征提取约2-5秒
@@ -158,11 +195,25 @@ graph TD
 ### 匹配结果文件
 ```
 results/matching/
-├── matching_report_TIMESTAMP.md    # 详细匹配报告
-├── match_pairs_TIMESTAMP.txt       # 匹配对详情
-├── fragment_matches_TIMESTAMP.json # 碎片匹配关系
-├── process_details_TIMESTAMP.json  # 处理过程详情
+├── run_TIMESTAMP/                  # 时间戳文件夹
+│   ├── matching_report_TIMESTAMP.md    # 详细匹配报告
+│   ├── match_pairs_TIMESTAMP.txt       # 匹配对详情
+│   ├── fragment_matches_TIMESTAMP.json # 碎片匹配关系
+│   └── process_details_TIMESTAMP.json  # 处理过程详情
 └── logs/                           # 运行日志
+```
+
+### 边界验证结果文件
+```
+data/output/
+└── run_TIMESTAMP/                  # 时间戳文件夹
+    ├── boundary_data.json          # 边界数据
+    ├── boundary_data.pkl           # 边界数据(Pickle)
+    ├── extracted_features.json     # 特征数据
+    ├── extracted_features.pkl      # 特征数据(Pickle)
+    └── feature_distributions.png   # 特征分布图
+
+results/boundary_validation_test.json  # 边界验证测试结果
 ```
 
 ### 报告内容示例
@@ -193,6 +244,7 @@ results/matching/
 
 ### 代码结构说明
 - `src/boundary/`: 边界检测和处理相关功能
+- `src/boundary_validation/`: 边界验证系统（六步验证流水线）
 - `src/matching/`: 几何匹配和FAISS检索功能
 - `src/texture_matching/`: 纹理匹配和SuperGlue集成
 - `models/`: 深度学习模型定义和权重
@@ -231,6 +283,12 @@ A: 可以调整特征权重参数(`--alpha`, `--beta`, `--gamma`)或增加候选
 
 ### Q: 如何可视化中间结果？
 A: 在各模块调用时设置`visualize=True`参数即可。
+
+### Q: 边界验证失败怎么办？
+A: 检查边界数据是否完整，或调整边界提取参数阈值。
+
+### Q: 如何查看历史运行结果？
+A: 查看`data/output/`和`results/matching/`目录下的时间戳文件夹。
 
 ## 许可证
 MIT License

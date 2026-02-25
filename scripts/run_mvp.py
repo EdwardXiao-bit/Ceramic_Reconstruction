@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import open3d as o3d
 import numpy as np
+from datetime import datetime
 
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -175,6 +176,60 @@ def save_features(fragments, output_dir):
     print(f"  Pickle格式: {pickle_path}")
 
 
+def save_boundary_data(fragments, output_dir):
+    """保存边界相关的数据到文件"""
+    boundary_data = {}
+    
+    for frag in fragments:
+        frag_boundary_data = {
+            'id': frag.id,
+            'file_name': getattr(frag, 'file_name', f'fragment_{frag.id}')
+        }
+        
+        # 保存边界点数据
+        if hasattr(frag, 'boundary_pts') and frag.boundary_pts is not None:
+            frag_boundary_data['boundary_points'] = frag.boundary_pts.tolist()
+            print(f"  ✓ 碎片{frag.id}边界点: {len(frag.boundary_pts)}个")
+        
+        # 保存断面patch数据
+        if hasattr(frag, 'section_patch') and frag.section_patch is not None:
+            # 转换点云为numpy数组
+            section_points = np.asarray(frag.section_patch.points)
+            frag_boundary_data['section_patch_points'] = section_points.tolist()
+            print(f"  ✓ 碎片{frag.id}断面patch: {len(section_points)}个点")
+        
+        # 保存Rim曲线数据
+        if hasattr(frag, 'rim_curve') and frag.rim_curve is not None:
+            frag_boundary_data['rim_curve'] = frag.rim_curve.tolist()
+            print(f"  ✓ 碎片{frag.id}Rim曲线: {len(frag.rim_curve)}个点")
+        
+        # 保存主轴数据
+        if hasattr(frag, 'main_axis') and frag.main_axis is not None:
+            frag_boundary_data['main_axis'] = frag.main_axis.tolist()
+        
+        # 保存轮廓曲线数据
+        if hasattr(frag, 'profile_curve') and frag.profile_curve is not None:
+            frag_boundary_data['profile_curve'] = frag.profile_curve.tolist()
+        
+        boundary_data[f'fragment_{frag.id}'] = frag_boundary_data
+    
+    # 保存边界数据
+    boundary_json_path = output_dir / "boundary_data.json"
+    with open(boundary_json_path, 'w', encoding='utf-8') as f:
+        json.dump(boundary_data, f, indent=2, ensure_ascii=False)
+    
+    # 保存为pickle格式（保留numpy数组）
+    boundary_pkl_path = output_dir / "boundary_data.pkl"
+    with open(boundary_pkl_path, 'wb') as f:
+        pickle.dump(boundary_data, f)
+    
+    print(f"\n边界数据已保存:")
+    print(f"  JSON格式: {boundary_json_path}")
+    print(f"  Pickle格式: {boundary_pkl_path}")
+    
+    return boundary_data
+
+
 def visualize_features(fragments, output_dir):
     """可视化特征分布"""
     try:
@@ -278,7 +333,13 @@ def visualize_rim(fragment, mode=VIS_MODE, always_show=False):
 
 def main():
     data_dir = PROJECT_ROOT / "data" / "eg1"
-    output_dir = PROJECT_ROOT / "data" / "output"
+    
+    # 为每次运行创建带时间戳的独立输出文件夹
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_dir = PROJECT_ROOT / "data" / "output" / f"run_{timestamp}"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    print(f"输出目录: {output_dir}")
 
     if not data_dir.exists():
         raise FileNotFoundError(f"数据目录不存在: {data_dir}")
@@ -530,6 +591,10 @@ def main():
     # 保存特征到文件供后续分析
     save_features(successful_fragments, output_dir)
     print(f"\n✓ 特征已保存至: {output_dir}")
+    
+    # 保存边界数据到文件
+    save_boundary_data(successful_fragments, output_dir)
+    print(f"\n✓ 边界数据已保存至: {output_dir}")
     
     # 可视化特征分布
     if len(successful_fragments) >= 2:
