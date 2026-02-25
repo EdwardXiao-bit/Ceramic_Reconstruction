@@ -582,12 +582,14 @@ def main():
         # 3. 保存匹配结果
         print("\n3. 保存匹配结果...")
         match_output_dir = PROJECT_ROOT / "results" / "matching"
-        save_matching_results(
+        timestamp = save_matching_results(
             matches=faiss_matches, 
             fragments=successful_fragments,
             output_dir=str(match_output_dir),
-            detailed_info=process_info
+            detailed_info=process_info,
+            create_run_folder=True  # 为每次运行创建独立文件夹
         )
+        print(f"   ✓ 匹配结果已保存到独立文件夹: run_{timestamp}")
         
     except Exception as e:
         print(f"   ✗ FAISS初筛失败: {e}")
