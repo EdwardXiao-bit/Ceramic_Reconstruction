@@ -12,10 +12,17 @@ from pathlib import Path
 class MatchResultsSaver:
     """匹配结果保存器"""
     
-    def __init__(self, output_dir="results/matching"):
-        self.output_dir = Path(output_dir)
-        self.output_dir.mkdir(parents=True, exist_ok=True)
+    def __init__(self, output_dir="results/matching", create_run_folder=True):
+        self.base_output_dir = Path(output_dir)
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        
+        # 为每次运行创建独立的文件夹
+        if create_run_folder:
+            self.output_dir = self.base_output_dir / f"run_{self.timestamp}"
+        else:
+            self.output_dir = self.base_output_dir
+            
+        self.output_dir.mkdir(parents=True, exist_ok=True)
         
     def save_detailed_matches(self, matches, fragments, detailed_info=None):
         """
@@ -38,6 +45,7 @@ class MatchResultsSaver:
         self._generate_summary_report(matches, fragments, detailed_info)
         
         print(f"[结果保存] 匹配结果已保存至: {self.output_dir}")
+        print(f"[结果保存] 本次运行标识: run_{self.timestamp}")
     
     def _save_match_pairs(self, matches, fragments):
         """保存匹配对详情"""
@@ -177,13 +185,16 @@ class MatchResultsSaver:
 
 
 def save_matching_results(matches, fragments, output_dir="results/matching", 
-                         detailed_info=None):
+                         detailed_info=None, create_run_folder=True):
     """
     便捷函数：保存匹配结果
     :param matches: 匹配对列表
     :param fragments: 碎片列表
     :param output_dir: 输出目录
     :param detailed_info: 详细信息字典
+    :param create_run_folder: 是否为每次运行创建独立文件夹
     """
-    saver = MatchResultsSaver(output_dir)
+    saver = MatchResultsSaver(output_dir, create_run_folder=create_run_folder)
+    timestamp = saver.timestamp  # 获取本次运行的时间戳
     saver.save_detailed_matches(matches, fragments, detailed_info)
+    return timestamp  # 返回时间戳以便外部使用
