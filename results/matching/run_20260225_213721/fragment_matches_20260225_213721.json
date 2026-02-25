@@ -1,0 +1,112 @@
+{
+  "0": [
+    {
+      "matched_fragment": 4,
+      "similarity": 0.5990887641906737,
+      "fragment_name": "6.obj"
+    },
+    {
+      "matched_fragment": 2,
+      "similarity": 0.5883669078350067,
+      "fragment_name": "4.obj"
+    },
+    {
+      "matched_fragment": 1,
+      "similarity": 0.556795248389244,
+      "fragment_name": "3.obj"
+    },
+    {
+      "matched_fragment": 3,
+      "similarity": 0.5307700365781785,
+      "fragment_name": "5.obj"
+    }
+  ],
+  "1": [
+    {
+      "matched_fragment": 4,
+      "similarity": 0.6240292966365815,
+      "fragment_name": "6.obj"
+    },
+    {
+      "matched_fragment": 3,
+      "similarity": 0.5969029247760773,
+      "fragment_name": "5.obj"
+    },
+    {
+      "matched_fragment": 0,
+      "similarity": 0.556795248389244,
+      "fragment_name": "2.obj"
+    },
+    {
+      "matched_fragment": 2,
+      "similarity": 0.5217941552400589,
+      "fragment_name": "4.obj"
+    }
+  ],
+  "2": [
+    {
+      "matched_fragment": 0,
+      "similarity": 0.5883669078350067,
+      "fragment_name": "2.obj"
+    },
+    {
+      "matched_fragment": 3,
+      "similarity": 0.5622954159975051,
+      "fragment_name": "5.obj"
+    },
+    {
+      "matched_fragment": 4,
+      "similarity": 0.5374259114265442,
+      "fragment_name": "6.obj"
+    },
+    {
+      "matched_fragment": 1,
+      "similarity": 0.5217941552400589,
+      "fragment_name": "3.obj"
+    }
+  ],
+  "3": [
+    {
+      "matched_fragment": 1,
+      "similarity": 0.5969029247760773,
+      "fragment_name": "3.obj"
+    },
+    {
+      "matched_fragment": 2,
+      "similarity": 0.5622954159975051,
+      "fragment_name": "4.obj"
+    },
+    {
+      "matched_fragment": 0,
+      "similarity": 0.5307700365781785,
+      "fragment_name": "2.obj"
+    },
+    {
+      "matched_fragment": 4,
+      "similarity": 0.5234806716442109,
+      "fragment_name": "6.obj"
+    }
+  ],
+  "4": [
+    {
+      "matched_fragment": 1,
+      "similarity": 0.6240292966365815,
+      "fragment_name": "3.obj"
+    },
+    {
+      "matched_fragment": 0,
+      "similarity": 0.5990887641906737,
+      "fragment_name": "2.obj"
+    },
+    {
+      "matched_fragment": 2,
+      "similarity": 0.5374259114265442,
+      "fragment_name": "4.obj"
+    },
+    {
+      "matched_fragment": 3,
+      "similarity": 0.5234806716442109,
+      "fragment_name": "5.obj"
+    }
+  ]
+}

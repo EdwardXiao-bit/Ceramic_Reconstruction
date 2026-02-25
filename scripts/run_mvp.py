@@ -136,6 +136,53 @@ def visualize_section_patch(fragment, mode=VIS_MODE):
     )
 
 
+def visualize_rim(fragment, mode=VIS_MODE, always_show=False):
+    if mode == VisualizationMode.NONE:
+        return
+    if not hasattr(fragment, "rim_curve"):
+        return
+
+    rim_curve = fragment.rim_curve
+    if len(rim_curve) < 10:
+        return
+
+    # 灰色主体
+    vis_base = o3d.geometry.PointCloud(fragment.point_cloud)
+    vis_base.paint_uniform_color([0.8, 0.8, 0.8])
+
+    # rim 点云，偏移避免 z-fighting
+    rim_pcd = o3d.geometry.PointCloud()
+    rim_pcd.points = o3d.utility.Vector3dVector(rim_curve)
+    rim_pcd.paint_uniform_color([0, 1, 0])
+    rim_pcd.estimate_normals(
+        search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.02, max_nn=30)
+    )
+    bbox = vis_base.get_axis_aligned_bounding_box()
+    offset = np.linalg.norm(bbox.get_extent()) * 0.005
+    rim_pcd.points = o3d.utility.Vector3dVector(
+        np.asarray(rim_pcd.points) + np.asarray(rim_pcd.normals) * offset
+    )
+
+    # rim 连线
+    lines = [[i, (i + 1) % len(rim_curve)] for i in range(len(rim_curve))]
+    rim_lines = o3d.geometry.LineSet()
+    rim_lines.points = rim_pcd.points  # 用偏移后的点
+    rim_lines.lines = o3d.utility.Vector2iVector(lines)
+    rim_lines.paint_uniform_color([0, 1, 0])
+
+    if always_show or mode == VisualizationMode.INTERACTIVE:
+        visualize_step(
+            [vis_base, rim_pcd, rim_lines],
+            window_name=f"Rim_{fragment.id}",
+            mode=mode
+        )
+        visualize_step(
+            [rim_pcd, rim_lines],
+            window_name=f"Rim_Only_{fragment.id}",
+            mode=mode
+        )
+
+
 def save_features(fragments, output_dir):
     """保存提取的特征到文件"""
     features_data = {}
@@ -303,31 +350,53 @@ def visualize_features(fragments, output_dir):
 
 
 def visualize_rim(fragment, mode=VIS_MODE, always_show=False):
-    if mode == VisualizationMode.NONE:
+    """可视化rim曲线，使用同学修改的版本"""
+    if mode == VisualizationMode.NONE and not always_show:
         return
-    if not hasattr(fragment, "rim_curve"):
+    
+    if not (hasattr(fragment, 'rim_curve') and fragment.rim_curve is not None):
         return
-
+    
     rim_curve = fragment.rim_curve
     if len(rim_curve) < 10:
         return
-
+    
+    # 灰色主体
+    vis_base = o3d.geometry.PointCloud(fragment.point_cloud)
+    vis_base.paint_uniform_color([0.8, 0.8, 0.8])
+    
+    # rim 点云，偏移避免 z-fighting
     rim_pcd = o3d.geometry.PointCloud()
     rim_pcd.points = o3d.utility.Vector3dVector(rim_curve)
-    rim_pcd.paint_uniform_color([0, 1, 0])
-
+    rim_pcd.paint_uniform_color([0, 1, 0])  # 纯绿色
+    rim_pcd.estimate_normals(
+        search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.02, max_nn=30)
+    )
+    bbox = vis_base.get_axis_aligned_bounding_box()
+    offset = np.linalg.norm(bbox.get_extent()) * 0.005
+    rim_pcd.points = o3d.utility.Vector3dVector(
+        np.asarray(rim_pcd.points) + np.asarray(rim_pcd.normals) * offset
+    )
+    
+    # rim 连线
     lines = [[i, (i + 1) % len(rim_curve)] for i in range(len(rim_curve))]
     rim_lines = o3d.geometry.LineSet()
-    rim_lines.points = o3d.utility.Vector3dVector(rim_curve)
+    rim_lines.points = rim_pcd.points  # 用偏移后的点
     rim_lines.lines = o3d.utility.Vector2iVector(lines)
-    rim_lines.paint_uniform_color([0, 1, 0])
-
-    vis_geoms = [fragment.point_cloud, rim_pcd, rim_lines]
-    if always_show or (
-        mode == VisualizationMode.INTERACTIVE and len(vis_geoms) > 0
-    ):
+    rim_lines.paint_uniform_color([0, 1, 0])  # 纯绿色
+    
+    # 完整显示（主体+rim）
+    if always_show or mode == VisualizationMode.INTERACTIVE:
         visualize_step(
-            vis_geoms, window_name=f"Rim_{fragment.id}", mode=mode
+            [vis_base, rim_pcd, rim_lines],
+            window_name=f"Rim_{fragment.id}",
+            mode=mode
+        )
+        # 仅rim显示
+        visualize_step(
+            [rim_pcd, rim_lines],
+            window_name=f"Rim_Only_{fragment.id}",
+            mode=mode
         )
 
 
