@@ -11,14 +11,28 @@ def extract_profile(fragment, n_bins=100):
     """
     if fragment.point_cloud is None:
         print(f"碎片{fragment.id}无点云数据，跳过轮廓提取")
-        return None, None
+        # 返回空二维数组，避免后续索引错误
+        fragment.profile_curve = np.empty((0, 2))
+        fragment.main_axis = None
+        return fragment.profile_curve, fragment.main_axis
 
     pcd = fragment.point_cloud
     pts = np.asarray(pcd.points)
     center = pts.mean(axis=0)
     pts -= center
 
-    _, _, Vt = np.linalg.svd(pts)
+    # 使用优化的SVD计算，避免内存溢出
+    try:
+        # 对于大矩阵，使用 economy-size SVD
+        if len(pts) > 10000:
+            _, _, Vt = np.linalg.svd(pts, full_matrices=False)
+        else:
+            _, _, Vt = np.linalg.svd(pts)
+    except MemoryError:
+        # 如果还是内存不足，使用随机SVD近似
+        print(f"[轮廓提取] 警告：内存不足，使用随机SVD近似")
+        from sklearn.utils.extmath import randomized_svd
+        _, _, Vt = randomized_svd(pts, n_components=3, random_state=42)
     axis = Vt[0]
 
     h = pts @ axis
@@ -28,11 +42,21 @@ def extract_profile(fragment, n_bins=100):
     profile = []
     for i in range(len(bins) - 1):
         mask = (h >= bins[i]) & (h < bins[i + 1])
-        if mask.sum() > 10:
+        if mask.sum() > 10:  # 有效分箱：点数>10
             profile.append([bins[i], r[mask].mean()])
+        else:
+            print(f"[轮廓提取] 碎片{fragment.id}分箱{i}点数不足，跳过")
 
-    profile_arr = np.array(profile)
-    # 保存轮廓到Fragment对象
+    # 关键修复：确保profile_arr始终是二维数组
+    profile_arr = np.array(profile) if profile else np.empty((0, 2))
+
+    # 保存到Fragment，兼容空轮廓
     fragment.profile_curve = profile_arr
     fragment.main_axis = axis
+
+    if len(profile_arr) == 0:
+        print(f"[轮廓提取] 碎片{fragment.id}无有效轮廓分箱，返回空轮廓")
+    else:
+        print(f"[轮廓提取] 碎片{fragment.id}提取到{len(profile_arr)}个轮廓分箱")
+
     return profile_arr, axis

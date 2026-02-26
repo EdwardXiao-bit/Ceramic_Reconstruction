@@ -9,9 +9,14 @@ def assemble(fragments, matches):
     :param matches: list[tuple] 匹配对 (frag1_id, frag2_id, 相似度)
     :return: o3d.geometry.PointCloud 装配后的点云
     """
-    if not matches:
+    if not matches or len(fragments) < 2:
         print("无有效匹配对，返回第一个碎片的点云")
-        return fragments[0].point_cloud
+        if fragments:
+            return fragments[0].point_cloud
+        else:
+            # 创建一个空点云作为fallback
+            empty_pcd = o3d.geometry.PointCloud()
+            return empty_pcd
 
     # 取相似度最高的匹配对进行合并
     best_match = matches[0]
