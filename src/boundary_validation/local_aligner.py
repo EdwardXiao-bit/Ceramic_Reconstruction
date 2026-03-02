@@ -233,6 +233,16 @@ class LocalAligner:
             fitness_score = result.fitness
             rmse = result.inlier_rmse
             
+            # 获取迭代次数（处理不同Open3D版本的兼容性）
+            iterations_used = 0
+            if hasattr(result, 'number_of_iterations'):
+                iterations_used = result.number_of_iterations
+            elif hasattr(result, 'iteration'):
+                iterations_used = result.iteration
+            else:
+                # 如果都无法获取，使用配置中的最大迭代次数作为估计
+                iterations_used = min(max_iterations, 50)  # 保守估计
+            
             # 判断收敛状态
             if fitness_score >= icp_config['fitness_threshold'] and rmse <= icp_config['rmse_threshold']:
                 convergence_status = 'converged'
@@ -246,7 +256,7 @@ class LocalAligner:
                 alignment_error=1.0 - fitness_score,
                 fitness_score=fitness_score,
                 rmse=rmse,
-                iterations_used=result.number_of_iterations,
+                iterations_used=iterations_used,
                 convergence_status=convergence_status
             )
             

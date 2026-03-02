@@ -62,6 +62,11 @@ class BoundaryExtractor:
         """
         提取单个碎片的边界区域
         """
+        # 首先检查是否已有预提取的边界数据
+        if hasattr(fragment, 'boundary_points') and fragment.boundary_points is not None:
+            print(f"[边界提取] 使用预提取的边界数据: 碎片{getattr(fragment, 'id', 'unknown')}")
+            return self._create_boundary_region_from_existing(fragment.boundary_points)
+        
         # 获取点云数据
         if hasattr(fragment, 'point_cloud') and fragment.point_cloud is not None:
             pcd = fragment.point_cloud
@@ -133,6 +138,40 @@ class BoundaryExtractor:
         )
         
         print(f"[边界提取] 提取完成，置信度: {confidence:.3f}")
+        return boundary_region
+    
+    def _create_boundary_region_from_existing(self, boundary_pcd: Any) -> BoundaryRegion:
+        """
+        从已有的边界点云创建边界区域对象
+        """
+        points = np.asarray(boundary_pcd.points)
+        n_points = len(points)
+        
+        # 如果有法向量，使用现有的；否则估算
+        if boundary_pcd.has_normals():
+            normals = np.asarray(boundary_pcd.normals)
+        else:
+            boundary_pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamKNN(knn=20))
+            normals = np.asarray(boundary_pcd.normals)
+        
+        # 创建简单的特征（使用默认值，因为这些在验证阶段可能不需要）
+        curvature = np.ones(n_points) * 0.5  # 默认曲率
+        roughness = np.ones(n_points) * 0.1  # 默认粗糙度
+        depth_values = np.ones(n_points) * 0.5  # 默认深度值
+        indices = np.arange(n_points)  # 原始索引
+        confidence = 1.0  # 预提取数据具有最高置信度
+        
+        boundary_region = BoundaryRegion(
+            points=points,
+            normals=normals,
+            curvature=curvature,
+            roughness=roughness,
+            depth_values=depth_values,
+            indices=indices,
+            confidence=confidence
+        )
+        
+        print(f"[边界提取] 从预提取数据创建边界区域: {n_points} 个点")
         return boundary_region
     
     def _compute_curvature(self, points: np.ndarray, normals: np.ndarray) -> np.ndarray:

@@ -43,29 +43,73 @@ def load_latest_matching_results():
     return matches, latest_run
 
 
-def create_test_pairs_from_matches(matches_data):
-    """从匹配结果创建测试对"""
-    test_pairs = []
-
-    # 选择几对高相似度的碎片对进行测试
-    high_similarity_pairs = []
-
+def create_test_pairs_from_matches(matches_data, similarity_threshold=0.3):
+    """从匹配结果创建测试对，基于相似度阈值选择所有符合条件的对
+    
+    Args:
+        matches_data: 匹配结果数据
+        similarity_threshold: 相似度阈值，默认0.3
+    
+    Returns:
+        list: 符合条件的测试对列表
+    """
+    # 使用集合存储已处理的碎片ID对，避免重复
+    processed_pairs = set()
+    valid_pairs = []
+    
+    # 收集所有可能的匹配对
+    all_candidates = []
+    
     for frag_id, candidates in matches_data.items():
+        frag1_original = int(frag_id)  # 保存原始frag_id，避免修改循环变量
         if candidates:
-            # 选择相似度最高的候选
-            best_match = candidates[0]
-            pair = (int(frag_id), int(best_match['matched_fragment']))
-            similarity = best_match['similarity']
-            high_similarity_pairs.append((pair, similarity))
-
-    # 按相似度排序，选择前几对
-    high_similarity_pairs.sort(key=lambda x: x[1], reverse=True)
-    selected_pairs = high_similarity_pairs[:3]  # 选择前3对
-
-    print("选择的测试对:")
+            for candidate in candidates:
+                frag2 = int(candidate['matched_fragment'])
+                similarity = candidate['similarity']
+                
+                # 确保较小的ID在前，避免(1,2)和(2,1)重复
+                frag1 = frag1_original  # 使用原始值而不是被修改的frag1
+                if frag1 > frag2:
+                    frag1, frag2 = frag2, frag1
+                
+                pair_key = (frag1, frag2)
+                
+                # 检查条件：相似度阈值、避免自匹配、避免重复处理
+                if (similarity >= similarity_threshold and 
+                    frag1 != frag2 and 
+                    pair_key not in processed_pairs):
+                    
+                    all_candidates.append({
+                        'pair': pair_key,
+                        'similarity': similarity,
+                        'original_order': (int(frag_id), int(candidate['matched_fragment']))
+                    })
+                    processed_pairs.add(pair_key)
+    
+    # 按相似度排序
+    all_candidates.sort(key=lambda x: x['similarity'], reverse=True)
+    
+    # 选择所有的对（不限制碎片使用次数）
+    selected_pairs = []
+    
+    for candidate in all_candidates:
+        frag1, frag2 = candidate['pair']
+        similarity = candidate['similarity']
+        
+        # 直接选择所有符合条件的对，不限制碎片重复使用
+        selected_pairs.append(((frag1, frag2), similarity))
+        
+        # 如果需要更多对，可以放松这个限制
+        # 目前先保证去重效果
+    
+    print(f"选择相似度 >= {similarity_threshold:.2f} 的所有唯一测试对:")
     for i, ((frag1, frag2), sim) in enumerate(selected_pairs):
         print(f"  {i + 1}. 碎片{frag1} - 碎片{frag2} (相似度: {sim:.4f})")
-
+    
+    if not selected_pairs:
+        print(f"警告: 没有找到相似度 >= {similarity_threshold:.2f} 的碎片对")
+        print("建议降低相似度阈值或检查匹配结果")
+    
     return [pair for pair, _ in selected_pairs]
 
 
@@ -87,7 +131,7 @@ def load_latest_boundary_data():
     with open(boundary_file, 'r', encoding='utf-8') as f:
         boundary_data = json.load(f)
 
-    print(f"✓ 成功加载边界数据: {boundary_file}")
+    print(f"[成功加载边界数据]: {boundary_file}")
     print(f"  包含 {len(boundary_data)} 个碎片的边界信息")
 
     return boundary_data, latest_run
@@ -126,7 +170,7 @@ def load_fragment_data_with_boundary(fragment_id, boundary_data):
             boundary_pcd = o3d.geometry.PointCloud()
             boundary_pcd.points = o3d.utility.Vector3dVector(boundary_points)
             fragment.boundary_points = boundary_pcd
-            print(f"  ✓ 加载碎片{fragment_id}边界点: {len(boundary_points)}个")
+            print(f"  [加载碎片{fragment_id}边界点]: {len(boundary_points)}个")
 
         # 加载断面patch
         if 'section_patch_points' in frag_boundary_data:
@@ -134,7 +178,7 @@ def load_fragment_data_with_boundary(fragment_id, boundary_data):
             section_pcd = o3d.geometry.PointCloud()
             section_pcd.points = o3d.utility.Vector3dVector(section_points)
             fragment.section_patch = section_pcd
-            print(f"  ✓ 加载碎片{fragment_id}断面patch: {len(section_points)}个点")
+            print(f"  [加载碎片{fragment_id}断面patch]: {len(section_points)}个点")
 
         # 加载Rim曲线
         if 'rim_curve' in frag_boundary_data:
@@ -143,7 +187,7 @@ def load_fragment_data_with_boundary(fragment_id, boundary_data):
             rim_pcd.points = o3d.utility.Vector3dVector(rim_points)
             fragment.rim_curve = rim_points
             fragment.rim_pcd = rim_pcd
-            print(f"  ✓ 加载碎片{fragment_id}Rim曲线: {len(rim_points)}个点")
+            print(f"  [加载碎片{fragment_id}Rim曲线]: {len(rim_points)}个点")
 
         # 加载主轴
         if 'main_axis' in frag_boundary_data:
@@ -161,13 +205,13 @@ def load_fragment_data_with_boundary(fragment_id, boundary_data):
             if mesh.has_vertices():
                 fragment.mesh = mesh
                 fragment.point_cloud = mesh.sample_points_uniformly(number_of_points=2000)
-                print(f"  ✓ 加载碎片{fragment_id}网格数据")
+                print(f"  [加载碎片{fragment_id}网格数据]")
             else:
-                print(f"  ⚠ 碎片{fragment_id}网格无顶点数据")
+                print(f"  [警告: 碎片{fragment_id}网格无顶点数据]")
         else:
-            print(f"  ⚠ 碎片{fragment_id}的OBJ文件不存在: {obj_file}")
+            print(f"  [警告: 碎片{fragment_id}的OBJ文件不存在]: {obj_file}")
     except Exception as e:
-        print(f"  ⚠ 加载碎片{fragment_id}网格时出错: {e}")
+        print(f"  [警告: 加载碎片{fragment_id}网格时出错]: {e}")
 
     return fragment
 
@@ -184,9 +228,11 @@ def test_boundary_validation_pipeline():
         matches_data, run_folder = load_latest_matching_results()
         boundary_data, boundary_run_folder = load_latest_boundary_data()
 
-        # 2. 创建测试对
+        # 2. 创建测试对（取消相似度阈值过滤，确保所有碎片对都参与验证）
         print("\n2. 创建测试碎片对...")
-        test_pairs = create_test_pairs_from_matches(matches_data)
+        # 根据项目要求，取消相似度阈值过滤，让所有碎片对都参与验证
+        similarity_threshold = 0.0  # 设置为0，不过滤任何对
+        test_pairs = create_test_pairs_from_matches(matches_data, similarity_threshold=similarity_threshold)
 
         # 3. 初始化边界验证器
         print("\n3. 初始化边界验证器...")
@@ -245,11 +291,15 @@ def test_boundary_validation_pipeline():
             print(f"  最低得分: {np.min(scores):.3f}")
             print(f"  得分标准差: {np.std(scores):.3f}")
 
-        # 6. 保存测试结果
+        # 6. 保存测试结果到独立文件
         print("\n6. 保存测试结果...")
+        import datetime
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                
+        # 创建独立的结果文件
         test_result = {
             'test_info': {
-                'timestamp': run_folder.name,
+                'timestamp': timestamp,
                 'test_pairs': test_pairs,
                 'total_tests': len(results),
                 'successful_tests': len(successful_tests),
@@ -257,19 +307,27 @@ def test_boundary_validation_pipeline():
             },
             'detailed_results': results
         }
-
-        output_file = project_root / "results" / "boundary_validation_test.json"
-        output_file.parent.mkdir(parents=True, exist_ok=True)
-
+                
+        # 保存到results/boundary_validation目录
+        output_dir = project_root / "results" / "boundary_validation"
+        output_dir.mkdir(parents=True, exist_ok=True)
+        output_file = output_dir / f"boundary_validation_test_{timestamp}.json"
+                
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(test_result, f, indent=2, ensure_ascii=False)
-
+                
         print(f"✓ 测试结果已保存到: {output_file}")
+                
+        # 同时保存最新的结果文件（保持向后兼容）
+        latest_file = project_root / "results" / "boundary_validation_test.json"
+        with open(latest_file, 'w', encoding='utf-8') as f:
+            json.dump(test_result, f, indent=2, ensure_ascii=False)
+        print(f"✓ 最新结果已更新: {latest_file}")
 
         return True
 
     except Exception as e:
-        print(f"✗ 测试过程中出现严重错误: {e}")
+        print(f"[测试过程中出现严重错误]: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -284,13 +342,13 @@ def quick_module_tests():
     config = get_config()
 
     # 测试配置加载
-    print("✓ 配置模块测试通过")
+    print("[模块功能快速测试]")
 
     # 测试边界提取器（基本初始化）
     try:
         from src.boundary_validation.boundary_extractor import BoundaryExtractor
         extractor = BoundaryExtractor(config.BOUNDARY_EXTRACTION)
-        print("✓ 边界提取器初始化成功")
+        print("[边界提取器初始化成功]")
     except Exception as e:
         print(f"✗ 边界提取器初始化失败: {e}")
         return False
@@ -299,7 +357,7 @@ def quick_module_tests():
     try:
         from src.boundary_validation.feature_matcher import FeatureMatcher
         matcher = FeatureMatcher(config.FEATURE_MATCHING)
-        print("✓ 特征匹配器初始化成功")
+        print("[特征匹配器初始化成功]")
     except Exception as e:
         print(f"✗ 特征匹配器初始化失败: {e}")
         return False
@@ -308,7 +366,7 @@ def quick_module_tests():
     try:
         from src.boundary_validation.complementarity_checker import ComplementarityChecker
         checker = ComplementarityChecker(config.COMPLEMENTARITY_CHECK)
-        print("✓ 互补性检查器初始化成功")
+        print("[互补性检查器初始化成功]")
     except Exception as e:
         print(f"✗ 互补性检查器初始化失败: {e}")
         return False
@@ -317,7 +375,7 @@ def quick_module_tests():
     try:
         from src.boundary_validation.local_aligner import LocalAligner
         aligner = LocalAligner(config.LOCAL_ALIGNMENT)
-        print("✓ 局部对齐器初始化成功")
+        print("[局部对齐器初始化成功]")
     except Exception as e:
         print(f"✗ 局部对齐器初始化失败: {e}")
         return False
@@ -326,7 +384,7 @@ def quick_module_tests():
     try:
         from src.boundary_validation.collision_detector import CollisionDetector
         detector = CollisionDetector(config.COLLISION_DETECTION)
-        print("✓ 碰撞检测器初始化成功")
+        print("[碰撞检测器初始化成功]")
     except Exception as e:
         print(f"✗ 碰撞检测器初始化失败: {e}")
         return False
@@ -335,12 +393,12 @@ def quick_module_tests():
     try:
         from src.boundary_validation.scoring_system import ScoringSystem
         scorer = ScoringSystem(config.FINAL_SCORING)
-        print("✓ 评分系统初始化成功")
+        print("[评分系统初始化成功]")
     except Exception as e:
         print(f"✗ 评分系统初始化失败: {e}")
         return False
 
-    print("\n✓ 所有模块初始化测试通过!")
+    print("\n[所有模块初始化测试通过!]")
     return True
 
 
@@ -356,12 +414,8 @@ if __name__ == "__main__":
     success = test_boundary_validation_pipeline()
 
     if success:
-        print("\n" + "=" * 60)
-        print("🎉 边界验证测试完成!")
-        print("=" * 60)
+        print(f"[边界验证测试完成!]")
         sys.exit(0)
     else:
-        print("\n" + "=" * 60)
-        print("❌ 边界验证测试失败!")
-        print("=" * 60)
+        print(f"[边界验证测试失败!]")
         sys.exit(1)
