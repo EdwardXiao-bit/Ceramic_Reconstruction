@@ -236,6 +236,7 @@ def test_boundary_validation_pipeline():
 
         # 3. 初始化边界验证器
         print("\n3. 初始化边界验证器...")
+        from src.boundary_validation.validator import BoundaryValidator
         validator = BoundaryValidator()
 
         # 4. 对每对碎片进行边界验证
@@ -258,15 +259,15 @@ def test_boundary_validation_pipeline():
                 })
 
                 if result['success']:
-                    print(f"✓ 验证成功")
-                    print(f"  综合得分: {result['final_scores']['total_score']:.3f}")
-                    print(f"  验证状态: {result['final_scores']['validation_status']}")
-                    print(f"  处理时间: {result['processing_time']:.2f}秒")
+                    print(f"  [验证成功]")
+                    print(f"    综合得分：{result['final_scores']['total_score']:.3f}")
+                    print(f"    验证状态：{result['final_scores']['validation_status']}")
+                    print(f"    处理时间：{result['processing_time']:.2f}秒")
                 else:
-                    print(f"✗ 验证失败: {result['error_message']}")
+                    print(f"  [验证失败] {result['error_message']}")
 
             except Exception as e:
-                print(f"✗ 验证过程中出现异常: {e}")
+                print(f"  [验证异常] {e}")
                 import traceback
                 traceback.print_exc()
 
@@ -307,22 +308,26 @@ def test_boundary_validation_pipeline():
             },
             'detailed_results': results
         }
-                
-        # 保存到results/boundary_validation目录
+                        
+        # 保存到 results/boundary_validation 目录
         output_dir = project_root / "results" / "boundary_validation"
         output_dir.mkdir(parents=True, exist_ok=True)
         output_file = output_dir / f"boundary_validation_test_{timestamp}.json"
                 
+        # 使用 validator 的序列化方法确保 numpy 数组可以正确保存
+        validator_instance = BoundaryValidator()
+        serializable_result = validator_instance._make_serializable(test_result)
+                        
         with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(test_result, f, indent=2, ensure_ascii=False)
-                
-        print(f"✓ 测试结果已保存到: {output_file}")
-                
+            json.dump(serializable_result, f, indent=2, ensure_ascii=False)
+                        
+        print(f"  [保存成功] 测试结果已保存到：{output_file}")
+                        
         # 同时保存最新的结果文件（保持向后兼容）
         latest_file = project_root / "results" / "boundary_validation_test.json"
         with open(latest_file, 'w', encoding='utf-8') as f:
-            json.dump(test_result, f, indent=2, ensure_ascii=False)
-        print(f"✓ 最新结果已更新: {latest_file}")
+            json.dump(serializable_result, f, indent=2, ensure_ascii=False)
+        print(f"  [更新成功] 最新结果已更新：{latest_file}")
 
         return True
 
@@ -350,8 +355,8 @@ def quick_module_tests():
         extractor = BoundaryExtractor(config.BOUNDARY_EXTRACTION)
         print("[边界提取器初始化成功]")
     except Exception as e:
-        print(f"✗ 边界提取器初始化失败: {e}")
-        return False
+            print(f"  [初始化失败] 边界提取器：{e}")
+            return False
 
     # 测试特征匹配器
     try:
@@ -359,8 +364,8 @@ def quick_module_tests():
         matcher = FeatureMatcher(config.FEATURE_MATCHING)
         print("[特征匹配器初始化成功]")
     except Exception as e:
-        print(f"✗ 特征匹配器初始化失败: {e}")
-        return False
+            print(f"  [初始化失败] 特征匹配器：{e}")
+            return False
 
     # 测试互补性检查器
     try:
@@ -368,8 +373,8 @@ def quick_module_tests():
         checker = ComplementarityChecker(config.COMPLEMENTARITY_CHECK)
         print("[互补性检查器初始化成功]")
     except Exception as e:
-        print(f"✗ 互补性检查器初始化失败: {e}")
-        return False
+            print(f"  [初始化失败] 互补性检查器：{e}")
+            return False
 
     # 测试局部对齐器
     try:
@@ -377,8 +382,8 @@ def quick_module_tests():
         aligner = LocalAligner(config.LOCAL_ALIGNMENT)
         print("[局部对齐器初始化成功]")
     except Exception as e:
-        print(f"✗ 局部对齐器初始化失败: {e}")
-        return False
+            print(f"  [初始化失败] 局部对齐器：{e}")
+            return False
 
     # 测试碰撞检测器
     try:
@@ -386,8 +391,8 @@ def quick_module_tests():
         detector = CollisionDetector(config.COLLISION_DETECTION)
         print("[碰撞检测器初始化成功]")
     except Exception as e:
-        print(f"✗ 碰撞检测器初始化失败: {e}")
-        return False
+            print(f"  [初始化失败] 碰撞检测器：{e}")
+            return False
 
     # 测试评分系统
     try:
@@ -395,8 +400,8 @@ def quick_module_tests():
         scorer = ScoringSystem(config.FINAL_SCORING)
         print("[评分系统初始化成功]")
     except Exception as e:
-        print(f"✗ 评分系统初始化失败: {e}")
-        return False
+            print(f"  [初始化失败] 评分系统：{e}")
+            return False
 
     print("\n[所有模块初始化测试通过!]")
     return True

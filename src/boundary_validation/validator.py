@@ -103,7 +103,8 @@ class BoundaryValidator:
                 'matches_count': len(match_result.matches),
                 'overlap_score': match_result.overlap_score,
                 'inlier_ratio': match_result.inlier_ratio,
-                'boundary_complementarity_score': match_result.boundary_complementarity_score
+                'boundary_complementarity_score': match_result.boundary_complementarity_score,
+                'initial_transformation': match_result.transformation  # 保存初始变换矩阵
             }
             
             # 3. 局部集合互补性检查
@@ -116,7 +117,9 @@ class BoundaryValidator:
                 'normal_complementarity_score': complementarity_result.normal_complementarity_score,
                 'shape_complementarity_score': complementarity_result.shape_complementarity_score,
                 'average_normal_angle': complementarity_result.average_normal_angle,
-                'reverse_normal_ratio': complementarity_result.reverse_normal_ratio
+                'reverse_normal_ratio': complementarity_result.reverse_normal_ratio,
+                'normal_similarity_stats': complementarity_result.normal_similarity_stats,  # 法向相似度统计
+                'shape_similarity_stats': complementarity_result.shape_similarity_stats  # 形状相似度统计
             }
             
             # 4. 局部对齐精化
@@ -129,7 +132,9 @@ class BoundaryValidator:
                 'fitness_score': alignment_result.fitness_score,
                 'rmse': alignment_result.rmse,
                 'iterations_used': alignment_result.iterations_used,
-                'convergence_status': alignment_result.convergence_status
+                'convergence_status': alignment_result.convergence_status,
+                'refined_transformation': alignment_result.refined_transformation,  # 保存精化后的变换矩阵
+                'alignment_error': alignment_result.alignment_error  # 对齐误差
             }
             
             # 5. 碰撞与穿透检查
@@ -142,7 +147,9 @@ class BoundaryValidator:
                 'collision_score': collision_result.collision_score,
                 'penetration_depth': collision_result.penetration_depth,
                 'collision_points_count': len(collision_result.collision_points),
-                'safety_margin': collision_result.safety_margin
+                'safety_margin': collision_result.safety_margin,
+                'collision_volumes': collision_result.collision_volumes,  # 碰撞体积信息
+                'detailed_analysis': collision_result.detailed_analysis  # 详细分析结果
             }
             
             # 6. 综合边界验证评分
