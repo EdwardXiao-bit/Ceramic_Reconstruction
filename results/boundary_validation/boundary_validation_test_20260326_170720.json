@@ -1,6 +1,6 @@
 {
   "test_info": {
-    "timestamp": "20260326_174650",
+    "timestamp": "20260326_170720",
     "test_pairs": [
       [
         2,
@@ -58,7 +58,7 @@
           2,
           3
         ],
-        "processing_time": 0.7582788467407227,
+        "processing_time": 1.7347733974456787,
         "success": true,
         "error_message": null,
         "boundary_regions": {
@@ -72,7 +72,7 @@
             "matches_count": 0,
             "overlap_score": 0.0,
             "inlier_ratio": 0.0,
-            "boundary_complementarity_score": 0.37365502251386884,
+            "boundary_complementarity_score": 0.04981896691615557,
             "initial_transformation": [
               [
                 1.0,
@@ -118,27 +118,27 @@
           },
           "local_alignment": {
             "fitness_score": 0.0,
-            "rmse": 0.9254258788794525,
-            "iterations_used": 1,
-            "convergence_status": "partial",
+            "rmse": 0.0,
+            "iterations_used": 30,
+            "convergence_status": "failed",
             "refined_transformation": [
               [
-                0.9133548736572266,
-                -0.4040876626968384,
-                -0.04996085911989212,
-                -0.009387258440256119
+                1.0,
+                0.0,
+                0.0,
+                0.0
               ],
               [
-                0.40697264671325684,
-                0.9097923040390015,
-                0.0815553218126297,
-                -0.00394867267459631
+                0.0,
+                1.0,
+                0.0,
+                0.0
               ],
               [
-                0.012498516589403152,
-                -0.09482164680957794,
-                0.9954158067703247,
-                -0.004766350612044334
+                0.0,
+                0.0,
+                1.0,
+                0.0
               ],
               [
                 0.0,
@@ -153,7 +153,7 @@
             "collision_score": 0.0,
             "penetration_depth": 0.0,
             "collision_points_count": 0,
-            "safety_margin": 0.59964425317634,
+            "safety_margin": 0.6591849329145077,
             "collision_volumes": {
               "sdf_volume": 0.0
             },
@@ -168,48 +168,48 @@
           }
         },
         "final_scores": {
-          "feature_score": 0.37365502251386884,
+          "feature_score": 0.04981896691615557,
           "normal_score": 0.0,
           "shape_score": 0.0,
-          "alignment_score": 0.0032070953645132235,
+          "alignment_score": 0.3,
           "collision_penalty": 1.0,
-          "total_score": 0.19405517470136985,
+          "total_score": 0.1724547417290389,
           "component_scores": {
-            "feature_score": 0.37365502251386884,
+            "feature_score": 0.04981896691615557,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.0032070953645132235,
+            "alignment_score": 0.3,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.48137729783408756,
+            "feature": 0.0722203495489141,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.0033053438223933996,
-            "collision": 0.5153173583435191
+            "alignment": 0.34791736891915714,
+            "collision": 0.5798622815319286
           },
           "validation_status": "invalid_match",
-          "confidence_level": 0.2311299536078297
+          "confidence_level": 0.24437384082160207
         },
         "detailed_report": {
           "summary": {
-            "total_score": 0.19405517470136985,
+            "total_score": 0.1724547417290389,
             "validation_status": "invalid_match",
-            "confidence_level": 0.2311299536078297
+            "confidence_level": 0.24437384082160207
           },
           "component_scores": {
-            "feature_score": 0.37365502251386884,
+            "feature_score": 0.04981896691615557,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.0032070953645132235,
+            "alignment_score": 0.3,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.48137729783408756,
+            "feature": 0.0722203495489141,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.0033053438223933996,
-            "collision": 0.5153173583435191
+            "alignment": 0.34791736891915714,
+            "collision": 0.5798622815319286
           },
           "detailed_analysis": {
             "component_details": {
@@ -255,7 +255,7 @@
               }
             },
             "balance_analysis": {
-              "score_variance": 0.15209570059616162,
+              "score_variance": 0.14561593615505472,
               "score_range": 1.0,
               "most_critical_component": "normal_score"
             }
@@ -288,7 +288,7 @@
           0,
           2
         ],
-        "processing_time": 0.8350448608398438,
+        "processing_time": 0.895606517791748,
         "success": true,
         "error_message": null,
         "boundary_regions": {
@@ -299,10 +299,10 @@
         },
         "intermediate_results": {
           "feature_matching": {
-            "matches_count": 0,
+            "matches_count": 1,
             "overlap_score": 0.0,
-            "inlier_ratio": 0.0,
-            "boundary_complementarity_score": 0.3743539326436349,
+            "inlier_ratio": 0.01,
+            "boundary_complementarity_score": 0.05591070406733524,
             "initial_transformation": [
               [
                 1.0,
@@ -332,43 +332,43 @@
           },
           "complementarity_check": {
             "normal_complementarity_score": 0.0,
-            "shape_complementarity_score": 0.0,
-            "average_normal_angle": 90.0,
+            "shape_complementarity_score": 0.0021194465458393096,
+            "average_normal_angle": 58.20573144939381,
             "reverse_normal_ratio": 0.0,
             "normal_similarity_stats": {
-              "min_similarity": 0.0,
-              "max_similarity": 0.0,
-              "mean_similarity": 0.0
+              "min_similarity": 0.5268707758311169,
+              "max_similarity": 0.5268707758311169,
+              "mean_similarity": 0.5268707758311169
             },
             "shape_similarity_stats": {
-              "min_similarity": 0.0,
-              "max_similarity": 0.0,
-              "mean_similarity": 0.0
+              "min_similarity": 0.005298616364598274,
+              "max_similarity": 0.005298616364598274,
+              "mean_similarity": 0.005298616364598274
             }
           },
           "local_alignment": {
             "fitness_score": 0.0,
-            "rmse": 1.8018015485590657,
-            "iterations_used": 1,
-            "convergence_status": "partial",
+            "rmse": 0.0,
+            "iterations_used": 30,
+            "convergence_status": "failed",
             "refined_transformation": [
               [
-                0.9133548736572266,
-                -0.4040876626968384,
-                -0.04996085911989212,
-                -0.009387258440256119
+                1.0,
+                0.0,
+                0.0,
+                0.0
               ],
               [
-                0.40697264671325684,
-                0.9097923040390015,
-                0.0815553218126297,
-                -0.00394867267459631
+                0.0,
+                1.0,
+                0.0,
+                0.0
               ],
               [
-                0.012498516589403152,
-                -0.09482164680957794,
-                0.9954158067703247,
-                -0.004766350612044334
+                0.0,
+                0.0,
+                1.0,
+                0.0
               ],
               [
                 0.0,
@@ -383,7 +383,7 @@
             "collision_score": 0.0,
             "penetration_depth": 0.0,
             "collision_points_count": 0,
-            "safety_margin": 1.2991451441968669,
+            "safety_margin": 1.2613675203460597,
             "collision_volumes": {
               "sdf_volume": 0.0
             },
@@ -398,48 +398,48 @@
           }
         },
         "final_scores": {
-          "feature_score": 0.3743539326436349,
+          "feature_score": 0.05591070406733524,
           "normal_score": 0.0,
-          "shape_score": 0.0,
-          "alignment_score": 0.0016558104845345307,
+          "shape_score": 0.0021194465458393096,
+          "alignment_score": 0.3,
           "collision_penalty": 1.0,
-          "total_score": 0.19391964525781563,
+          "total_score": 0.17450753765329363,
           "component_scores": {
-            "feature_score": 0.3743539326436349,
+            "feature_score": 0.05591070406733524,
             "normal_score": 0.0,
-            "shape_score": 0.0,
-            "alignment_score": 0.0016558104845345307,
+            "shape_score": 0.0021194465458393096,
+            "alignment_score": 0.3,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.48261476054415786,
+            "feature": 0.08009783534167011,
             "normal": 0.0,
-            "shape": 0.0,
-            "alignment": 0.0017077284586954926,
-            "collision": 0.5156775109971466
+            "shape": 0.003036325213140883,
+            "alignment": 0.34382468979194586,
+            "collision": 0.5730411496532432
           },
           "validation_status": "invalid_match",
-          "confidence_level": 0.23031521997263993
+          "confidence_level": 0.24962097725455687
         },
         "detailed_report": {
           "summary": {
-            "total_score": 0.19391964525781563,
+            "total_score": 0.17450753765329363,
             "validation_status": "invalid_match",
-            "confidence_level": 0.23031521997263993
+            "confidence_level": 0.24962097725455687
           },
           "component_scores": {
-            "feature_score": 0.3743539326436349,
+            "feature_score": 0.05591070406733524,
             "normal_score": 0.0,
-            "shape_score": 0.0,
-            "alignment_score": 0.0016558104845345307,
+            "shape_score": 0.0021194465458393096,
+            "alignment_score": 0.3,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.48261476054415786,
+            "feature": 0.08009783534167011,
             "normal": 0.0,
-            "shape": 0.0,
-            "alignment": 0.0017077284586954926,
-            "collision": 0.5156775109971466
+            "shape": 0.003036325213140883,
+            "alignment": 0.34382468979194586,
+            "collision": 0.5730411496532432
           },
           "detailed_analysis": {
             "component_details": {
@@ -485,7 +485,7 @@
               }
             },
             "balance_analysis": {
-              "score_variance": 0.15229260919147716,
+              "score_variance": 0.1448562641776155,
               "score_range": 1.0,
               "most_critical_component": "normal_score"
             }
@@ -518,7 +518,7 @@
           3,
           4
         ],
-        "processing_time": 0.939887285232544,
+        "processing_time": 0.6027302742004395,
         "success": true,
         "error_message": null,
         "boundary_regions": {
@@ -532,7 +532,7 @@
             "matches_count": 0,
             "overlap_score": 0.0,
             "inlier_ratio": 0.0,
-            "boundary_complementarity_score": 0.35792479250869685,
+            "boundary_complementarity_score": 0.02243688379236124,
             "initial_transformation": [
               [
                 1.0,
@@ -578,27 +578,27 @@
           },
           "local_alignment": {
             "fitness_score": 0.0,
-            "rmse": 0.5444361354516002,
-            "iterations_used": 1,
-            "convergence_status": "partial",
+            "rmse": 0.0,
+            "iterations_used": 30,
+            "convergence_status": "failed",
             "refined_transformation": [
               [
-                0.9133548736572266,
-                -0.4040876626968384,
-                -0.04996085911989212,
-                -0.009387258440256119
+                1.0,
+                0.0,
+                0.0,
+                0.0
               ],
               [
-                0.40697264671325684,
-                0.9097923040390015,
-                0.0815553218126297,
-                -0.00394867267459631
+                0.0,
+                1.0,
+                0.0,
+                0.0
               ],
               [
-                0.012498516589403152,
-                -0.09482164680957794,
-                0.9954158067703247,
-                -0.004766350612044334
+                0.0,
+                0.0,
+                1.0,
+                0.0
               ],
               [
                 0.0,
@@ -613,7 +613,7 @@
             "collision_score": 0.0,
             "penetration_depth": 0.0,
             "collision_points_count": 0,
-            "safety_margin": 0.29982444935729563,
+            "safety_margin": 0.28606543248215627,
             "collision_volumes": {
               "sdf_volume": 0.0
             },
@@ -628,48 +628,48 @@
           }
         },
         "final_scores": {
-          "feature_score": 0.35792479250869685,
+          "feature_score": 0.02243688379236124,
           "normal_score": 0.0,
           "shape_score": 0.0,
-          "alignment_score": 0.00541090273193762,
+          "alignment_score": 0.3,
           "collision_penalty": 1.0,
-          "total_score": 0.19056337867356174,
+          "total_score": 0.16560922094809033,
           "component_scores": {
-            "feature_score": 0.35792479250869685,
+            "feature_score": 0.02243688379236124,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.00541090273193762,
+            "alignment_score": 0.3,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.4695613540755751,
+            "feature": 0.033870221210982585,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.005678848443600055,
-            "collision": 0.5247597974808249
+            "alignment": 0.3622986670458815,
+            "collision": 0.6038311117431359
           },
           "validation_status": "invalid_match",
-          "confidence_level": 0.23016336703199047
+          "confidence_level": 0.2252770312525557
         },
         "detailed_report": {
           "summary": {
-            "total_score": 0.19056337867356174,
+            "total_score": 0.16560922094809033,
             "validation_status": "invalid_match",
-            "confidence_level": 0.23016336703199047
+            "confidence_level": 0.2252770312525557
           },
           "component_scores": {
-            "feature_score": 0.35792479250869685,
+            "feature_score": 0.02243688379236124,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.00541090273193762,
+            "alignment_score": 0.3,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.4695613540755751,
+            "feature": 0.033870221210982585,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.005678848443600055,
-            "collision": 0.5247597974808249
+            "alignment": 0.3622986670458815,
+            "collision": 0.6038311117431359
           },
           "detailed_analysis": {
             "component_details": {
@@ -715,7 +715,7 @@
               }
             },
             "balance_analysis": {
-              "score_variance": 0.15128051827546307,
+              "score_variance": 0.14814711028628433,
               "score_range": 1.0,
               "most_critical_component": "normal_score"
             }
@@ -748,7 +748,7 @@
           0,
           1
         ],
-        "processing_time": 0.865790605545044,
+        "processing_time": 0.9763579368591309,
         "success": true,
         "error_message": null,
         "boundary_regions": {
@@ -762,7 +762,7 @@
             "matches_count": 0,
             "overlap_score": 0.0,
             "inlier_ratio": 0.0,
-            "boundary_complementarity_score": 0.37342993462547613,
+            "boundary_complementarity_score": 0.033620915585863435,
             "initial_transformation": [
               [
                 1.0,
@@ -808,27 +808,27 @@
           },
           "local_alignment": {
             "fitness_score": 0.0,
-            "rmse": 1.490983794998418,
-            "iterations_used": 1,
-            "convergence_status": "partial",
+            "rmse": 0.0,
+            "iterations_used": 30,
+            "convergence_status": "failed",
             "refined_transformation": [
               [
-                0.9133548736572266,
-                -0.4040876626968384,
-                -0.04996085911989212,
-                -0.009387258440256119
+                1.0,
+                0.0,
+                0.0,
+                0.0
               ],
               [
-                0.40697264671325684,
-                0.9097923040390015,
-                0.0815553218126297,
-                -0.00394867267459631
+                0.0,
+                1.0,
+                0.0,
+                0.0
               ],
               [
-                0.012498516589403152,
-                -0.09482164680957794,
-                0.9954158067703247,
-                -0.004766350612044334
+                0.0,
+                0.0,
+                1.0,
+                0.0
               ],
               [
                 0.0,
@@ -843,7 +843,7 @@
             "collision_score": 0.0,
             "penetration_depth": 0.0,
             "collision_points_count": 0,
-            "safety_margin": 1.008216204244337,
+            "safety_margin": 0.8655981171180381,
             "collision_volumes": {
               "sdf_volume": 0.0
             },
@@ -858,48 +858,48 @@
           }
         },
         "final_scores": {
-          "feature_score": 0.37342993462547613,
+          "feature_score": 0.033620915585863435,
           "normal_score": 0.0,
           "shape_score": 0.0,
-          "alignment_score": 0.001998689133084986,
+          "alignment_score": 0.3,
           "collision_penalty": 1.0,
-          "total_score": 0.19375722148298602,
+          "total_score": 0.16840522889646586,
           "component_scores": {
-            "feature_score": 0.37342993462547613,
+            "feature_score": 0.033620915585863435,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.001998689133084986,
+            "alignment_score": 0.3,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.48182711819371765,
+            "feature": 0.04991073585745561,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.002063086080392098,
-            "collision": 0.5161097957258903
+            "alignment": 0.3562834740534541,
+            "collision": 0.5938057900890903
           },
           "validation_status": "invalid_match",
-          "confidence_level": 0.23038942675918755
+          "confidence_level": 0.23334993298712078
         },
         "detailed_report": {
           "summary": {
-            "total_score": 0.19375722148298602,
+            "total_score": 0.16840522889646586,
             "validation_status": "invalid_match",
-            "confidence_level": 0.23038942675918755
+            "confidence_level": 0.23334993298712078
           },
           "component_scores": {
-            "feature_score": 0.37342993462547613,
+            "feature_score": 0.033620915585863435,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.001998689133084986,
+            "alignment_score": 0.3,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.48182711819371765,
+            "feature": 0.04991073585745561,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.002063086080392098,
-            "collision": 0.5161097957258903
+            "alignment": 0.3562834740534541,
+            "collision": 0.5938057900890903
           },
           "detailed_analysis": {
             "component_details": {
@@ -945,7 +945,7 @@
               }
             },
             "balance_analysis": {
-              "score_variance": 0.15221862620435284,
+              "score_variance": 0.14708428333344328,
               "score_range": 1.0,
               "most_critical_component": "normal_score"
             }
@@ -978,7 +978,7 @@
           1,
           2
         ],
-        "processing_time": 0.7939271926879883,
+        "processing_time": 1.1110508441925049,
         "success": true,
         "error_message": null,
         "boundary_regions": {
@@ -989,10 +989,10 @@
         },
         "intermediate_results": {
           "feature_matching": {
-            "matches_count": 1,
+            "matches_count": 2,
             "overlap_score": 0.0,
-            "inlier_ratio": 0.01,
-            "boundary_complementarity_score": 0.3773661665052483,
+            "inlier_ratio": 0.02,
+            "boundary_complementarity_score": 0.046425166281050305,
             "initial_transformation": [
               [
                 1.0,
@@ -1022,43 +1022,43 @@
           },
           "complementarity_check": {
             "normal_complementarity_score": 0.0,
-            "shape_complementarity_score": 0.1848812198753974,
-            "average_normal_angle": 74.64209001960565,
+            "shape_complementarity_score": 0.03276029489934445,
+            "average_normal_angle": 61.2473885629461,
             "reverse_normal_ratio": 0.0,
             "normal_similarity_stats": {
-              "min_similarity": 0.2648478123267784,
-              "max_similarity": 0.2648478123267784,
-              "mean_similarity": 0.2648478123267784
+              "min_similarity": 0.09917296789197821,
+              "max_similarity": 0.7860044641437939,
+              "mean_similarity": 0.4425887160178861
             },
             "shape_similarity_stats": {
-              "min_similarity": 0.46220304968849346,
-              "max_similarity": 0.46220304968849346,
-              "mean_similarity": 0.46220304968849346
+              "min_similarity": 0.003762258216738701,
+              "max_similarity": 0.16003921627998352,
+              "mean_similarity": 0.08190073724836111
             }
           },
           "local_alignment": {
             "fitness_score": 0.0,
-            "rmse": 1.3394713294095826,
-            "iterations_used": 1,
-            "convergence_status": "partial",
+            "rmse": 0.0,
+            "iterations_used": 30,
+            "convergence_status": "failed",
             "refined_transformation": [
               [
-                0.9133548736572266,
-                -0.4040876626968384,
-                -0.04996085911989212,
-                -0.009387258440256119
+                1.0,
+                0.0,
+                0.0,
+                0.0
               ],
               [
-                0.40697264671325684,
-                0.9097923040390015,
-                0.0815553218126297,
-                -0.00394867267459631
+                0.0,
+                1.0,
+                0.0,
+                0.0
               ],
               [
-                0.012498516589403152,
-                -0.09482164680957794,
-                0.9954158067703247,
-                -0.004766350612044334
+                0.0,
+                0.0,
+                1.0,
+                0.0
               ],
               [
                 0.0,
@@ -1073,7 +1073,7 @@
             "collision_score": 0.0,
             "penetration_depth": 0.0,
             "collision_points_count": 0,
-            "safety_margin": 0.6815408079880182,
+            "safety_margin": 0.5267312627366392,
             "collision_volumes": {
               "sdf_volume": 0.0
             },
@@ -1088,48 +1088,48 @@
           }
         },
         "final_scores": {
-          "feature_score": 0.3773661665052483,
+          "feature_score": 0.046425166281050305,
           "normal_score": 0.0,
-          "shape_score": 0.1848812198753974,
-          "alignment_score": 0.002223092802803415,
+          "shape_score": 0.03276029489934445,
+          "alignment_score": 0.3,
           "collision_penalty": 1.0,
-          "total_score": 0.2410064651557221,
+          "total_score": 0.17979636529509868,
           "component_scores": {
-            "feature_score": 0.3773661665052483,
+            "feature_score": 0.046425166281050305,
             "normal_score": 0.0,
-            "shape_score": 0.1848812198753974,
-            "alignment_score": 0.002223092802803415,
+            "shape_score": 0.03276029489934445,
+            "alignment_score": 0.3,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.3914481778128024,
+            "feature": 0.0645524260249268,
             "normal": 0.0,
-            "shape": 0.19178035302490706,
-            "alignment": 0.001844840802396735,
-            "collision": 0.4149266283598938
+            "shape": 0.045551942673556244,
+            "alignment": 0.33371086173806885,
+            "collision": 0.5561847695634482
           },
           "validation_status": "invalid_match",
-          "confidence_level": 0.30021387672747357
+          "confidence_level": 0.2610443415943548
         },
         "detailed_report": {
           "summary": {
-            "total_score": 0.2410064651557221,
+            "total_score": 0.17979636529509868,
             "validation_status": "invalid_match",
-            "confidence_level": 0.30021387672747357
+            "confidence_level": 0.2610443415943548
           },
           "component_scores": {
-            "feature_score": 0.3773661665052483,
+            "feature_score": 0.046425166281050305,
             "normal_score": 0.0,
-            "shape_score": 0.1848812198753974,
-            "alignment_score": 0.002223092802803415,
+            "shape_score": 0.03276029489934445,
+            "alignment_score": 0.3,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.3914481778128024,
+            "feature": 0.0645524260249268,
             "normal": 0.0,
-            "shape": 0.19178035302490706,
-            "alignment": 0.001844840802396735,
-            "collision": 0.4149266283598938
+            "shape": 0.045551942673556244,
+            "alignment": 0.33371086173806885,
+            "collision": 0.5561847695634482
           },
           "detailed_analysis": {
             "component_details": {
@@ -1175,7 +1175,7 @@
               }
             },
             "balance_analysis": {
-              "score_variance": 0.1374155310359587,
+              "score_variance": 0.1425596051439679,
               "score_range": 1.0,
               "most_critical_component": "normal_score"
             }
@@ -1208,7 +1208,7 @@
           0,
           3
         ],
-        "processing_time": 0.6806583404541016,
+        "processing_time": 0.7850630283355713,
         "success": true,
         "error_message": null,
         "boundary_regions": {
@@ -1222,7 +1222,7 @@
             "matches_count": 0,
             "overlap_score": 0.0,
             "inlier_ratio": 0.0,
-            "boundary_complementarity_score": 0.3743071828425368,
+            "boundary_complementarity_score": 0.039692369214643926,
             "initial_transformation": [
               [
                 1.0,
@@ -1268,27 +1268,27 @@
           },
           "local_alignment": {
             "fitness_score": 0.0,
-            "rmse": 2.032962436787541,
-            "iterations_used": 1,
-            "convergence_status": "partial",
+            "rmse": 0.0,
+            "iterations_used": 30,
+            "convergence_status": "failed",
             "refined_transformation": [
               [
-                0.9133548736572266,
-                -0.4040876626968384,
-                -0.04996085911989212,
-                -0.009387258440256119
+                1.0,
+                0.0,
+                0.0,
+                0.0
               ],
               [
-                0.40697264671325684,
-                0.9097923040390015,
-                0.0815553218126297,
-                -0.00394867267459631
+                0.0,
+                1.0,
+                0.0,
+                0.0
               ],
               [
-                0.012498516589403152,
-                -0.09482164680957794,
-                0.9954158067703247,
-                -0.004766350612044334
+                0.0,
+                0.0,
+                1.0,
+                0.0
               ],
               [
                 0.0,
@@ -1303,7 +1303,7 @@
             "collision_score": 0.0,
             "penetration_depth": 0.0,
             "collision_points_count": 0,
-            "safety_margin": 1.4348065156038887,
+            "safety_margin": 1.4524185586745333,
             "collision_volumes": {
               "sdf_volume": 0.0
             },
@@ -1318,48 +1318,48 @@
           }
         },
         "final_scores": {
-          "feature_score": 0.3743071828425368,
+          "feature_score": 0.039692369214643926,
           "normal_score": 0.0,
           "shape_score": 0.0,
-          "alignment_score": 0.0014684557806737522,
+          "alignment_score": 0.3,
           "collision_penalty": 1.0,
-          "total_score": 0.19387048686676894,
+          "total_score": 0.16992309230366098,
           "component_scores": {
-            "feature_score": 0.3743071828425368,
+            "feature_score": 0.039692369214643926,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.0014684557806737522,
+            "alignment_score": 0.3,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.4826768489777495,
+            "feature": 0.05839755014537944,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.001514883265014855,
-            "collision": 0.5158082677572358
+            "alignment": 0.3531009186954827,
+            "collision": 0.5885015311591378
           },
           "validation_status": "invalid_match",
-          "confidence_level": 0.2301985596456579
+          "confidence_level": 0.23757290864654446
         },
         "detailed_report": {
           "summary": {
-            "total_score": 0.19387048686676894,
+            "total_score": 0.16992309230366098,
             "validation_status": "invalid_match",
-            "confidence_level": 0.2301985596456579
+            "confidence_level": 0.23757290864654446
           },
           "component_scores": {
-            "feature_score": 0.3743071828425368,
+            "feature_score": 0.039692369214643926,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.0014684557806737522,
+            "alignment_score": 0.3,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.4826768489777495,
+            "feature": 0.05839755014537944,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.001514883265014855,
-            "collision": 0.5158082677572358
+            "alignment": 0.3531009186954827,
+            "collision": 0.5885015311591378
           },
           "detailed_analysis": {
             "component_details": {
@@ -1405,7 +1405,7 @@
               }
             },
             "balance_analysis": {
-              "score_variance": 0.1523112603848151,
+              "score_variance": 0.1465240710694965,
               "score_range": 1.0,
               "most_critical_component": "normal_score"
             }
@@ -1438,7 +1438,7 @@
           1,
           3
         ],
-        "processing_time": 0.7269072532653809,
+        "processing_time": 0.9310905933380127,
         "success": true,
         "error_message": null,
         "boundary_regions": {
@@ -1452,7 +1452,7 @@
             "matches_count": 1,
             "overlap_score": 0.0,
             "inlier_ratio": 0.01,
-            "boundary_complementarity_score": 0.3747745449333639,
+            "boundary_complementarity_score": 0.03436608169158121,
             "initial_transformation": [
               [
                 1.0,
@@ -1482,43 +1482,43 @@
           },
           "complementarity_check": {
             "normal_complementarity_score": 0.0,
-            "shape_complementarity_score": 0.13980908375680476,
-            "average_normal_angle": 39.56850686347176,
+            "shape_complementarity_score": 0.0,
+            "average_normal_angle": 41.87771175795881,
             "reverse_normal_ratio": 0.0,
             "normal_similarity_stats": {
-              "min_similarity": 0.770863492146982,
-              "max_similarity": 0.770863492146982,
-              "mean_similarity": 0.770863492146982
+              "min_similarity": 0.7445712789152422,
+              "max_similarity": 0.7445712789152422,
+              "mean_similarity": 0.7445712789152422
             },
             "shape_similarity_stats": {
-              "min_similarity": 0.34952270939201185,
-              "max_similarity": 0.34952270939201185,
-              "mean_similarity": 0.34952270939201185
+              "min_similarity": 0.0,
+              "max_similarity": 0.0,
+              "mean_similarity": 0.0
             }
           },
           "local_alignment": {
             "fitness_score": 0.0,
-            "rmse": 2.211717433120281,
-            "iterations_used": 1,
-            "convergence_status": "partial",
+            "rmse": 0.0,
+            "iterations_used": 30,
+            "convergence_status": "failed",
             "refined_transformation": [
               [
-                0.9133548736572266,
-                -0.4040876626968384,
-                -0.04996085911989212,
-                -0.009387258440256119
+                1.0,
+                0.0,
+                0.0,
+                0.0
               ],
               [
-                0.40697264671325684,
-                0.9097923040390015,
-                0.0815553218126297,
-                -0.00394867267459631
+                0.0,
+                1.0,
+                0.0,
+                0.0
               ],
               [
-                0.012498516589403152,
-                -0.09482164680957794,
-                0.9954158067703247,
-                -0.004766350612044334
+                0.0,
+                0.0,
+                1.0,
+                0.0
               ],
               [
                 0.0,
@@ -1533,7 +1533,7 @@
             "collision_score": 0.0,
             "penetration_depth": 0.0,
             "collision_points_count": 0,
-            "safety_margin": 1.5291438223457503,
+            "safety_margin": 1.5871928343686692,
             "collision_volumes": {
               "sdf_volume": 0.0
             },
@@ -1548,48 +1548,48 @@
           }
         },
         "final_scores": {
-          "feature_score": 0.3747745449333639,
+          "feature_score": 0.03436608169158121,
           "normal_score": 0.0,
-          "shape_score": 0.13980908375680476,
-          "alignment_score": 0.0013503067290544968,
+          "shape_score": 0.0,
+          "alignment_score": 0.3,
           "collision_penalty": 1.0,
-          "total_score": 0.22891596851835305,
+          "total_score": 0.16859152042289532,
           "component_scores": {
-            "feature_score": 0.3747745449333639,
+            "feature_score": 0.03436608169158121,
             "normal_score": 0.0,
-            "shape_score": 0.13980908375680476,
-            "alignment_score": 0.0013503067290544968,
+            "shape_score": 0.0,
+            "alignment_score": 0.3,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.40929270613914903,
+            "feature": 0.050960572639384916,
             "normal": 0.0,
-            "shape": 0.1526860321952548,
-            "alignment": 0.001179740092221865,
-            "collision": 0.43684152157337436
+            "shape": 0.0,
+            "alignment": 0.3558897852602306,
+            "collision": 0.5931496421003843
           },
           "validation_status": "invalid_match",
-          "confidence_level": 0.28829968163812025
+          "confidence_level": 0.23387419713737131
         },
         "detailed_report": {
           "summary": {
-            "total_score": 0.22891596851835305,
+            "total_score": 0.16859152042289532,
             "validation_status": "invalid_match",
-            "confidence_level": 0.28829968163812025
+            "confidence_level": 0.23387419713737131
           },
           "component_scores": {
-            "feature_score": 0.3747745449333639,
+            "feature_score": 0.03436608169158121,
             "normal_score": 0.0,
-            "shape_score": 0.13980908375680476,
-            "alignment_score": 0.0013503067290544968,
+            "shape_score": 0.0,
+            "alignment_score": 0.3,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.40929270613914903,
+            "feature": 0.050960572639384916,
             "normal": 0.0,
-            "shape": 0.1526860321952548,
-            "alignment": 0.001179740092221865,
-            "collision": 0.43684152157337436
+            "shape": 0.0,
+            "alignment": 0.3558897852602306,
+            "collision": 0.5931496421003843
           },
           "detailed_analysis": {
             "component_details": {
@@ -1635,7 +1635,7 @@
               }
             },
             "balance_analysis": {
-              "score_variance": 0.14007864468961342,
+              "score_variance": 0.1470148919154087,
               "score_range": 1.0,
               "most_critical_component": "normal_score"
             }
@@ -1668,7 +1668,7 @@
           1,
           4
         ],
-        "processing_time": 0.7744381427764893,
+        "processing_time": 0.6648907661437988,
         "success": true,
         "error_message": null,
         "boundary_regions": {
@@ -1682,7 +1682,7 @@
             "matches_count": 0,
             "overlap_score": 0.0,
             "inlier_ratio": 0.0,
-            "boundary_complementarity_score": 0.35346587732123835,
+            "boundary_complementarity_score": 0.022550911907693382,
             "initial_transformation": [
               [
                 1.0,
@@ -1728,27 +1728,27 @@
           },
           "local_alignment": {
             "fitness_score": 0.0,
-            "rmse": 2.4411453615130174,
-            "iterations_used": 1,
-            "convergence_status": "partial",
+            "rmse": 0.0,
+            "iterations_used": 30,
+            "convergence_status": "failed",
             "refined_transformation": [
               [
-                0.9133548736572266,
-                -0.4040876626968384,
-                -0.04996085911989212,
-                -0.009387258440256119
+                1.0,
+                0.0,
+                0.0,
+                0.0
               ],
               [
-                0.40697264671325684,
-                0.9097923040390015,
-                0.0815553218126297,
-                -0.00394867267459631
+                0.0,
+                1.0,
+                0.0,
+                0.0
               ],
               [
-                0.012498516589403152,
-                -0.09482164680957794,
-                0.9954158067703247,
-                -0.004766350612044334
+                0.0,
+                0.0,
+                1.0,
+                0.0
               ],
               [
                 0.0,
@@ -1763,7 +1763,7 @@
             "collision_score": 0.0,
             "penetration_depth": 0.0,
             "collision_points_count": 0,
-            "safety_margin": 1.7455571469979987,
+            "safety_margin": 1.8191388255074645,
             "collision_volumes": {
               "sdf_volume": 0.0
             },
@@ -1778,48 +1778,48 @@
           }
         },
         "final_scores": {
-          "feature_score": 0.35346587732123835,
+          "feature_score": 0.022550911907693382,
           "normal_score": 0.0,
           "shape_score": 0.0,
-          "alignment_score": 0.0012239176211680043,
+          "alignment_score": 0.3,
           "collision_penalty": 1.0,
-          "total_score": 0.1886112528545432,
+          "total_score": 0.16563772797692333,
           "component_scores": {
-            "feature_score": 0.35346587732123835,
+            "feature_score": 0.022550911907693382,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.0012239176211680043,
+            "alignment_score": 0.3,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.46851112005738976,
+            "feature": 0.034036496671270414,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.0012978203608157868,
-            "collision": 0.5301910595817945
+            "alignment": 0.3622363137482736,
+            "collision": 0.6037271895804561
           },
           "validation_status": "invalid_match",
-          "confidence_level": 0.2269829399542825
+          "confidence_level": 0.22536129767464974
         },
         "detailed_report": {
           "summary": {
-            "total_score": 0.1886112528545432,
+            "total_score": 0.16563772797692333,
             "validation_status": "invalid_match",
-            "confidence_level": 0.2269829399542825
+            "confidence_level": 0.22536129767464974
           },
           "component_scores": {
-            "feature_score": 0.35346587732123835,
+            "feature_score": 0.022550911907693382,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.0012239176211680043,
+            "alignment_score": 0.3,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.46851112005738976,
+            "feature": 0.034036496671270414,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.0012978203608157868,
-            "collision": 0.5301910595817945
+            "alignment": 0.3622363137482736,
+            "collision": 0.6037271895804561
           },
           "detailed_analysis": {
             "component_details": {
@@ -1865,7 +1865,7 @@
               }
             },
             "balance_analysis": {
-              "score_variance": 0.15158054726011927,
+              "score_variance": 0.14813607214205887,
               "score_range": 1.0,
               "most_critical_component": "normal_score"
             }
@@ -1898,7 +1898,7 @@
           2,
           4
         ],
-        "processing_time": 0.912656307220459,
+        "processing_time": 0.6198673248291016,
         "success": true,
         "error_message": null,
         "boundary_regions": {
@@ -1909,10 +1909,10 @@
         },
         "intermediate_results": {
           "feature_matching": {
-            "matches_count": 0,
+            "matches_count": 1,
             "overlap_score": 0.0,
-            "inlier_ratio": 0.0,
-            "boundary_complementarity_score": 0.35746040847166505,
+            "inlier_ratio": 0.01,
+            "boundary_complementarity_score": 0.03367942466603181,
             "initial_transformation": [
               [
                 1.0,
@@ -1943,12 +1943,12 @@
           "complementarity_check": {
             "normal_complementarity_score": 0.0,
             "shape_complementarity_score": 0.0,
-            "average_normal_angle": 90.0,
+            "average_normal_angle": 44.218269713672484,
             "reverse_normal_ratio": 0.0,
             "normal_similarity_stats": {
-              "min_similarity": 0.0,
-              "max_similarity": 0.0,
-              "mean_similarity": 0.0
+              "min_similarity": 0.7166882685022571,
+              "max_similarity": 0.7166882685022571,
+              "mean_similarity": 0.7166882685022571
             },
             "shape_similarity_stats": {
               "min_similarity": 0.0,
@@ -1958,27 +1958,27 @@
           },
           "local_alignment": {
             "fitness_score": 0.0,
-            "rmse": 1.2812282764179963,
-            "iterations_used": 1,
-            "convergence_status": "partial",
+            "rmse": 0.0,
+            "iterations_used": 30,
+            "convergence_status": "failed",
             "refined_transformation": [
               [
-                0.9133548736572266,
-                -0.4040876626968384,
-                -0.04996085911989212,
-                -0.009387258440256119
+                1.0,
+                0.0,
+                0.0,
+                0.0
               ],
               [
-                0.40697264671325684,
-                0.9097923040390015,
-                0.0815553218126297,
-                -0.00394867267459631
+                0.0,
+                1.0,
+                0.0,
+                0.0
               ],
               [
-                0.012498516589403152,
-                -0.09482164680957794,
-                0.9954158067703247,
-                -0.004766350612044334
+                0.0,
+                0.0,
+                1.0,
+                0.0
               ],
               [
                 0.0,
@@ -1993,7 +1993,7 @@
             "collision_score": 0.0,
             "penetration_depth": 0.0,
             "collision_points_count": 0,
-            "safety_margin": 0.9828738853229182,
+            "safety_margin": 1.0480670238169938,
             "collision_volumes": {
               "sdf_volume": 0.0
             },
@@ -2008,48 +2008,48 @@
           }
         },
         "final_scores": {
-          "feature_score": 0.35746040847166505,
+          "feature_score": 0.03367942466603181,
           "normal_score": 0.0,
           "shape_score": 0.0,
-          "alignment_score": 0.00232336919411517,
+          "alignment_score": 0.3,
           "collision_penalty": 1.0,
-          "total_score": 0.1898297759567393,
+          "total_score": 0.16841985616650795,
           "component_scores": {
-            "feature_score": 0.35746040847166505,
+            "feature_score": 0.03367942466603181,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.00232336919411517,
+            "alignment_score": 0.3,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.4707644080994009,
+            "feature": 0.049993251141264954,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.002447844846684798,
-            "collision": 0.5267877470539143
+            "alignment": 0.3562525308220256,
+            "collision": 0.5937542180367095
           },
           "validation_status": "invalid_match",
-          "confidence_level": 0.2282599529083964
+          "confidence_level": 0.23339115803800706
         },
         "detailed_report": {
           "summary": {
-            "total_score": 0.1898297759567393,
+            "total_score": 0.16841985616650795,
             "validation_status": "invalid_match",
-            "confidence_level": 0.2282599529083964
+            "confidence_level": 0.23339115803800706
           },
           "component_scores": {
-            "feature_score": 0.35746040847166505,
+            "feature_score": 0.03367942466603181,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.00232336919411517,
+            "alignment_score": 0.3,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.4707644080994009,
+            "feature": 0.049993251141264954,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.002447844846684798,
-            "collision": 0.5267877470539143
+            "alignment": 0.3562525308220256,
+            "collision": 0.5937542180367095
           },
           "detailed_analysis": {
             "component_details": {
@@ -2095,7 +2095,7 @@
               }
             },
             "balance_analysis": {
-              "score_variance": 0.15159619145370756,
+              "score_variance": 0.14707882841806627,
               "score_range": 1.0,
               "most_critical_component": "normal_score"
             }
@@ -2128,7 +2128,7 @@
           0,
           4
         ],
-        "processing_time": 0.7555854320526123,
+        "processing_time": 0.6368770599365234,
         "success": true,
         "error_message": null,
         "boundary_regions": {
@@ -2142,7 +2142,7 @@
             "matches_count": 0,
             "overlap_score": 0.0,
             "inlier_ratio": 0.0,
-            "boundary_complementarity_score": 0.35726261050630237,
+            "boundary_complementarity_score": 0.02316518721811959,
             "initial_transformation": [
               [
                 1.0,
@@ -2188,27 +2188,27 @@
           },
           "local_alignment": {
             "fitness_score": 0.0,
-            "rmse": 1.770830582893519,
-            "iterations_used": 1,
-            "convergence_status": "partial",
+            "rmse": 0.0,
+            "iterations_used": 30,
+            "convergence_status": "failed",
             "refined_transformation": [
               [
-                0.9133548736572266,
-                -0.4040876626968384,
-                -0.04996085911989212,
-                -0.009387258440256119
+                1.0,
+                0.0,
+                0.0,
+                0.0
               ],
               [
-                0.40697264671325684,
-                0.9097923040390015,
-                0.0815553218126297,
-                -0.00394867267459631
+                0.0,
+                1.0,
+                0.0,
+                0.0
               ],
               [
-                0.012498516589403152,
-                -0.09482164680957794,
-                0.9954158067703247,
-                -0.004766350612044334
+                0.0,
+                0.0,
+                1.0,
+                0.0
               ],
               [
                 0.0,
@@ -2223,7 +2223,7 @@
             "collision_score": 0.0,
             "penetration_depth": 0.0,
             "collision_points_count": 0,
-            "safety_margin": 1.1599097071231086,
+            "safety_margin": 1.1826255102702095,
             "collision_volumes": {
               "sdf_volume": 0.0
             },
@@ -2238,48 +2238,48 @@
           }
         },
         "final_scores": {
-          "feature_score": 0.35726261050630237,
+          "feature_score": 0.02316518721811959,
           "normal_score": 0.0,
           "shape_score": 0.0,
-          "alignment_score": 0.001684607187689666,
+          "alignment_score": 0.3,
           "collision_penalty": 1.0,
-          "total_score": 0.1896525740641135,
+          "total_score": 0.16579129680452992,
           "component_scores": {
-            "feature_score": 0.35726261050630237,
+            "feature_score": 0.02316518721811959,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.001684607187689666,
+            "alignment_score": 0.3,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.47094352959523633,
+            "feature": 0.03493124739447518,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.001776519191477118,
-            "collision": 0.5272799512132866
+            "alignment": 0.3619007822270717,
+            "collision": 0.6031679703784529
           },
           "validation_status": "invalid_match",
-          "confidence_level": 0.2278484641112929
+          "confidence_level": 0.22581454327616443
         },
         "detailed_report": {
           "summary": {
-            "total_score": 0.1896525740641135,
+            "total_score": 0.16579129680452992,
             "validation_status": "invalid_match",
-            "confidence_level": 0.2278484641112929
+            "confidence_level": 0.22581454327616443
           },
           "component_scores": {
-            "feature_score": 0.35726261050630237,
+            "feature_score": 0.02316518721811959,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.001684607187689666,
+            "alignment_score": 0.3,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.47094352959523633,
+            "feature": 0.03493124739447518,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.001776519191477118,
-            "collision": 0.5272799512132866
+            "alignment": 0.3619007822270717,
+            "collision": 0.6031679703784529
           },
           "detailed_analysis": {
             "component_details": {
@@ -2325,7 +2325,7 @@
               }
             },
             "balance_analysis": {
-              "score_variance": 0.15165838053430125,
+              "score_variance": 0.14807668067313168,
               "score_range": 1.0,
               "most_critical_component": "normal_score"
             }

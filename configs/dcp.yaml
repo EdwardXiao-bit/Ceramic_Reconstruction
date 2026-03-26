@@ -1,0 +1,74 @@
+# DCP (Deep Closest Point) 模型配置
+MODEL:
+  NAME: "DCP"
+  TYPE: "PointNet"  # 或 "ResNet"
+  
+  # PointNet 编码器参数
+  POINTNET:
+    EMBEDDING_DIM: 1024
+    GLOBAL_POOLING: "max"
+    
+  # Transformer 参数
+  TRANSFORMER:
+    NUM_LAYERS: 6
+    NUM_HEADS: 8
+    HIDDEN_DIM: 512
+    DROPOUT: 0.1
+    
+  # 回归头
+  REGRESSOR:
+    LAYERS: [512, 256, 128, 6]  # 输出 6 个参数：3 旋转 + 3 平移
+    ACTIVATION: "relu"
+    
+# 数据集配置
+DATASET:
+  NAME: "ModelNet40"
+  ROOT: "data/modelnet40"
+  
+  # 采样参数
+  NUM_POINTS: 1024
+  NORMALIZE: true
+  
+  # 数据增强
+  AUGMENTATION:
+    ROTATION: true
+    NOISE: true
+    NOISE_STD: 0.01
+    
+# 训练配置
+TRAIN:
+  BATCH_SIZE: 32
+  NUM_EPOCHS: 250
+  LR: 0.001
+  LR_SCHEDULER: "StepLR"
+  LR_DECAY: 0.7
+  LR_DECAY_STEP: 50
+  
+  # 优化器
+  OPTIMIZER: "Adam"
+  MOMENTUM: 0.9
+  
+  # 损失函数
+  LOSS:
+    ROTATION_WEIGHT: 1.0
+    TRANSLATION_WEIGHT: 1.0
+    
+# 验证配置
+VAL:
+  BATCH_SIZE: 32
+  SPLIT: "test"
+  
+# 推理配置
+TEST:
+  NUM_POINTS: 1024
+  
+# 设备配置
+DEVICE:
+  CUDA: true
+  GPU_ID: 0
+  
+# 日志和检查点
+LOGGING:
+  LOG_DIR: "logs/dcp"
+  CHECKPOINT_DIR: "checkpoints/dcp"
+  SAVE_FREQ: 10

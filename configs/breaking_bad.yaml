@@ -1,0 +1,82 @@
+# Breaking Bad 数据集专用训练配置
+# 继承自 Predator 配置，针对陶瓷碎片数据优化
+
+# 模型配置
+MODEL:
+  NAME: "Predator"
+  BACKBONE: "ResUNetPPN2"
+  INPUT_DIM: 3
+
+  # 网络结构参数
+  UNET:
+    PLANES: [64, 128, 256, 512]
+    CONV1_KERNEL_SIZE: 5
+    
+  # Transformer 参数
+  TRANSFORMER:
+    NUM_LAYERS: 6
+    NUM_HEADS: 8
+    HIDDEN_DIM: 512
+    DROPOUT: 0.1
+    
+  # 匹配头
+  MATCHING:
+    FEATURE_DIM: 256
+    TEMPERATURE: 0.1
+    
+# 数据集配置
+DATASET:
+  NAME: "BreakingBad"
+  ROOT: "data/breaking_bad"
+  
+  # 数据增强 - 针对陶瓷碎片的特殊设置
+  AUGMENTATION:
+    ROTATION_RANGE: [-180, 180]     # 完整旋转范围
+    SCALE_RANGE: [0.9, 1.1]           # 较小缩放范围，保持原始比例
+    NOISE_STD: 0.005                  # 较低噪声水平，匹配真实扫描质量
+    
+  # 采样参数
+  NUM_POINTS: 1024                   # 增加点数以捕捉更多细节
+  VOXEL_SIZE: 0.01                   # 更精细的体素大小
+
+# 训练配置
+TRAIN:
+  BATCH_SIZE: 2                     # 减小批次大小，适应复杂数据
+  NUM_EPOCHS: 100                    # 增加训练轮次
+  LR: 0.0005                         # 使用更小的学习率
+  LR_DECAY: 0.1
+  LR_DECAY_STEP: 50
+  WEIGHT_DECAY: 0.0001
+  
+  # 优化器
+  OPTIMIZER: "AdamW"
+  
+  # 损失函数权重
+  LOSS:
+    OVERLAP_WEIGHT: 1.0
+    SALIENCY_WEIGHT: 1.0
+    FEATURE_WEIGHT: 1.2               # 增加特征匹配权重
+    TRANSFORMATION_WEIGHT: 1.0
+    
+# 验证配置
+VAL:
+  BATCH_SIZE: 1
+  NUM_VIEWS: 100
+  
+# 推理配置
+TEST:
+  VOXEL_SIZE: 0.01
+  RANSAC_ITERATIONS: 20000            # 增加RANSAC迭代次数
+  RANSAC_THRESHOLD: 0.02             # 更严格的阈值
+  
+# 设备配置
+DEVICE:
+  CUDA: true
+  GPU_ID: 0
+  
+# 日志和检查点
+LOGGING:
+  LOG_DIR: "logs/breaking_bad"
+  CHECKPOINT_DIR: "checkpoints/breaking_bad"
+  SAVE_FREQ: 5
+  VISUALIZE_FREQ: 10

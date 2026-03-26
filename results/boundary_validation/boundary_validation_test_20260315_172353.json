@@ -1,6 +1,6 @@
 {
   "test_info": {
-    "timestamp": "20260326_174650",
+    "timestamp": "20260315_172353",
     "test_pairs": [
       [
         2,
@@ -58,7 +58,7 @@
           2,
           3
         ],
-        "processing_time": 0.7582788467407227,
+        "processing_time": 0.5190341472625732,
         "success": true,
         "error_message": null,
         "boundary_regions": {
@@ -69,10 +69,10 @@
         },
         "intermediate_results": {
           "feature_matching": {
-            "matches_count": 0,
+            "matches_count": 1,
             "overlap_score": 0.0,
-            "inlier_ratio": 0.0,
-            "boundary_complementarity_score": 0.37365502251386884,
+            "inlier_ratio": 0.01,
+            "boundary_complementarity_score": 0.3762830835855784,
             "initial_transformation": [
               [
                 1.0,
@@ -102,43 +102,43 @@
           },
           "complementarity_check": {
             "normal_complementarity_score": 0.0,
-            "shape_complementarity_score": 0.0,
-            "average_normal_angle": 90.0,
+            "shape_complementarity_score": 0.024190144240856172,
+            "average_normal_angle": 89.10180784031236,
             "reverse_normal_ratio": 0.0,
             "normal_similarity_stats": {
-              "min_similarity": 0.0,
-              "max_similarity": 0.0,
-              "mean_similarity": 0.0
+              "min_similarity": 0.01567576843079249,
+              "max_similarity": 0.01567576843079249,
+              "mean_similarity": 0.01567576843079249
             },
             "shape_similarity_stats": {
-              "min_similarity": 0.0,
-              "max_similarity": 0.0,
-              "mean_similarity": 0.0
+              "min_similarity": 0.06047536060214043,
+              "max_similarity": 0.06047536060214043,
+              "mean_similarity": 0.06047536060214043
             }
           },
           "local_alignment": {
             "fitness_score": 0.0,
-            "rmse": 0.9254258788794525,
+            "rmse": 1.1124637621654627,
             "iterations_used": 1,
             "convergence_status": "partial",
             "refined_transformation": [
               [
-                0.9133548736572266,
-                -0.4040876626968384,
-                -0.04996085911989212,
-                -0.009387258440256119
+                0.997392788427014,
+                0.033267171822849315,
+                -0.06403867633858762,
+                -0.16344749927520752
               ],
               [
-                0.40697264671325684,
-                0.9097923040390015,
-                0.0815553218126297,
-                -0.00394867267459631
+                -0.03845957197353256,
+                0.9959199147894671,
+                -0.08163600383226546,
+                -0.10840123891830444
               ],
               [
-                0.012498516589403152,
-                -0.09482164680957794,
-                0.9954158067703247,
-                -0.004766350612044334
+                0.061061590909957886,
+                0.08388606181506386,
+                0.9946027848375749,
+                -0.07968083769083023
               ],
               [
                 0.0,
@@ -153,7 +153,7 @@
             "collision_score": 0.0,
             "penetration_depth": 0.0,
             "collision_points_count": 0,
-            "safety_margin": 0.59964425317634,
+            "safety_margin": 0.451385004307686,
             "collision_volumes": {
               "sdf_volume": 0.0
             },
@@ -168,48 +168,48 @@
           }
         },
         "final_scores": {
-          "feature_score": 0.37365502251386884,
+          "feature_score": 0.3762830835855784,
           "normal_score": 0.0,
-          "shape_score": 0.0,
-          "alignment_score": 0.0032070953645132235,
+          "shape_score": 0.024190144240856172,
+          "alignment_score": 0.0026726920735618094,
           "collision_penalty": 1.0,
-          "total_score": 0.19405517470136985,
+          "total_score": 0.200652845371321,
           "component_scores": {
-            "feature_score": 0.37365502251386884,
+            "feature_score": 0.3762830835855784,
             "normal_score": 0.0,
-            "shape_score": 0.0,
-            "alignment_score": 0.0032070953645132235,
+            "shape_score": 0.024190144240856172,
+            "alignment_score": 0.0026726920735618094,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.48137729783408756,
+            "feature": 0.46882350819551344,
             "normal": 0.0,
-            "shape": 0.0,
-            "alignment": 0.0033053438223933996,
-            "collision": 0.5153173583435191
+            "shape": 0.030139298792512453,
+            "alignment": 0.002663996185666663,
+            "collision": 0.4983731968263075
           },
           "validation_status": "invalid_match",
-          "confidence_level": 0.2311299536078297
+          "confidence_level": 0.24404903235394587
         },
         "detailed_report": {
           "summary": {
-            "total_score": 0.19405517470136985,
+            "total_score": 0.200652845371321,
             "validation_status": "invalid_match",
-            "confidence_level": 0.2311299536078297
+            "confidence_level": 0.24404903235394587
           },
           "component_scores": {
-            "feature_score": 0.37365502251386884,
+            "feature_score": 0.3762830835855784,
             "normal_score": 0.0,
-            "shape_score": 0.0,
-            "alignment_score": 0.0032070953645132235,
+            "shape_score": 0.024190144240856172,
+            "alignment_score": 0.0026726920735618094,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.48137729783408756,
+            "feature": 0.46882350819551344,
             "normal": 0.0,
-            "shape": 0.0,
-            "alignment": 0.0033053438223933996,
-            "collision": 0.5153173583435191
+            "shape": 0.030139298792512453,
+            "alignment": 0.002663996185666663,
+            "collision": 0.4983731968263075
           },
           "detailed_analysis": {
             "component_details": {
@@ -255,7 +255,7 @@
               }
             },
             "balance_analysis": {
-              "score_variance": 0.15209570059616162,
+              "score_variance": 0.1496835141695167,
               "score_range": 1.0,
               "most_critical_component": "normal_score"
             }
@@ -288,7 +288,7 @@
           0,
           2
         ],
-        "processing_time": 0.8350448608398438,
+        "processing_time": 0.5784080028533936,
         "success": true,
         "error_message": null,
         "boundary_regions": {
@@ -302,7 +302,7 @@
             "matches_count": 0,
             "overlap_score": 0.0,
             "inlier_ratio": 0.0,
-            "boundary_complementarity_score": 0.3743539326436349,
+            "boundary_complementarity_score": 0.3733792728324994,
             "initial_transformation": [
               [
                 1.0,
@@ -348,27 +348,27 @@
           },
           "local_alignment": {
             "fitness_score": 0.0,
-            "rmse": 1.8018015485590657,
+            "rmse": 1.7321757520880279,
             "iterations_used": 1,
             "convergence_status": "partial",
             "refined_transformation": [
               [
-                0.9133548736572266,
-                -0.4040876626968384,
-                -0.04996085911989212,
-                -0.009387258440256119
+                0.9964276568118855,
+                0.04577708541781807,
+                -0.0709679166598621,
+                -0.008850005455315113
               ],
               [
-                0.40697264671325684,
-                0.9097923040390015,
-                0.0815553218126297,
-                -0.00394867267459631
+                -0.04047693068619029,
+                0.9964064671580632,
+                0.07440333638501619,
+                0.09323625266551971
               ],
               [
-                0.012498516589403152,
-                -0.09482164680957794,
-                0.9954158067703247,
-                -0.004766350612044334
+                0.07411885261535645,
+                -0.07126497563711753,
+                0.9946998346112217,
+                0.09690400213003159
               ],
               [
                 0.0,
@@ -383,7 +383,7 @@
             "collision_score": 0.0,
             "penetration_depth": 0.0,
             "collision_points_count": 0,
-            "safety_margin": 1.2991451441968669,
+            "safety_margin": 1.288374011686499,
             "collision_volumes": {
               "sdf_volume": 0.0
             },
@@ -398,48 +398,48 @@
           }
         },
         "final_scores": {
-          "feature_score": 0.3743539326436349,
+          "feature_score": 0.3733792728324994,
           "normal_score": 0.0,
           "shape_score": 0.0,
-          "alignment_score": 0.0016558104845345307,
+          "alignment_score": 0.0017219847058509727,
           "collision_penalty": 1.0,
-          "total_score": 0.19391964525781563,
+          "total_score": 0.19368921514929505,
           "component_scores": {
-            "feature_score": 0.3743539326436349,
+            "feature_score": 0.3733792728324994,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.0016558104845345307,
+            "alignment_score": 0.0017219847058509727,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.48261476054415786,
+            "feature": 0.48193090222486035,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.0017077284586954926,
-            "collision": 0.5156775109971466
+            "alignment": 0.0017780904368099922,
+            "collision": 0.5162910073383297
           },
           "validation_status": "invalid_match",
-          "confidence_level": 0.23031521997263993
+          "confidence_level": 0.23021962007546126
         },
         "detailed_report": {
           "summary": {
-            "total_score": 0.19391964525781563,
+            "total_score": 0.19368921514929505,
             "validation_status": "invalid_match",
-            "confidence_level": 0.23031521997263993
+            "confidence_level": 0.23021962007546126
           },
           "component_scores": {
-            "feature_score": 0.3743539326436349,
+            "feature_score": 0.3733792728324994,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.0016558104845345307,
+            "alignment_score": 0.0017219847058509727,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.48261476054415786,
+            "feature": 0.48193090222486035,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.0017077284586954926,
-            "collision": 0.5156775109971466
+            "alignment": 0.0017780904368099922,
+            "collision": 0.5162910073383297
           },
           "detailed_analysis": {
             "component_details": {
@@ -485,7 +485,7 @@
               }
             },
             "balance_analysis": {
-              "score_variance": 0.15229260919147716,
+              "score_variance": 0.15224687058310854,
               "score_range": 1.0,
               "most_critical_component": "normal_score"
             }
@@ -518,7 +518,7 @@
           3,
           4
         ],
-        "processing_time": 0.939887285232544,
+        "processing_time": 0.5481812953948975,
         "success": true,
         "error_message": null,
         "boundary_regions": {
@@ -529,10 +529,10 @@
         },
         "intermediate_results": {
           "feature_matching": {
-            "matches_count": 0,
+            "matches_count": 1,
             "overlap_score": 0.0,
-            "inlier_ratio": 0.0,
-            "boundary_complementarity_score": 0.35792479250869685,
+            "inlier_ratio": 0.01,
+            "boundary_complementarity_score": 0.3602005132012238,
             "initial_transformation": [
               [
                 1.0,
@@ -561,14 +561,14 @@
             ]
           },
           "complementarity_check": {
-            "normal_complementarity_score": 0.0,
+            "normal_complementarity_score": 0.7,
             "shape_complementarity_score": 0.0,
-            "average_normal_angle": 90.0,
+            "average_normal_angle": 16.722940824348107,
             "reverse_normal_ratio": 0.0,
             "normal_similarity_stats": {
-              "min_similarity": 0.0,
-              "max_similarity": 0.0,
-              "mean_similarity": 0.0
+              "min_similarity": 0.9577073609549188,
+              "max_similarity": 0.9577073609549188,
+              "mean_similarity": 0.9577073609549188
             },
             "shape_similarity_stats": {
               "min_similarity": 0.0,
@@ -578,27 +578,27 @@
           },
           "local_alignment": {
             "fitness_score": 0.0,
-            "rmse": 0.5444361354516002,
+            "rmse": 0.5676152932146376,
             "iterations_used": 1,
             "convergence_status": "partial",
             "refined_transformation": [
               [
-                0.9133548736572266,
-                -0.4040876626968384,
-                -0.04996085911989212,
-                -0.009387258440256119
+                0.9987268748480389,
+                0.04620299783273545,
+                0.020246054815996756,
+                -0.15979211032390594
               ],
               [
-                0.40697264671325684,
-                0.9097923040390015,
-                0.0815553218126297,
-                -0.00394867267459631
+                -0.046452513780102844,
+                0.9988480327018753,
+                0.012032012056343935,
+                0.029260758310556412
               ],
               [
-                0.012498516589403152,
-                -0.09482164680957794,
-                0.9954158067703247,
-                -0.004766350612044334
+                -0.019666817039251328,
+                -0.012957173896534002,
+                0.9997226162269506,
+                -0.02362039126455784
               ],
               [
                 0.0,
@@ -613,7 +613,7 @@
             "collision_score": 0.0,
             "penetration_depth": 0.0,
             "collision_points_count": 0,
-            "safety_margin": 0.29982444935729563,
+            "safety_margin": 0.2510531774510935,
             "collision_volumes": {
               "sdf_volume": 0.0
             },
@@ -628,48 +628,48 @@
           }
         },
         "final_scores": {
-          "feature_score": 0.35792479250869685,
-          "normal_score": 0.0,
+          "feature_score": 0.3602005132012238,
+          "normal_score": 0.7,
           "shape_score": 0.0,
-          "alignment_score": 0.00541090273193762,
+          "alignment_score": 0.005193768300877072,
           "collision_penalty": 1.0,
-          "total_score": 0.19056337867356174,
+          "total_score": 0.33108888196048136,
           "component_scores": {
-            "feature_score": 0.35792479250869685,
-            "normal_score": 0.0,
+            "feature_score": 0.3602005132012238,
+            "normal_score": 0.7,
             "shape_score": 0.0,
-            "alignment_score": 0.00541090273193762,
+            "alignment_score": 0.005193768300877072,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.4695613540755751,
-            "normal": 0.0,
+            "feature": 0.27198173423127603,
+            "normal": 0.4228471797996235,
             "shape": 0.0,
-            "alignment": 0.005678848443600055,
-            "collision": 0.5247597974808249
+            "alignment": 0.003137386112226504,
+            "collision": 0.302033699856874
           },
-          "validation_status": "invalid_match",
-          "confidence_level": 0.23016336703199047
+          "validation_status": "poor_match",
+          "confidence_level": 0.3966678657846082
         },
         "detailed_report": {
           "summary": {
-            "total_score": 0.19056337867356174,
-            "validation_status": "invalid_match",
-            "confidence_level": 0.23016336703199047
+            "total_score": 0.33108888196048136,
+            "validation_status": "poor_match",
+            "confidence_level": 0.3966678657846082
           },
           "component_scores": {
-            "feature_score": 0.35792479250869685,
-            "normal_score": 0.0,
+            "feature_score": 0.3602005132012238,
+            "normal_score": 0.7,
             "shape_score": 0.0,
-            "alignment_score": 0.00541090273193762,
+            "alignment_score": 0.005193768300877072,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.4695613540755751,
-            "normal": 0.0,
+            "feature": 0.27198173423127603,
+            "normal": 0.4228471797996235,
             "shape": 0.0,
-            "alignment": 0.005678848443600055,
-            "collision": 0.5247597974808249
+            "alignment": 0.003137386112226504,
+            "collision": 0.302033699856874
           },
           "detailed_analysis": {
             "component_details": {
@@ -682,12 +682,12 @@
                 ]
               },
               "normal_complementarity": {
-                "quality": "poor",
-                "strengths": [],
-                "weaknesses": [
-                  "表现较差",
-                  "法向互补性弱"
-                ]
+                "quality": "good",
+                "strengths": [
+                  "表现良好",
+                  "法向互补性强"
+                ],
+                "weaknesses": []
               },
               "shape_complementarity": {
                 "quality": "poor",
@@ -715,15 +715,14 @@
               }
             },
             "balance_analysis": {
-              "score_variance": 0.15128051827546307,
+              "score_variance": 0.15332013546545448,
               "score_range": 1.0,
-              "most_critical_component": "normal_score"
+              "most_critical_component": "shape_score"
             }
           },
           "recommendations": [
             "整体匹配质量较低，建议重新考虑碎片配对",
             "特征匹配度不足，建议检查边界特征提取参数",
-            "法向互补性较差，建议调整碎片相对姿态",
             "形状匹配度低，可能需要更精确的几何处理",
             "对齐精度不足，建议使用更高精度的对齐算法",
             "验证结果不确定性较高，建议多次验证或人工确认"
@@ -748,7 +747,7 @@
           0,
           1
         ],
-        "processing_time": 0.865790605545044,
+        "processing_time": 0.5462615489959717,
         "success": true,
         "error_message": null,
         "boundary_regions": {
@@ -762,7 +761,7 @@
             "matches_count": 0,
             "overlap_score": 0.0,
             "inlier_ratio": 0.0,
-            "boundary_complementarity_score": 0.37342993462547613,
+            "boundary_complementarity_score": 0.3744222886529224,
             "initial_transformation": [
               [
                 1.0,
@@ -808,27 +807,27 @@
           },
           "local_alignment": {
             "fitness_score": 0.0,
-            "rmse": 1.490983794998418,
+            "rmse": 1.3998219327217436,
             "iterations_used": 1,
             "convergence_status": "partial",
             "refined_transformation": [
               [
-                0.9133548736572266,
-                -0.4040876626968384,
-                -0.04996085911989212,
-                -0.009387258440256119
+                0.9940641903922582,
+                -0.08492732381187425,
+                0.06799808279034783,
+                -0.05456129461526871
               ],
               [
-                0.40697264671325684,
-                0.9097923040390015,
-                0.0815553218126297,
-                -0.00394867267459631
+                0.0727284207001988,
+                0.9835700083869227,
+                0.1652289406804559,
+                -0.12719100713729858
               ],
               [
-                0.012498516589403152,
-                -0.09482164680957794,
-                0.9954158067703247,
-                -0.004766350612044334
+                -0.08091332763433456,
+                -0.15930278158665168,
+                0.9839083641710857,
+                -0.10457120090723038
               ],
               [
                 0.0,
@@ -843,7 +842,7 @@
             "collision_score": 0.0,
             "penetration_depth": 0.0,
             "collision_points_count": 0,
-            "safety_margin": 1.008216204244337,
+            "safety_margin": 0.9691375538536029,
             "collision_volumes": {
               "sdf_volume": 0.0
             },
@@ -858,48 +857,48 @@
           }
         },
         "final_scores": {
-          "feature_score": 0.37342993462547613,
+          "feature_score": 0.3744222886529224,
           "normal_score": 0.0,
           "shape_score": 0.0,
-          "alignment_score": 0.001998689133084986,
+          "alignment_score": 0.002127928308086628,
           "collision_penalty": 1.0,
-          "total_score": 0.19375722148298602,
+          "total_score": 0.19403115782484792,
           "component_scores": {
-            "feature_score": 0.37342993462547613,
+            "feature_score": 0.3744222886529224,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.001998689133084986,
+            "alignment_score": 0.002127928308086628,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.48182711819371765,
+            "feature": 0.4824254682215957,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.002063086080392098,
-            "collision": 0.5161097957258903
+            "alignment": 0.002193388249538263,
+            "collision": 0.515381143528866
           },
           "validation_status": "invalid_match",
-          "confidence_level": 0.23038942675918755
+          "confidence_level": 0.23060211785325896
         },
         "detailed_report": {
           "summary": {
-            "total_score": 0.19375722148298602,
+            "total_score": 0.19403115782484792,
             "validation_status": "invalid_match",
-            "confidence_level": 0.23038942675918755
+            "confidence_level": 0.23060211785325896
           },
           "component_scores": {
-            "feature_score": 0.37342993462547613,
+            "feature_score": 0.3744222886529224,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.001998689133084986,
+            "alignment_score": 0.002127928308086628,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.48182711819371765,
+            "feature": 0.4824254682215957,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.002063086080392098,
-            "collision": 0.5161097957258903
+            "alignment": 0.002193388249538263,
+            "collision": 0.515381143528866
           },
           "detailed_analysis": {
             "component_details": {
@@ -945,7 +944,7 @@
               }
             },
             "balance_analysis": {
-              "score_variance": 0.15221862620435284,
+              "score_variance": 0.1522436956711793,
               "score_range": 1.0,
               "most_critical_component": "normal_score"
             }
@@ -978,7 +977,7 @@
           1,
           2
         ],
-        "processing_time": 0.7939271926879883,
+        "processing_time": 0.5618231296539307,
         "success": true,
         "error_message": null,
         "boundary_regions": {
@@ -992,7 +991,7 @@
             "matches_count": 1,
             "overlap_score": 0.0,
             "inlier_ratio": 0.01,
-            "boundary_complementarity_score": 0.3773661665052483,
+            "boundary_complementarity_score": 0.37621618390600575,
             "initial_transformation": [
               [
                 1.0,
@@ -1022,43 +1021,43 @@
           },
           "complementarity_check": {
             "normal_complementarity_score": 0.0,
-            "shape_complementarity_score": 0.1848812198753974,
-            "average_normal_angle": 74.64209001960565,
+            "shape_complementarity_score": 0.0,
+            "average_normal_angle": 75.33634733688174,
             "reverse_normal_ratio": 0.0,
             "normal_similarity_stats": {
-              "min_similarity": 0.2648478123267784,
-              "max_similarity": 0.2648478123267784,
-              "mean_similarity": 0.2648478123267784
+              "min_similarity": 0.2531442775680175,
+              "max_similarity": 0.2531442775680175,
+              "mean_similarity": 0.2531442775680175
             },
             "shape_similarity_stats": {
-              "min_similarity": 0.46220304968849346,
-              "max_similarity": 0.46220304968849346,
-              "mean_similarity": 0.46220304968849346
+              "min_similarity": 0.0,
+              "max_similarity": 0.0,
+              "mean_similarity": 0.0
             }
           },
           "local_alignment": {
             "fitness_score": 0.0,
-            "rmse": 1.3394713294095826,
+            "rmse": 1.2209640032454352,
             "iterations_used": 1,
             "convergence_status": "partial",
             "refined_transformation": [
               [
-                0.9133548736572266,
-                -0.4040876626968384,
-                -0.04996085911989212,
-                -0.009387258440256119
+                0.987337511915058,
+                -0.02763578218688616,
+                0.15620759119550587,
+                -0.2471827119588852
               ],
               [
-                0.40697264671325684,
-                0.9097923040390015,
-                0.0815553218126297,
-                -0.00394867267459631
+                0.006570657213203268,
+                0.9909876682651575,
+                0.1337915959129413,
+                -0.0141041474416852
               ],
               [
-                0.012498516589403152,
-                -0.09482164680957794,
-                0.9954158067703247,
-                -0.004766350612044334
+                -0.15849724411964417,
+                -0.1310710826604513,
+                0.9786209420068701,
+                -0.10302293300628662
               ],
               [
                 0.0,
@@ -1073,7 +1072,7 @@
             "collision_score": 0.0,
             "penetration_depth": 0.0,
             "collision_points_count": 0,
-            "safety_margin": 0.6815408079880182,
+            "safety_margin": 0.4747856811501108,
             "collision_volumes": {
               "sdf_volume": 0.0
             },
@@ -1088,48 +1087,48 @@
           }
         },
         "final_scores": {
-          "feature_score": 0.3773661665052483,
+          "feature_score": 0.37621618390600575,
           "normal_score": 0.0,
-          "shape_score": 0.1848812198753974,
-          "alignment_score": 0.002223092802803415,
+          "shape_score": 0.0,
+          "alignment_score": 0.002437114320232357,
           "collision_penalty": 1.0,
-          "total_score": 0.2410064651557221,
+          "total_score": 0.1945414688405479,
           "component_scores": {
-            "feature_score": 0.3773661665052483,
+            "feature_score": 0.37621618390600575,
             "normal_score": 0.0,
-            "shape_score": 0.1848812198753974,
-            "alignment_score": 0.002223092802803415,
+            "shape_score": 0.0,
+            "alignment_score": 0.002437114320232357,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.3914481778128024,
+            "feature": 0.4834652813976181,
             "normal": 0.0,
-            "shape": 0.19178035302490706,
-            "alignment": 0.001844840802396735,
-            "collision": 0.4149266283598938
+            "shape": 0.0,
+            "alignment": 0.0025054959590439714,
+            "collision": 0.5140292226433381
           },
           "validation_status": "invalid_match",
-          "confidence_level": 0.30021387672747357
+          "confidence_level": 0.23102831299808727
         },
         "detailed_report": {
           "summary": {
-            "total_score": 0.2410064651557221,
+            "total_score": 0.1945414688405479,
             "validation_status": "invalid_match",
-            "confidence_level": 0.30021387672747357
+            "confidence_level": 0.23102831299808727
           },
           "component_scores": {
-            "feature_score": 0.3773661665052483,
+            "feature_score": 0.37621618390600575,
             "normal_score": 0.0,
-            "shape_score": 0.1848812198753974,
-            "alignment_score": 0.002223092802803415,
+            "shape_score": 0.0,
+            "alignment_score": 0.002437114320232357,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.3914481778128024,
+            "feature": 0.4834652813976181,
             "normal": 0.0,
-            "shape": 0.19178035302490706,
-            "alignment": 0.001844840802396735,
-            "collision": 0.4149266283598938
+            "shape": 0.0,
+            "alignment": 0.0025054959590439714,
+            "collision": 0.5140292226433381
           },
           "detailed_analysis": {
             "component_details": {
@@ -1175,7 +1174,7 @@
               }
             },
             "balance_analysis": {
-              "score_variance": 0.1374155310359587,
+              "score_variance": 0.1522815146433981,
               "score_range": 1.0,
               "most_critical_component": "normal_score"
             }
@@ -1208,7 +1207,7 @@
           0,
           3
         ],
-        "processing_time": 0.6806583404541016,
+        "processing_time": 0.5489470958709717,
         "success": true,
         "error_message": null,
         "boundary_regions": {
@@ -1219,10 +1218,10 @@
         },
         "intermediate_results": {
           "feature_matching": {
-            "matches_count": 0,
+            "matches_count": 1,
             "overlap_score": 0.0,
-            "inlier_ratio": 0.0,
-            "boundary_complementarity_score": 0.3743071828425368,
+            "inlier_ratio": 0.01,
+            "boundary_complementarity_score": 0.3742336112783926,
             "initial_transformation": [
               [
                 1.0,
@@ -1252,43 +1251,43 @@
           },
           "complementarity_check": {
             "normal_complementarity_score": 0.0,
-            "shape_complementarity_score": 0.0,
-            "average_normal_angle": 90.0,
+            "shape_complementarity_score": 0.003940571844577789,
+            "average_normal_angle": 63.05934628090774,
             "reverse_normal_ratio": 0.0,
             "normal_similarity_stats": {
-              "min_similarity": 0.0,
-              "max_similarity": 0.0,
-              "mean_similarity": 0.0
+              "min_similarity": 0.4530673625049391,
+              "max_similarity": 0.4530673625049391,
+              "mean_similarity": 0.4530673625049391
             },
             "shape_similarity_stats": {
-              "min_similarity": 0.0,
-              "max_similarity": 0.0,
-              "mean_similarity": 0.0
+              "min_similarity": 0.009851429611444473,
+              "max_similarity": 0.009851429611444473,
+              "mean_similarity": 0.009851429611444473
             }
           },
           "local_alignment": {
             "fitness_score": 0.0,
-            "rmse": 2.032962436787541,
+            "rmse": 1.889722652643897,
             "iterations_used": 1,
             "convergence_status": "partial",
             "refined_transformation": [
               [
-                0.9133548736572266,
-                -0.4040876626968384,
-                -0.04996085911989212,
-                -0.009387258440256119
+                0.9911391089698434,
+                -0.05714292405562144,
+                -0.11990848872975952,
+                0.04810884967446327
               ],
               [
-                0.40697264671325684,
-                0.9097923040390015,
-                0.0815553218126297,
-                -0.00394867267459631
+                0.046439008190319875,
+                0.9948369242202929,
+                -0.0902385959861297,
+                0.02312879078090191
               ],
               [
-                0.012498516589403152,
-                -0.09482164680957794,
-                0.9954158067703247,
-                -0.004766350612044334
+                0.12444587796926498,
+                0.0838705666987285,
+                0.9886754005523848,
+                0.15039797127246857
               ],
               [
                 0.0,
@@ -1303,7 +1302,7 @@
             "collision_score": 0.0,
             "penetration_depth": 0.0,
             "collision_points_count": 0,
-            "safety_margin": 1.4348065156038887,
+            "safety_margin": 1.5742059108888036,
             "collision_volumes": {
               "sdf_volume": 0.0
             },
@@ -1318,48 +1317,48 @@
           }
         },
         "final_scores": {
-          "feature_score": 0.3743071828425368,
+          "feature_score": 0.3742336112783926,
           "normal_score": 0.0,
-          "shape_score": 0.0,
-          "alignment_score": 0.0014684557806737522,
+          "shape_score": 0.003940571844577789,
+          "alignment_score": 0.0015791778846374319,
           "collision_penalty": 1.0,
-          "total_score": 0.19387048686676894,
+          "total_score": 0.19485938135767011,
           "component_scores": {
-            "feature_score": 0.3743071828425368,
+            "feature_score": 0.3742336112783926,
             "normal_score": 0.0,
-            "shape_score": 0.0,
-            "alignment_score": 0.0014684557806737522,
+            "shape_score": 0.003940571844577789,
+            "alignment_score": 0.0015791778846374319,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.4826768489777495,
+            "feature": 0.4801329151706017,
             "normal": 0.0,
-            "shape": 0.0,
-            "alignment": 0.001514883265014855,
-            "collision": 0.5158082677572358
+            "shape": 0.00505566092984863,
+            "alignment": 0.0016208384463038037,
+            "collision": 0.5131905854532457
           },
           "validation_status": "invalid_match",
-          "confidence_level": 0.2301985596456579
+          "confidence_level": 0.23244938923250852
         },
         "detailed_report": {
           "summary": {
-            "total_score": 0.19387048686676894,
+            "total_score": 0.19485938135767011,
             "validation_status": "invalid_match",
-            "confidence_level": 0.2301985596456579
+            "confidence_level": 0.23244938923250852
           },
           "component_scores": {
-            "feature_score": 0.3743071828425368,
+            "feature_score": 0.3742336112783926,
             "normal_score": 0.0,
-            "shape_score": 0.0,
-            "alignment_score": 0.0014684557806737522,
+            "shape_score": 0.003940571844577789,
+            "alignment_score": 0.0015791778846374319,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.4826768489777495,
+            "feature": 0.4801329151706017,
             "normal": 0.0,
-            "shape": 0.0,
-            "alignment": 0.001514883265014855,
-            "collision": 0.5158082677572358
+            "shape": 0.00505566092984863,
+            "alignment": 0.0016208384463038037,
+            "collision": 0.5131905854532457
           },
           "detailed_analysis": {
             "component_details": {
@@ -1405,7 +1404,7 @@
               }
             },
             "balance_analysis": {
-              "score_variance": 0.1523112603848151,
+              "score_variance": 0.15186499005547255,
               "score_range": 1.0,
               "most_critical_component": "normal_score"
             }
@@ -1438,7 +1437,7 @@
           1,
           3
         ],
-        "processing_time": 0.7269072532653809,
+        "processing_time": 0.5459024906158447,
         "success": true,
         "error_message": null,
         "boundary_regions": {
@@ -1449,240 +1448,10 @@
         },
         "intermediate_results": {
           "feature_matching": {
-            "matches_count": 1,
-            "overlap_score": 0.0,
-            "inlier_ratio": 0.01,
-            "boundary_complementarity_score": 0.3747745449333639,
-            "initial_transformation": [
-              [
-                1.0,
-                0.0,
-                0.0,
-                0.0
-              ],
-              [
-                0.0,
-                1.0,
-                0.0,
-                0.0
-              ],
-              [
-                0.0,
-                0.0,
-                1.0,
-                0.0
-              ],
-              [
-                0.0,
-                0.0,
-                0.0,
-                1.0
-              ]
-            ]
-          },
-          "complementarity_check": {
-            "normal_complementarity_score": 0.0,
-            "shape_complementarity_score": 0.13980908375680476,
-            "average_normal_angle": 39.56850686347176,
-            "reverse_normal_ratio": 0.0,
-            "normal_similarity_stats": {
-              "min_similarity": 0.770863492146982,
-              "max_similarity": 0.770863492146982,
-              "mean_similarity": 0.770863492146982
-            },
-            "shape_similarity_stats": {
-              "min_similarity": 0.34952270939201185,
-              "max_similarity": 0.34952270939201185,
-              "mean_similarity": 0.34952270939201185
-            }
-          },
-          "local_alignment": {
-            "fitness_score": 0.0,
-            "rmse": 2.211717433120281,
-            "iterations_used": 1,
-            "convergence_status": "partial",
-            "refined_transformation": [
-              [
-                0.9133548736572266,
-                -0.4040876626968384,
-                -0.04996085911989212,
-                -0.009387258440256119
-              ],
-              [
-                0.40697264671325684,
-                0.9097923040390015,
-                0.0815553218126297,
-                -0.00394867267459631
-              ],
-              [
-                0.012498516589403152,
-                -0.09482164680957794,
-                0.9954158067703247,
-                -0.004766350612044334
-              ],
-              [
-                0.0,
-                0.0,
-                0.0,
-                1.0
-              ]
-            ],
-            "alignment_error": 1.0
-          },
-          "collision_detection": {
-            "collision_score": 0.0,
-            "penetration_depth": 0.0,
-            "collision_points_count": 0,
-            "safety_margin": 1.5291438223457503,
-            "collision_volumes": {
-              "sdf_volume": 0.0
-            },
-            "detailed_analysis": {
-              "sdf_analysis": {
-                "penetration_points": 0,
-                "total_points": 2000,
-                "penetration_ratio": 0.0,
-                "avg_penetration_depth": 0.0
-              }
-            }
-          }
-        },
-        "final_scores": {
-          "feature_score": 0.3747745449333639,
-          "normal_score": 0.0,
-          "shape_score": 0.13980908375680476,
-          "alignment_score": 0.0013503067290544968,
-          "collision_penalty": 1.0,
-          "total_score": 0.22891596851835305,
-          "component_scores": {
-            "feature_score": 0.3747745449333639,
-            "normal_score": 0.0,
-            "shape_score": 0.13980908375680476,
-            "alignment_score": 0.0013503067290544968,
-            "collision_penalty": 1.0
-          },
-          "weighted_contributions": {
-            "feature": 0.40929270613914903,
-            "normal": 0.0,
-            "shape": 0.1526860321952548,
-            "alignment": 0.001179740092221865,
-            "collision": 0.43684152157337436
-          },
-          "validation_status": "invalid_match",
-          "confidence_level": 0.28829968163812025
-        },
-        "detailed_report": {
-          "summary": {
-            "total_score": 0.22891596851835305,
-            "validation_status": "invalid_match",
-            "confidence_level": 0.28829968163812025
-          },
-          "component_scores": {
-            "feature_score": 0.3747745449333639,
-            "normal_score": 0.0,
-            "shape_score": 0.13980908375680476,
-            "alignment_score": 0.0013503067290544968,
-            "collision_penalty": 1.0
-          },
-          "weighted_contributions": {
-            "feature": 0.40929270613914903,
-            "normal": 0.0,
-            "shape": 0.1526860321952548,
-            "alignment": 0.001179740092221865,
-            "collision": 0.43684152157337436
-          },
-          "detailed_analysis": {
-            "component_details": {
-              "feature_matching": {
-                "quality": "poor",
-                "strengths": [],
-                "weaknesses": [
-                  "表现较差",
-                  "特征匹配不足"
-                ]
-              },
-              "normal_complementarity": {
-                "quality": "poor",
-                "strengths": [],
-                "weaknesses": [
-                  "表现较差",
-                  "法向互补性弱"
-                ]
-              },
-              "shape_complementarity": {
-                "quality": "poor",
-                "strengths": [],
-                "weaknesses": [
-                  "表现较差",
-                  "形状匹配度低"
-                ]
-              },
-              "alignment_accuracy": {
-                "quality": "poor",
-                "strengths": [],
-                "weaknesses": [
-                  "表现较差",
-                  "对齐精度不足"
-                ]
-              },
-              "collision_avoidance": {
-                "quality": "excellent",
-                "strengths": [],
-                "weaknesses": [
-                  "表现较差",
-                  "碰撞风险较高"
-                ]
-              }
-            },
-            "balance_analysis": {
-              "score_variance": 0.14007864468961342,
-              "score_range": 1.0,
-              "most_critical_component": "normal_score"
-            }
-          },
-          "recommendations": [
-            "整体匹配质量较低，建议重新考虑碎片配对",
-            "特征匹配度不足，建议检查边界特征提取参数",
-            "法向互补性较差，建议调整碎片相对姿态",
-            "形状匹配度低，可能需要更精确的几何处理",
-            "对齐精度不足，建议使用更高精度的对齐算法",
-            "验证结果不确定性较高，建议多次验证或人工确认"
-          ],
-          "quality_assessment": {
-            "quality_level": "poor",
-            "quality_description": "较差匹配",
-            "stability": "unstable",
-            "stability_description": "不稳定",
-            "reliability": "low"
-          }
-        }
-      }
-    },
-    {
-      "pair": [
-        1,
-        4
-      ],
-      "result": {
-        "fragment_ids": [
-          1,
-          4
-        ],
-        "processing_time": 0.7744381427764893,
-        "success": true,
-        "error_message": null,
-        "boundary_regions": {
-          "fragment1_points": 4357,
-          "fragment2_points": 895,
-          "boundary1_confidence": 1.0,
-          "boundary2_confidence": 1.0
-        },
-        "intermediate_results": {
-          "feature_matching": {
             "matches_count": 0,
             "overlap_score": 0.0,
             "inlier_ratio": 0.0,
-            "boundary_complementarity_score": 0.35346587732123835,
+            "boundary_complementarity_score": 0.37402267500493436,
             "initial_transformation": [
               [
                 1.0,
@@ -1728,27 +1497,27 @@
           },
           "local_alignment": {
             "fitness_score": 0.0,
-            "rmse": 2.4411453615130174,
+            "rmse": 2.3947248210509735,
             "iterations_used": 1,
             "convergence_status": "partial",
             "refined_transformation": [
               [
-                0.9133548736572266,
-                -0.4040876626968384,
-                -0.04996085911989212,
-                -0.009387258440256119
+                0.988152206241466,
+                0.009727616873335404,
+                -0.15316855925554448,
+                -0.01815709099173546
               ],
               [
-                0.40697264671325684,
-                0.9097923040390015,
-                0.0815553218126297,
-                -0.00394867267459631
+                -0.03190126740958199,
+                0.9892107813837286,
+                -0.14298395286979504,
+                -0.008305029943585396
               ],
               [
-                0.012498516589403152,
-                -0.09482164680957794,
-                0.9954158067703247,
-                -0.004766350612044334
+                0.15012508630752563,
+                0.14617617749852485,
+                0.9778011249578356,
+                -0.15309284627437592
               ],
               [
                 0.0,
@@ -1763,7 +1532,7 @@
             "collision_score": 0.0,
             "penetration_depth": 0.0,
             "collision_points_count": 0,
-            "safety_margin": 1.7455571469979987,
+            "safety_margin": 1.3620716984235022,
             "collision_volumes": {
               "sdf_volume": 0.0
             },
@@ -1778,48 +1547,48 @@
           }
         },
         "final_scores": {
-          "feature_score": 0.35346587732123835,
+          "feature_score": 0.37402267500493436,
           "normal_score": 0.0,
           "shape_score": 0.0,
-          "alignment_score": 0.0012239176211680043,
+          "alignment_score": 0.0012475439907876295,
           "collision_penalty": 1.0,
-          "total_score": 0.1886112528545432,
+          "total_score": 0.19375517754939112,
           "component_scores": {
-            "feature_score": 0.35346587732123835,
+            "feature_score": 0.37402267500493436,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.0012239176211680043,
+            "alignment_score": 0.0012475439907876295,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.46851112005738976,
+            "feature": 0.4825970068717136,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.0012978203608157868,
-            "collision": 0.5301910595817945
+            "alignment": 0.0012877529329192886,
+            "collision": 0.5161152401953671
           },
           "validation_status": "invalid_match",
-          "confidence_level": 0.2269829399542825
+          "confidence_level": 0.230029259229965
         },
         "detailed_report": {
           "summary": {
-            "total_score": 0.1886112528545432,
+            "total_score": 0.19375517754939112,
             "validation_status": "invalid_match",
-            "confidence_level": 0.2269829399542825
+            "confidence_level": 0.230029259229965
           },
           "component_scores": {
-            "feature_score": 0.35346587732123835,
+            "feature_score": 0.37402267500493436,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.0012239176211680043,
+            "alignment_score": 0.0012475439907876295,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.46851112005738976,
+            "feature": 0.4825970068717136,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.0012978203608157868,
-            "collision": 0.5301910595817945
+            "alignment": 0.0012877529329192886,
+            "collision": 0.5161152401953671
           },
           "detailed_analysis": {
             "component_details": {
@@ -1865,7 +1634,237 @@
               }
             },
             "balance_analysis": {
-              "score_variance": 0.15158054726011927,
+              "score_variance": 0.15232417654650948,
+              "score_range": 1.0,
+              "most_critical_component": "normal_score"
+            }
+          },
+          "recommendations": [
+            "整体匹配质量较低，建议重新考虑碎片配对",
+            "特征匹配度不足，建议检查边界特征提取参数",
+            "法向互补性较差，建议调整碎片相对姿态",
+            "形状匹配度低，可能需要更精确的几何处理",
+            "对齐精度不足，建议使用更高精度的对齐算法",
+            "验证结果不确定性较高，建议多次验证或人工确认"
+          ],
+          "quality_assessment": {
+            "quality_level": "poor",
+            "quality_description": "较差匹配",
+            "stability": "unstable",
+            "stability_description": "不稳定",
+            "reliability": "low"
+          }
+        }
+      }
+    },
+    {
+      "pair": [
+        1,
+        4
+      ],
+      "result": {
+        "fragment_ids": [
+          1,
+          4
+        ],
+        "processing_time": 0.5720868110656738,
+        "success": true,
+        "error_message": null,
+        "boundary_regions": {
+          "fragment1_points": 4357,
+          "fragment2_points": 895,
+          "boundary1_confidence": 1.0,
+          "boundary2_confidence": 1.0
+        },
+        "intermediate_results": {
+          "feature_matching": {
+            "matches_count": 0,
+            "overlap_score": 0.0,
+            "inlier_ratio": 0.0,
+            "boundary_complementarity_score": 0.36042757753967397,
+            "initial_transformation": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          },
+          "complementarity_check": {
+            "normal_complementarity_score": 0.0,
+            "shape_complementarity_score": 0.0,
+            "average_normal_angle": 90.0,
+            "reverse_normal_ratio": 0.0,
+            "normal_similarity_stats": {
+              "min_similarity": 0.0,
+              "max_similarity": 0.0,
+              "mean_similarity": 0.0
+            },
+            "shape_similarity_stats": {
+              "min_similarity": 0.0,
+              "max_similarity": 0.0,
+              "mean_similarity": 0.0
+            }
+          },
+          "local_alignment": {
+            "fitness_score": 0.0,
+            "rmse": 2.328792831819938,
+            "iterations_used": 1,
+            "convergence_status": "partial",
+            "refined_transformation": [
+              [
+                0.9959106766427688,
+                -0.0653175295395163,
+                -0.062413798040670806,
+                0.0971580520272255
+              ],
+              [
+                0.07081671907569476,
+                0.9933853604933456,
+                0.09039117965138105,
+                0.026863977313041687
+              ],
+              [
+                0.056096822023391724,
+                -0.09444148184967682,
+                0.993948665551244,
+                0.0720575749874115
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "alignment_error": 1.0
+          },
+          "collision_detection": {
+            "collision_score": 0.0,
+            "penetration_depth": 0.0,
+            "collision_points_count": 0,
+            "safety_margin": 1.8901362455670287,
+            "collision_volumes": {
+              "sdf_volume": 0.0
+            },
+            "detailed_analysis": {
+              "sdf_analysis": {
+                "penetration_points": 0,
+                "total_points": 2000,
+                "penetration_ratio": 0.0,
+                "avg_penetration_depth": 0.0
+              }
+            }
+          }
+        },
+        "final_scores": {
+          "feature_score": 0.36042757753967397,
+          "normal_score": 0.0,
+          "shape_score": 0.0,
+          "alignment_score": 0.0012827130129629916,
+          "collision_penalty": 1.0,
+          "total_score": 0.1903634369875111,
+          "component_scores": {
+            "feature_score": 0.36042757753967397,
+            "normal_score": 0.0,
+            "shape_score": 0.0,
+            "alignment_score": 0.0012827130129629916,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.4733413927109858,
+            "normal": 0.0,
+            "shape": 0.0,
+            "alignment": 0.0013476464107413072,
+            "collision": 0.5253109608782729
+          },
+          "validation_status": "invalid_match",
+          "confidence_level": 0.22808938175312193
+        },
+        "detailed_report": {
+          "summary": {
+            "total_score": 0.1903634369875111,
+            "validation_status": "invalid_match",
+            "confidence_level": 0.22808938175312193
+          },
+          "component_scores": {
+            "feature_score": 0.36042757753967397,
+            "normal_score": 0.0,
+            "shape_score": 0.0,
+            "alignment_score": 0.0012827130129629916,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.4733413927109858,
+            "normal": 0.0,
+            "shape": 0.0,
+            "alignment": 0.0013476464107413072,
+            "collision": 0.5253109608782729
+          },
+          "detailed_analysis": {
+            "component_details": {
+              "feature_matching": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "特征匹配不足"
+                ]
+              },
+              "normal_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "法向互补性弱"
+                ]
+              },
+              "shape_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "形状匹配度低"
+                ]
+              },
+              "alignment_accuracy": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "对齐精度不足"
+                ]
+              },
+              "collision_avoidance": {
+                "quality": "excellent",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "碰撞风险较高"
+                ]
+              }
+            },
+            "balance_analysis": {
+              "score_variance": 0.15181174018488042,
               "score_range": 1.0,
               "most_critical_component": "normal_score"
             }
@@ -1898,7 +1897,7 @@
           2,
           4
         ],
-        "processing_time": 0.912656307220459,
+        "processing_time": 0.48955845832824707,
         "success": true,
         "error_message": null,
         "boundary_regions": {
@@ -1912,7 +1911,7 @@
             "matches_count": 0,
             "overlap_score": 0.0,
             "inlier_ratio": 0.0,
-            "boundary_complementarity_score": 0.35746040847166505,
+            "boundary_complementarity_score": 0.3589413923904776,
             "initial_transformation": [
               [
                 1.0,
@@ -1958,27 +1957,27 @@
           },
           "local_alignment": {
             "fitness_score": 0.0,
-            "rmse": 1.2812282764179963,
+            "rmse": 1.2257681697469602,
             "iterations_used": 1,
             "convergence_status": "partial",
             "refined_transformation": [
               [
-                0.9133548736572266,
-                -0.4040876626968384,
-                -0.04996085911989212,
-                -0.009387258440256119
+                0.9989014790033011,
+                -0.02126209165457902,
+                0.04175776130483819,
+                0.03258180245757103
               ],
               [
-                0.40697264671325684,
-                0.9097923040390015,
-                0.0815553218126297,
-                -0.00394867267459631
+                0.019386682241491204,
+                0.9988071940443805,
+                0.04481428241096267,
+                -0.18259777128696442
               ],
               [
-                0.012498516589403152,
-                -0.09482164680957794,
-                0.9954158067703247,
-                -0.004766350612044334
+                -0.042660798877477646,
+                -0.04395550932119141,
+                0.9981222027224206,
+                0.03552500903606415
               ],
               [
                 0.0,
@@ -1993,7 +1992,7 @@
             "collision_score": 0.0,
             "penetration_depth": 0.0,
             "collision_points_count": 0,
-            "safety_margin": 0.9828738853229182,
+            "safety_margin": 1.1091290001623024,
             "collision_volumes": {
               "sdf_volume": 0.0
             },
@@ -2008,48 +2007,48 @@
           }
         },
         "final_scores": {
-          "feature_score": 0.35746040847166505,
+          "feature_score": 0.3589413923904776,
           "normal_score": 0.0,
           "shape_score": 0.0,
-          "alignment_score": 0.00232336919411517,
+          "alignment_score": 0.0024276398061088508,
           "collision_penalty": 1.0,
-          "total_score": 0.1898297759567393,
+          "total_score": 0.1902208760588412,
           "component_scores": {
-            "feature_score": 0.35746040847166505,
+            "feature_score": 0.3589413923904776,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.00232336919411517,
+            "alignment_score": 0.0024276398061088508,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.4707644080994009,
+            "feature": 0.47174290202438923,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.002447844846684798,
-            "collision": 0.5267877470539143
+            "alignment": 0.0025524430928999683,
+            "collision": 0.5257046548827108
           },
           "validation_status": "invalid_match",
-          "confidence_level": 0.2282599529083964
+          "confidence_level": 0.22854722583175846
         },
         "detailed_report": {
           "summary": {
-            "total_score": 0.1898297759567393,
+            "total_score": 0.1902208760588412,
             "validation_status": "invalid_match",
-            "confidence_level": 0.2282599529083964
+            "confidence_level": 0.22854722583175846
           },
           "component_scores": {
-            "feature_score": 0.35746040847166505,
+            "feature_score": 0.3589413923904776,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.00232336919411517,
+            "alignment_score": 0.0024276398061088508,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.4707644080994009,
+            "feature": 0.47174290202438923,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.002447844846684798,
-            "collision": 0.5267877470539143
+            "alignment": 0.0025524430928999683,
+            "collision": 0.5257046548827108
           },
           "detailed_analysis": {
             "component_details": {
@@ -2095,7 +2094,7 @@
               }
             },
             "balance_analysis": {
-              "score_variance": 0.15159619145370756,
+              "score_variance": 0.1516359376482938,
               "score_range": 1.0,
               "most_critical_component": "normal_score"
             }
@@ -2128,7 +2127,7 @@
           0,
           4
         ],
-        "processing_time": 0.7555854320526123,
+        "processing_time": 0.5577137470245361,
         "success": true,
         "error_message": null,
         "boundary_regions": {
@@ -2142,7 +2141,7 @@
             "matches_count": 0,
             "overlap_score": 0.0,
             "inlier_ratio": 0.0,
-            "boundary_complementarity_score": 0.35726261050630237,
+            "boundary_complementarity_score": 0.3538073426857436,
             "initial_transformation": [
               [
                 1.0,
@@ -2188,27 +2187,27 @@
           },
           "local_alignment": {
             "fitness_score": 0.0,
-            "rmse": 1.770830582893519,
+            "rmse": 1.8934587781916754,
             "iterations_used": 1,
             "convergence_status": "partial",
             "refined_transformation": [
               [
-                0.9133548736572266,
-                -0.4040876626968384,
-                -0.04996085911989212,
-                -0.009387258440256119
+                0.9928349582923417,
+                -0.11210474051519222,
+                0.04136748684998452,
+                -0.11544107645750046
               ],
               [
-                0.40697264671325684,
-                0.9097923040390015,
-                0.0815553218126297,
-                -0.00394867267459631
+                0.1095248327019469,
+                0.992165252014729,
+                0.06010374581474709,
+                -0.18201246857643127
               ],
               [
-                0.012498516589403152,
-                -0.09482164680957794,
-                0.9954158067703247,
-                -0.004766350612044334
+                -0.04778129607439041,
+                -0.055142330329749134,
+                0.997334553199078,
+                -0.06686795502901077
               ],
               [
                 0.0,
@@ -2223,7 +2222,7 @@
             "collision_score": 0.0,
             "penetration_depth": 0.0,
             "collision_points_count": 0,
-            "safety_margin": 1.1599097071231086,
+            "safety_margin": 1.0734130107792332,
             "collision_volumes": {
               "sdf_volume": 0.0
             },
@@ -2238,48 +2237,48 @@
           }
         },
         "final_scores": {
-          "feature_score": 0.35726261050630237,
+          "feature_score": 0.3538073426857436,
           "normal_score": 0.0,
           "shape_score": 0.0,
-          "alignment_score": 0.001684607187689666,
+          "alignment_score": 0.0015760782604654362,
           "collision_penalty": 1.0,
-          "total_score": 0.1896525740641135,
+          "total_score": 0.188767051323529,
           "component_scores": {
-            "feature_score": 0.35726261050630237,
+            "feature_score": 0.3538073426857436,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.001684607187689666,
+            "alignment_score": 0.0015760782604654362,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.47094352959523633,
+            "feature": 0.46857666659123554,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.001776519191477118,
-            "collision": 0.5272799512132866
+            "alignment": 0.0016698658472597383,
+            "collision": 0.5297534675615047
           },
           "validation_status": "invalid_match",
-          "confidence_level": 0.2278484641112929
+          "confidence_level": 0.22724780998896618
         },
         "detailed_report": {
           "summary": {
-            "total_score": 0.1896525740641135,
+            "total_score": 0.188767051323529,
             "validation_status": "invalid_match",
-            "confidence_level": 0.2278484641112929
+            "confidence_level": 0.22724780998896618
           },
           "component_scores": {
-            "feature_score": 0.35726261050630237,
+            "feature_score": 0.3538073426857436,
             "normal_score": 0.0,
             "shape_score": 0.0,
-            "alignment_score": 0.001684607187689666,
+            "alignment_score": 0.0015760782604654362,
             "collision_penalty": 1.0
           },
           "weighted_contributions": {
-            "feature": 0.47094352959523633,
+            "feature": 0.46857666659123554,
             "normal": 0.0,
             "shape": 0.0,
-            "alignment": 0.001776519191477118,
-            "collision": 0.5272799512132866
+            "alignment": 0.0016698658472597383,
+            "collision": 0.5297534675615047
           },
           "detailed_analysis": {
             "component_details": {
@@ -2325,7 +2324,7 @@
               }
             },
             "balance_analysis": {
-              "score_variance": 0.15165838053430125,
+              "score_variance": 0.15155385524117213,
               "score_range": 1.0,
               "most_critical_component": "normal_score"
             }

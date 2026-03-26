@@ -65,16 +65,96 @@ class FeatureMatcher:
         return MockPredator()
     
     def _load_d3feat_model(self):
-        """加载D3Feat模型"""
-        # 这里应该是实际的D3Feat模型加载代码
+        """加载 D3Feat 模型（带降级处理）"""
+        from pathlib import Path
+            
+        # 尝试加载真实 D3Feat 模型
+        try:
+            from src.models.d3feat import D3Feat
+            import yaml
+            
+            # 检查是否有配置文件
+            config_paths = [
+                Path('configs/d3feat.yaml'),
+                Path(__file__).parent.parent.parent / 'configs' / 'd3feat.yaml'
+            ]
+            
+            config_file = None
+            for path in config_paths:
+                if path.exists():
+                    config_file = path
+                    break
+            
+            # 如果没有配置文件，使用默认配置
+            if config_file is None:
+                print("[特征匹配] ⚠ 未找到 d3feat.yaml，使用默认配置")
+                config = {
+                    'INPUT_DIM': 3,
+                    'FEATURE_DIM': 256,
+                    'SA_LAYERS': {
+                        'C1': 64, 'NPOINT1': 1024, 'RADIUS1': 0.1, 'NSAMPLE1': 32,
+                        'C2': 128, 'NPOINT2': 256, 'RADIUS2': 0.2, 'NSAMPLE2': 32,
+                        'C3': 256, 'NPOINT3': 64, 'RADIUS3': 0.4, 'NSAMPLE3': 32
+                    },
+                    'KEYPOINT_HEAD': False
+                }
+            else:
+                with open(config_file, 'r', encoding='utf-8') as f:
+                    config = yaml.safe_load(f)
+            
+            # 创建模型
+            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+            model = D3Feat(config).to(device)
+            
+            # 按优先级尝试加载预训练权重
+            weight_paths = [
+                Path('models/weights/d3feat_3dmatch.pth'),
+                Path(__file__).parent.parent.parent / 'models' / 'weights' / 'd3feat_3dmatch.pth',
+                Path('pretrained_weights/d3feat/d3feat_best.pth'),
+                Path(__file__).parent.parent.parent / 'pretrained_weights' / 'd3feat' / 'd3feat_best.pth'
+            ]
+            
+            loaded_weight = None
+            for weight_path in weight_paths:
+                if weight_path.exists():
+                    print(f"[特征匹配] 加载 D3Feat 权重：{weight_path}")
+                    checkpoint = torch.load(weight_path, map_location=device)
+                    
+                    # 兼容不同格式的 checkpoint
+                    if 'model_state_dict' in checkpoint:
+                        model.load_state_dict(checkpoint['model_state_dict'], strict=False)
+                    elif 'state_dict' in checkpoint:
+                        model.load_state_dict(checkpoint['state_dict'], strict=False)
+                    else:
+                        model.load_state_dict(checkpoint, strict=False)
+                    
+                    loaded_weight = weight_path.name
+                    break
+            
+            if loaded_weight:
+                print(f"[特征匹配] ✓ D3Feat 模型加载成功 (权重：{loaded_weight})")
+            else:
+                print("[特征匹配] ⚠ 警告：未找到 D3Feat 预训练权重，使用随机初始化")
+            
+            model.eval()
+            return model
+            
+        except Exception as e:
+            print(f"[特征匹配] ⚠ D3Feat 加载失败 ({e})，降级到 Mock 模式")
+            import traceback
+            traceback.print_exc()
+            return self._create_mock_d3feat()
+    
+    def _create_mock_d3feat(self):
+        """创建 Mock D3Feat（降级处理）"""
         class MockD3Feat:
             def extract_features(self, points):
                 # 模拟特征提取
                 features = np.random.randn(len(points), 256)
                 return features
-                
+                    
         return MockD3Feat()
-    
+
     def match_boundaries(self, boundary1: Any, boundary2: Any) -> Optional[MatchResult]:
         """
         对两个边界区域进行特征匹配验证
@@ -339,7 +419,8 @@ class FeatureMatcher:
             residuals = np.linalg.norm(transformed_points1 - matched_points2, axis=1)
             
             # 识别内点
-            inlier_threshold = 0.02
+            # 放宽内点阈值：从 0.02 改为 0.05（5 厘米），适应陶瓷碎片的制造和扫描误差
+            inlier_threshold = 0.05
             inliers = residuals < inlier_threshold
             inlier_ratio = np.sum(inliers) / len(matches)
             

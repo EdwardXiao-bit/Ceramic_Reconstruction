@@ -48,26 +48,177 @@ class ComplementarityChecker:
                 self.cnn_model = None
     
     def _load_pointnet_model(self):
-        """加载PointNet++模型"""
-        # 这里应该是实际的PointNet++模型加载代码
-        class MockPointNet:
-            def encode(self, points):
-                # 模拟编码过程
-                batch_size = 1
-                embedding_dim = 256
-                return np.random.randn(batch_size, embedding_dim).astype(np.float32)
+        """加载 PointNet++ 模型（带降级处理）"""
+        from pathlib import Path
+            
+        # 尝试加载真实 PointNet++ 模型
+        try:
+            from src.models.pointnet2 import PointNet2Encoder, PointNet2SSG
+            import yaml
                 
-        return MockPointNet()
+            # 检查是否有配置文件
+            config_paths = [
+                Path('configs/pointnet2.yaml'),
+                Path(__file__).parent.parent.parent / 'configs' / 'pointnet2.yaml'
+            ]
+                
+            config_file = None
+            for path in config_paths:
+                if path.exists():
+                    config_file = path
+                    break
+                
+            # 如果没有配置文件，使用默认配置
+            if config_file is None:
+                print("[互补性检查] ⚠ 未找到 pointnet2.yaml，使用默认配置")
+                config = {
+                    'INPUT_DIM': 3,
+                    'OUTPUT_DIM': 256,
+                    'USE_SSG': True  # 使用简化版 SSG，更稳定
+                }
+            else:
+                with open(config_file, 'r', encoding='utf-8') as f:
+                    config = yaml.safe_load(f)
+                
+            # 创建模型
+            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+                        
+            # 根据配置选择模型类型
+            if config.get('USE_SSG', False):
+                print("[互补性检查] 使用 PointNet++ SSG 版本")
+                model = PointNet2SSG(config).to(device)
+            else:
+                print("[互补性检查] 使用 PointNet++ 完整版 Encoder")
+                model = PointNet2Encoder(config).to(device)
+                
+            # 按优先级尝试加载预训练权重
+            weight_paths = [
+                # Breaking Bad 数据集预训练权重（最高优先级）
+                Path('pretrained_weights/breaking_bad/pointnet2_breaking_bad_best.pth'),
+                Path(__file__).parent.parent.parent / 'pretrained_weights' / 'breaking_bad' / 'pointnet2_breaking_bad_best.pth',
+                # 通用 PointNet++ 权重
+                Path('models/weights/pointnet2_part_seg_ssg.pth'),
+                Path(__file__).parent.parent.parent / 'models' / 'weights' / 'pointnet2_part_seg_ssg.pth',
+                Path('pretrained_weights/pointnet2/pointnet2_best.pth'),
+                Path(__file__).parent.parent.parent / 'pretrained_weights' / 'pointnet2' / 'pointnet2_best.pth'
+            ]
+                
+            loaded_weight = None
+            for weight_path in weight_paths:
+                if weight_path.exists():
+                    print(f"[互补性检查] 加载 PointNet++ 权重：{weight_path}")
+                    checkpoint = torch.load(weight_path, map_location=device)
+                        
+                    # 兼容不同格式的 checkpoint
+                    if 'model_state_dict' in checkpoint:
+                        model.load_state_dict(checkpoint['model_state_dict'], strict=False)
+                    elif 'state_dict' in checkpoint:
+                        model.load_state_dict(checkpoint['state_dict'], strict=False)
+                    else:
+                        model.load_state_dict(checkpoint, strict=False)
+                        
+                    loaded_weight = weight_path.name
+                    break
+                
+            if loaded_weight:
+                print(f"[互补性检查] ✓ PointNet++ 模型加载成功 (权重：{loaded_weight})")
+            else:
+                print("[互补性检查] ⚠ 警告：未找到 PointNet++ 预训练权重，使用随机初始化")
+                
+            model.eval()
+            return model
+                
+        except Exception as e:
+            print(f"[互补性检查] ⚠ PointNet++ 加载失败 ({e})，降级到几何相似度")
+            import traceback
+            traceback.print_exc()
+            return None
     
     def _load_cnn_model(self):
-        """加载3D CNN模型"""
-        # 这里应该是实际的3D CNN模型加载代码
-        class MockCNN:
-            def predict_complementarity(self, patch1, patch2):
-                # 模拟互补性预测
-                return np.random.uniform(0.6, 0.95)
+        """加载 3D CNN 模型（带降级处理）"""
+        from pathlib import Path
+            
+        # 尝试加载真实 3D CNN 模型
+        try:
+            from src.models.cnn_3d import PointNet3DCNN, Light3DCNN
+            import yaml
                 
-        return MockCNN()
+            # 检查是否有配置文件
+            config_paths = [
+                Path('configs/cnn_3d.yaml'),
+                Path(__file__).parent.parent.parent / 'configs' / 'cnn_3d.yaml'
+            ]
+                
+            config_file = None
+            for path in config_paths:
+                if path.exists():
+                    config_file = path
+                    break
+                
+            # 如果没有配置文件，使用默认配置
+            if config_file is None:
+                print("[互补性检查] ⚠ 未找到 cnn_3d.yaml，使用默认配置（轻量版）")
+                # 使用轻量版作为默认，更快
+                model = Light3DCNN()
+                print("[互补性检查] ✓ 3D CNN (Light) 模型创建成功")
+                return model
+                
+            with open(config_file, 'r', encoding='utf-8') as f:
+                config = yaml.safe_load(f)
+                
+            # 创建模型
+            use_light_version = config.get('USE_LIGHT_VERSION', True)
+                
+            if use_light_version:
+                print("[互补性检查] 使用 3D CNN 轻量版")
+                model = Light3DCNN()
+            else:
+                print("[互补性检查] 使用 3D CNN 完整版")
+                model = PointNet3DCNN(config.get('MODEL', {}))
+                
+            # 按优先级尝试加载预训练权重
+            weight_paths = [
+                # Breaking Bad 数据集预训练权重（最高优先级）
+                Path('pretrained_weights/breaking_bad/cnn3d_breaking_bad_best.pth'),
+                Path(__file__).parent.parent.parent / 'pretrained_weights' / 'breaking_bad' / 'cnn3d_breaking_bad_best.pth',
+                # 通用 3D CNN 权重
+                Path('models/weights/cnn3d_complementarity.pth'),
+                Path(__file__).parent.parent.parent / 'models' / 'weights' / 'cnn3d_complementarity.pth',
+                Path('pretrained_weights/cnn3d/cnn3d_best.pth'),
+                Path(__file__).parent.parent.parent / 'pretrained_weights' / 'cnn3d' / 'cnn3d_best.pth'
+            ]
+                
+            loaded_weight = None
+            for weight_path in weight_paths:
+                if weight_path.exists():
+                    print(f"[互补性检查] 加载 3D CNN 权重：{weight_path}")
+                        
+                    if hasattr(model, 'load_weights'):
+                        model.load_weights(str(weight_path))
+                    elif hasattr(model, 'model'):
+                        checkpoint = torch.load(str(weight_path), map_location=model.device)
+                        if 'model_state_dict' in checkpoint:
+                            model.model.load_state_dict(checkpoint['model_state_dict'])
+                        elif 'state_dict' in checkpoint:
+                            model.model.load_state_dict(checkpoint['state_dict'])
+                        else:
+                            model.model.load_state_dict(checkpoint)
+                        
+                    loaded_weight = weight_path.name
+                    break
+                
+            if loaded_weight:
+                print(f"[互补性检查] ✓ 3D CNN 模型加载成功 (权重：{loaded_weight})")
+            else:
+                print("[互补性检查] ⚠ 警告：未找到 3D CNN 预训练权重，使用随机初始化")
+                
+            return model
+                
+        except Exception as e:
+            print(f"[互补性检查] ⚠ 3D CNN 加载失败 ({e})，降级到几何相似度")
+            import traceback
+            traceback.print_exc()
+            return None
     
     def check_complementarity(self, boundary1: Any, boundary2: Any, 
                             match_result: Any) -> ComplementarityResult:
@@ -254,27 +405,47 @@ class ComplementarityChecker:
     
     def _compute_patch_similarity(self, patch1: np.ndarray, patch2: np.ndarray) -> float:
         """
-        计算两个patch的相似度
+        计算两个 patch 的相似度
         """
-        # 方法1: 使用PointNet++特征相似度
+        # 方法 1: 使用 PointNet++ 特征相似度
         if self.pointnet_model is not None:
             try:
-                feat1 = self.pointnet_model.encode(patch1)
-                feat2 = self.pointnet_model.encode(patch2)
+                import torch
+                # 将 numpy 转换为 torch tensor（添加 batch 维度）
+                if isinstance(patch1, np.ndarray):
+                    patch1_tensor = torch.FloatTensor(patch1).unsqueeze(0)  # [1, N, 3]
+                else:
+                    patch1_tensor = patch1
+                
+                if isinstance(patch2, np.ndarray):
+                    patch2_tensor = torch.FloatTensor(patch2).unsqueeze(0)  # [1, N, 3]
+                else:
+                    patch2_tensor = patch2
+                
+                # 编码
+                feat1 = self.pointnet_model.encode(patch1_tensor)
+                feat2 = self.pointnet_model.encode(patch2_tensor)
+                
+                # 将结果转为 numpy 进行相似度计算
+                if isinstance(feat1, torch.Tensor):
+                    feat1 = feat1.cpu().numpy()
+                if isinstance(feat2, torch.Tensor):
+                    feat2 = feat2.cpu().numpy()
+                
                 similarity = self._compute_feature_similarity(feat1, feat2)
                 return float(similarity)
             except Exception as e:
-                print(f"[形状互补性] PointNet++计算失败: {e}")
+                print(f"[形状互补性] PointNet++ 计算失败：{e}")
         
-        # 方法2: 使用3D CNN
+        # 方法 2: 使用 3D CNN
         if self.cnn_model is not None:
             try:
                 similarity = self.cnn_model.predict_complementarity(patch1, patch2)
                 return float(similarity)
             except Exception as e:
-                print(f"[形状互补性] CNN计算失败: {e}")
+                print(f"[形状互补性] CNN 计算失败：{e}")
         
-        # 方法3: 基础几何相似度（降级方案）
+        # 方法 3: 基础几何相似度（降级方案）
         return self._compute_geometric_similarity(patch1, patch2)
     
     def _compute_feature_similarity(self, feat1: np.ndarray, feat2: np.ndarray) -> float:

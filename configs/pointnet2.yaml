@@ -1,0 +1,72 @@
+# PointNet++ 分类模型配置
+MODEL:
+  NAME: "PointNetPlusPlus"
+  TYPE: "Classification"
+  
+  # 网络结构
+  SA_LAYERS:  # Set Abstraction 层
+    - NP: [512, 32, 64]    # 采样点数，邻域大小，输出维度
+      MLP: [64, 64, 128]
+      GROUP_ALL: false
+    - NP: [128, 64, 128]
+      MLP: [128, 128, 256]
+      GROUP_ALL: false
+    - NP: [null, null, 256]
+      MLP: [256, 512, 1024]
+      GROUP_ALL: true
+      
+  # FP 层 (Feature Propagation)
+  FP_LAYERS:
+    - MLP: [512, 512]
+    - MLP: [256, 256]
+    
+  # 分类头
+  CLASSIFIER:
+    LAYERS: [512, 256]
+    NUM_CLASSES: 40  # ModelNet40
+    DROPOUT: 0.5
+    
+# 数据集配置
+DATASET:
+  NAME: "ModelNet40"
+  ROOT: "data/modelnet40"
+  
+  # 归一化
+  NORMALIZE: true
+  
+  # 数据增强
+  AUGMENTATION:
+    ROTATION: true
+    SCALING: [0.8, 1.2]
+    NOISE: true
+    NOISE_STD: 0.01
+    
+# 训练配置
+TRAIN:
+  BATCH_SIZE: 32
+  NUM_EPOCHS: 200
+  LR: 0.001
+  LR_SCHEDULER: "CosineAnnealingLR"
+  T_MAX: 200
+  
+  # 优化器
+  OPTIMIZER: "Adam"
+  WEIGHT_DECAY: 0.0001
+  
+  # 损失函数
+  LOSS: "CrossEntropy"
+  
+# 验证配置
+VAL:
+  BATCH_SIZE: 32
+  
+# 设备配置
+DEVICE:
+  CUDA: true
+  GPU_ID: 0
+  
+# 日志和检查点
+LOGGING:
+  LOG_DIR: "logs/pointnet2"
+  CHECKPOINT_DIR: "checkpoints/pointnet2"
+  SAVE_FREQ: 20

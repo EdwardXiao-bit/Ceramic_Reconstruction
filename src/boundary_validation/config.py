@@ -22,12 +22,12 @@ class BoundaryValidationConfig:
     
     # 2. 特征匹配验证参数
     FEATURE_MATCHING = {
-        'predator_enabled': True,             # 是否使用Predator
-        'd3feat_enabled': False,              # 是否使用D3Feat
-        'matchability_threshold': 0.7,        # 匹配可信度阈值
-        'min_matches': 10,                    # 最少匹配点对数
-        'overlap_threshold': 0.3,             # 重叠度阈值
-        'inlier_ratio_threshold': 0.6,        # 内点比率阈值
+        'predator_enabled': True,             # ✅ 启用 Predator（有预训练权重）
+        'd3feat_enabled': True,               # ⚠️ 保留接口（当前使用随机权重，后续可加载预训练模型）
+        'matchability_threshold': 0.6,        # 匹配可信度阈值（降低）
+        'min_matches': 3,                     # 最少匹配点对数（进一步降低）
+        'overlap_threshold': 0.15,            # 重叠度阈值（降低）
+        'inlier_ratio_threshold': 0.2,        # 内点比率阈值（降低，放宽 RANSAC 约束）
         'feature_weights': {
             'overlap_score': 0.3,             # 重叠度权重
             'matchability_score': 0.4,        # 匹配度权重
@@ -38,15 +38,15 @@ class BoundaryValidationConfig:
     # 3. 互补性检查参数
     COMPLEMENTARITY_CHECK = {
         'normal_complementarity': {
-            'mirror_angle_tolerance': 15.0,   # 镜像法向角度容忍度（度）
-            'min_normal_similarity': 0.8,     # 最小法向相似度
-            'reverse_normal_ratio': 0.7,      # 反向法向比例阈值
+            'mirror_angle_tolerance': 20.0,   # 镜像法向角度容忍度（度）（放宽）
+            'min_normal_similarity': 0.7,     # 最小法向相似度（降低）
+            'reverse_normal_ratio': 0.6,      # 反向法向比例阈值（降低）
         },
         'shape_complementarity': {
-            'patch_size': 50,                 # boundary patch大小
-            'pointnet_enabled': True,         # 是否使用PointNet++
-            'cnn_enabled': False,             # 是否使用3D CNN
-            'similarity_threshold': 0.75,     # 形状相似度阈值
+            'patch_size': 50,                 # boundary patch 大小
+            'pointnet_enabled': True,         # 是否使用 PointNet++
+            'cnn_enabled': True,              # 是否使用 3D CNN ✓ 启用
+            'similarity_threshold': 0.6,      # 形状相似度阈值（降低）
         }
     }
     

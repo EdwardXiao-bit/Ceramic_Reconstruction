@@ -40,12 +40,91 @@ class LocalAligner:
                 self.dcp_model = None
     
     def _create_dcp_model(self):
-        """创建DCP模型"""
-        # 这里应该是实际的DCP模型实现
+        """创建 DCP 模型（带降级处理）"""
+        from pathlib import Path
+            
+        # 尝试加载真实 DCP 模型
+        try:
+            # 首先检查是否有 DCP 模型实现
+            try:
+                from src.models.dcp import DCP
+                has_dcp_implementation = True
+            except ImportError:
+                print("[局部对齐] ⚠ 未找到 DCP 模型实现，使用 Mock 模式")
+                has_dcp_implementation = False
+                
+            if not has_dcp_implementation:
+                return self._create_mock_dcp()
+                
+            import yaml
+                
+            # 加载配置
+            config_paths = [
+                Path('configs/dcp.yaml'),
+                Path(__file__).parent.parent.parent / 'configs' / 'dcp.yaml'
+            ]
+                
+            config_file = None
+            for path in config_paths:
+                if path.exists():
+                    config_file = path
+                    break
+                
+            if config_file is None:
+                raise FileNotFoundError("未找到 dcp.yaml 配置文件")
+                
+            with open(config_file, 'r', encoding='utf-8') as f:
+                config = yaml.safe_load(f)
+                
+            # 创建模型
+            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+            model = DCP(config['MODEL']).to(device)
+                
+            # 按优先级尝试加载预训练权重
+            weight_paths = [
+                # 1. DCP 通用权重
+                Path('pretrained_weights/dcp/dcp_best.pth'),
+                # 2. 相对路径备用
+                Path(__file__).parent.parent.parent / 'pretrained_weights' / 'dcp' / 'dcp_best.pth'
+            ]
+                
+            loaded_weight = None
+            for weight_path in weight_paths:
+                if weight_path.exists():
+                    print(f"[局部对齐] 加载 DCP 权重：{weight_path}")
+                    checkpoint = torch.load(weight_path, map_location=device)
+                        
+                    # 兼容不同格式的 checkpoint
+                    if 'model_state_dict' in checkpoint:
+                        model.load_state_dict(checkpoint['model_state_dict'])
+                    elif 'state_dict' in checkpoint:
+                        model.load_state_dict(checkpoint['state_dict'])
+                    else:
+                        # 如果直接是 state_dict
+                        model.load_state_dict(checkpoint)
+                        
+                    loaded_weight = weight_path.name
+                    break
+                
+            if loaded_weight:
+                print(f"[局部对齐] ✓ DCP 模型加载成功 (权重：{loaded_weight})")
+            else:
+                print("[局部对齐] ⚠ 警告：未找到 DCP 预训练权重，使用随机初始化")
+                
+            model.eval()
+            return model
+                
+        except Exception as e:
+            print(f"[局部对齐] ⚠ DCP 加载失败 ({e})，降级到 Mock 模式")
+            # 降级到 Mock 实现
+            return self._create_mock_dcp()
+        
+    def _create_mock_dcp(self):
+        """创建 Mock DCP（降级处理）"""
         class MockDCP(nn.Module):
             def __init__(self):
                 super().__init__()
-                # 简化的Transformer编码器
+                # 简化的 Transformer 编码器
                 self.encoder = nn.TransformerEncoder(
                     nn.TransformerEncoderLayer(d_model=512, nhead=8, batch_first=True),
                     num_layers=6
@@ -55,16 +134,16 @@ class LocalAligner:
                     nn.ReLU(),
                     nn.Linear(256, 128),
                     nn.ReLU(),
-                    nn.Linear(128, 6)  # 3个旋转参数 + 3个平移参数
+                    nn.Linear(128, 6)  # 3 个旋转参数 + 3 个平移参数
                 )
-                
+                    
             def forward(self, src, tgt):
                 # 简化的前向传播
                 batch_size = src.shape[0]
                 # 模拟编码和回归
                 delta_params = torch.randn(batch_size, 6) * 0.1
                 return delta_params
-                
+                    
         return MockDCP()
     
     def refine_alignment(self, fragment1: Any, fragment2: Any, 
@@ -143,7 +222,7 @@ class LocalAligner:
     def _refine_with_dcp(self, points1: np.ndarray, points2: np.ndarray, 
                         initial_transform: np.ndarray) -> AlignmentResult:
         """
-        使用DCP进行对齐精化
+        使用 DCP 进行对齐精化
         """
         try:
             # 应用初始变换
@@ -158,17 +237,29 @@ class LocalAligner:
             src_tensor = src_tensor[:, :min_points, :]
             tgt_tensor = tgt_tensor[:, :min_points, :]
             
-            # DCP预测
+            # DCP 预测
             with torch.no_grad():
-                delta_params = self.dcp_model(src_tensor, tgt_tensor)
-                delta_params = delta_params.squeeze(0).cpu().numpy()
-            
-            # 解码变换参数
-            rotation_delta = delta_params[:3]
-            translation_delta = delta_params[3:]
-            
-            # 构建增量变换矩阵
-            delta_transform = self._params_to_transform(rotation_delta, translation_delta)
+                # 检查是否是真实 DCP 模型
+                if hasattr(self.dcp_model, 'forward') and callable(getattr(self.dcp_model, 'forward')):
+                    # 真实 DCP：返回 (R, t) 或完整的 transform
+                    output = self.dcp_model(src_tensor, tgt_tensor)
+                    
+                    if isinstance(output, tuple) and len(output) == 2:
+                        # 返回 (R_pred, t_pred)
+                        R_pred, t_pred = output
+                        # 构建增量变换矩阵
+                        delta_transform = torch.eye(4, device=R_pred.device)
+                        delta_transform[:3, :3] = R_pred[0]
+                        delta_transform[:3, 3] = t_pred[0]
+                        delta_transform = delta_transform.cpu().numpy()
+                    else:
+                        # 返回完整的 4x4 变换矩阵
+                        delta_transform = output[0].cpu().numpy()
+                else:
+                    # Mock DCP：直接返回参数
+                    delta_params = self.dcp_model(src_tensor, tgt_tensor)
+                    delta_params = delta_params.squeeze(0).cpu().numpy()
+                    delta_transform = self._params_to_transform(delta_params[:3], delta_params[3:])
             
             # 组合变换
             refined_transform = delta_transform @ initial_transform
@@ -183,14 +274,16 @@ class LocalAligner:
                 alignment_error=1.0 - fitness_score,
                 fitness_score=fitness_score,
                 rmse=rmse,
-                iterations_used=1,  # DCP通常是单次预测
+                iterations_used=1,  # DCP 通常是单次预测
                 convergence_status='converged' if fitness_score > 0.5 else 'partial'
             )
             
             return result
             
         except Exception as e:
-            print(f"[DCP精化] 失败: {e}")
+            print(f"[DCP 精化] 失败：{e}")
+            import traceback
+            traceback.print_exc()
             return self._create_failed_result()
     
     def _refine_with_local_icp(self, points1: np.ndarray, points2: np.ndarray, 
