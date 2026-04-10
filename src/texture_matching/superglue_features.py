@@ -13,6 +13,7 @@ import warnings
 # SuperGlue相关导入
 try:
     from models.matching import Matching
+    from models.superpoint import SuperPoint
     from models.utils import frame2tensor
     SUPERGLUE_AVAILABLE = True
 except ImportError:
@@ -149,15 +150,20 @@ def extract_superglue_features(image: np.ndarray,
             }
         }
         
-        # 初始化匹配器
+        # 初始化SuperPoint（单独用于特征提取）
         device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        matcher = Matching(config).eval().to(device)
+        superpoint = SuperPoint(config.get('superpoint', {})).eval().to(device)
         
-        # 转换图像格式
+        # 转换图像格式为单通道灰度图 [1, 1, H, W]
         inp = frame2tensor(gray_image, device)
+        # 确保是单通道输入
+        if inp.shape[1] == 3:
+            # 如果是RGB，转换为灰度
+            gray_tensor = torch.mean(inp, dim=1, keepdim=True)
+            inp = gray_tensor
         
-        # 提取特征
-        pred = matcher.superpoint({'image': inp})
+        # 提取特征（直接使用SuperPoint而不是Matching）
+        pred = superpoint({'image': inp})
         
         # 提取关键点和描述子
         keypoints = pred['keypoints'][0].detach().cpu().numpy()  # (N, 2)

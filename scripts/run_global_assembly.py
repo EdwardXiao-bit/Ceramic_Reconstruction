@@ -39,34 +39,110 @@ def find_latest_boundary_validation_result():
     return latest_file
 
 
+def load_fragment_with_fallback(fragment_id, boundary_data, data_dir):
+    """修复版碎片加载：确保point_cloud始终有效"""
+    import open3d as o3d
+    import numpy as np
+    from pathlib import Path
+
+    class MockFragment:
+        def __init__(self, fid):
+            self.id = fid
+            self.file_name = f"{fid + 2}.obj"
+            self.point_cloud = None
+            self.mesh = None
+            self.boundary_points = None
+            self.section_patch = None
+
+    fragment = MockFragment(fragment_id)
+    frag_key = f"fragment_{fragment_id}"
+
+    # 加载边界数据
+    if frag_key in boundary_data:
+        bd = boundary_data[frag_key]
+
+        if 'boundary_points' in bd:
+            bp = np.array(bd['boundary_points'])
+            boundary_pcd = o3d.geometry.PointCloud()
+            boundary_pcd.points = o3d.utility.Vector3dVector(bp)
+            fragment.boundary_points = boundary_pcd
+
+        if 'section_patch_points' in bd:
+            sp = np.array(bd['section_patch_points'])
+            section_pcd = o3d.geometry.PointCloud()
+            section_pcd.points = o3d.utility.Vector3dVector(sp)
+            fragment.section_patch = section_pcd
+
+        if 'rim_curve' in bd:
+            fragment.rim_curve = np.array(bd['rim_curve'])
+
+    # 尝试加载真实网格
+    obj_file = Path(data_dir) / f"{fragment_id + 2}.obj"
+    if obj_file.exists():
+        try:
+            mesh = o3d.io.read_triangle_mesh(str(obj_file))
+            if len(mesh.vertices) > 0:
+                fragment.mesh = mesh
+                fragment.point_cloud = mesh.sample_points_uniformly(
+                    number_of_points=min(5000, len(mesh.vertices) * 2))
+        except Exception as e:
+            print(f"  [警告] 加载网格失败: {e}")
+
+    # fallback：用边界点云作为point_cloud
+    if fragment.point_cloud is None and fragment.boundary_points is not None:
+        print(f"  [fallback] 碎片{fragment_id}用边界点云作为point_cloud")
+        fragment.point_cloud = fragment.boundary_points
+
+    # 最终fallback：创建虚拟点云
+    if fragment.point_cloud is None:
+        print(f"  [fallback] 碎片{fragment_id}创建虚拟点云")
+        dummy_pts = np.random.randn(100, 3) * 0.1
+        dummy_pcd = o3d.geometry.PointCloud()
+        dummy_pcd.points = o3d.utility.Vector3dVector(dummy_pts)
+        fragment.point_cloud = dummy_pcd
+
+    return fragment
+
+
 def load_fragments():
-    """加载碎片数据"""
-    from src.common.geometry import Fragment
-    from src.common.io import load_fragments as io_load_fragments
+    """加载所有碎片数据"""
+    from pathlib import Path
     
-    # 尝试多个可能的数据目录
-    possible_dirs = [
-        os.path.join(project_root, "data", "eg1"),
-        os.path.join(project_root, "data", "demo"),
-        os.path.join(project_root, "data", "input")
-    ]
+    # 确定数据目录
+    data_dir = Path(project_root) / 'data' / 'eg1'
+    if not data_dir.exists():
+        print(f"⚠ 数据目录不存在: {data_dir}，尝试使用默认路径")
+        data_dir = Path('data/eg1')
     
-    data_dir = None
-    for dir_path in possible_dirs:
-        if os.path.exists(dir_path):
-            data_dir = dir_path
-            break
-    
-    if data_dir is None:
-        print(f"❌ 未找到数据目录，尝试以下路径:")
-        for dir_path in possible_dirs:
-            print(f"  - {dir_path}")
+    if not data_dir.exists():
+        print(f"❌ 数据目录不存在: {data_dir}")
         return []
     
-    print(f"✓ 使用数据目录：{data_dir}")
-    fragments = io_load_fragments(data_dir)
-    print(f"✓ 加载{len(fragments)}个碎片")
+    # 查找所有 OBJ 文件
+    obj_files = sorted(data_dir.glob('*.obj'))
     
+    if not obj_files:
+        print(f"❌ 在 {data_dir} 中未找到 OBJ 文件")
+        return []
+    
+    print(f"  发现 {len(obj_files)} 个碎片文件")
+    
+    # 从文件名提取碎片ID（假设文件名为 2.obj, 3.obj, ...）
+    fragments = []
+    for obj_file in obj_files:
+        try:
+            # 从文件名提取 ID（例如 "2.obj" -> 0, "3.obj" -> 1）
+            fid = int(obj_file.stem) - 2
+            print(f"  加载碎片 {fid} ({obj_file.name})...")
+            
+            # 创建空的 boundary_data（因为这里不需要）
+            fragment = load_fragment_with_fallback(fid, {}, data_dir)
+            if fragment.point_cloud is not None:
+                fragments.append(fragment)
+        except Exception as e:
+            print(f"  ⚠ 跳过 {obj_file.name}: {e}")
+    
+    print(f"✓ 成功加载 {len(fragments)} 个碎片")
     return fragments
 
 

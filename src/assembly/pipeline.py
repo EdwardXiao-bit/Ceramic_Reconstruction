@@ -49,7 +49,34 @@ class GlobalAssemblyPipeline:
         self.visualize_collision = visualize_collision_areas
         
         self.texture_assisted_correction = texture_assisted_correction
-        
+
+    def _extract_transformation_from_result(vr: dict) -> np.ndarray:
+        """
+        从验证结果中提取最佳变换矩阵
+        优先级：局部对齐变换 > 特征匹配变换 > 单位矩阵
+        """
+        # 优先用ICP精化后的变换
+        intermediate = vr.get('intermediate_results', {})
+
+        local_align = intermediate.get('local_alignment', {})
+        if local_align:
+            T_local = local_align.get('refined_transformation')
+            if T_local is not None:
+                T = np.array(T_local)
+                if T.shape == (4, 4) and not np.allclose(T, np.eye(4)):
+                    return T
+
+        # 次选：特征匹配的初始变换
+        feat_match = intermediate.get('feature_matching', {})
+        if feat_match:
+            T_feat = feat_match.get('initial_transformation')
+            if T_feat is not None:
+                T = np.array(T_feat)
+                if T.shape == (4, 4) and not np.allclose(T, np.eye(4)):
+                    return T
+
+        return np.eye(4)
+
     def run(self, fragments: List[Any], 
            validation_results: List[Dict]) -> Dict[str, Any]:
         """
@@ -90,28 +117,31 @@ class GlobalAssemblyPipeline:
             for vr in validation_results:
                 if not vr.get('success', False):
                     continue
-                    
-                pair = vr['pair']
+
+                pair = vr.get('pair', [])
+                if len(pair) < 2:
+                    continue
                 f1_id, f2_id = pair[0], pair[1]
-                
-                # 提取验证得分
+
                 final_scores = vr.get('final_scores', {})
                 total_score = final_scores.get('total_score', 0.0)
-                
-                # 获取变换矩阵（从局部对齐结果）
-                local_align = vr.get('local_alignment', {})
-                transformation = np.eye(4)  # TODO: 从实际结果中提取
-                
-                # 创建匹配边
+
+                # MVP阶段：接受所有成功验证的对（不过滤低分）
+                # 只过滤明显无效（total_score < 0.05）
+                if total_score < 0.05:
+                    continue
+
+                # 提取真实变换矩阵
+                transformation = _extract_transformation_from_result(vr)
+
                 edge = self.MatchEdge(
                     fragment1_id=f1_id,
                     fragment2_id=f2_id,
-                    weight=total_score,
+                    weight=max(total_score, 0.1),  # 保证权重不为0
                     transformation=transformation,
-                    confidence=total_score,
-                    dcp_residual=local_align.get('rmse', 0.0)
+                    confidence=max(total_score, 0.1),
+                    dcp_residual=vr.get('intermediate_results', {}).get('local_alignment', {}).get('rmse', 0.0)
                 )
-                
                 graph.add_match_edge(edge)
                 valid_pairs += 1
             
@@ -221,7 +251,7 @@ class GlobalAssemblyPipeline:
             result['logs'].append(f"错误：{e}")
         
         return result
-    
+
     def _build_matching_graph(self, fragments: List[Any], 
                              validation_results: List[Dict]) -> str:
         """构建匹配图的辅助函数"""

@@ -17,6 +17,7 @@ SUPPRESS_WARNINGS = True
 try:
     # 尝试导入SuperGlue
     from models.matching import Matching
+    from models.superpoint import SuperPoint
     from models.utils import frame2tensor
     SUPERGLUE_AVAILABLE = True
     if not SUPPRESS_WARNINGS:
@@ -48,6 +49,7 @@ class EnhancedTextureMatcher:
         self.use_superglue = use_superglue and SUPERGLUE_AVAILABLE
         self.config = config or self._default_config()
         self.matcher = None
+        self.superpoint = None  # 添加SuperPoint实例用于单独特征提取
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         
         if self.use_superglue:
@@ -92,11 +94,14 @@ class EnhancedTextureMatcher:
         """初始化SuperGlue匹配器"""
         try:
             self.matcher = Matching(self.config).eval().to(self.device)
+            # 单独初始化SuperPoint用于特征提取
+            self.superpoint = SuperPoint(self.config.get('superpoint', {})).eval().to(self.device)
             print(f"[SuperGlue] 初始化成功 (设备: {self.device})")
         except Exception as e:
             print(f"[SuperGlue] 初始化失败: {e}")
             self.use_superglue = False
             self.matcher = None
+            self.superpoint = None
     
     def extract_features(self, image: np.ndarray) -> Optional[Dict]:
         """
@@ -118,52 +123,41 @@ class EnhancedTextureMatcher:
     def _extract_superglue_features(self, image_rgb: np.ndarray) -> Dict:
         """使用SuperGlue提取特征"""
         try:
-            # 确保输入是正确的numpy数组格式
-            if len(image_rgb.shape) == 3:
-                # RGB图像 [H, W, 3]
-                if image_rgb.shape[2] == 3:
-                    # 正确的RGB格式
-                    pass
-                elif image_rgb.shape[2] > 3:
-                    # 多于3个通道，取前3个
-                    image_rgb = image_rgb[:, :, :3]
-                else:
-                    # 少于3个通道，转换为RGB
-                    if image_rgb.shape[2] == 1:
-                        image_rgb = cv2.cvtColor(image_rgb.squeeze(), cv2.COLOR_GRAY2RGB)
-                    else:
-                        raise ValueError(f"Unsupported channel count: {image_rgb.shape[2]}")
+            # SuperPoint需要灰度图像作为输入
+            if len(image_rgb.shape) == 3 and image_rgb.shape[2] == 3:
+                # RGB图像转换为灰度图
+                gray_image = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2GRAY)
+            elif len(image_rgb.shape) == 3 and image_rgb.shape[2] > 3:
+                # 多于3个通道，先取前3个再转灰度
+                gray_image = cv2.cvtColor(image_rgb[:, :, :3], cv2.COLOR_RGB2GRAY)
             elif len(image_rgb.shape) == 2:
-                # 灰度图像 [H, W]，转换为RGB
-                image_rgb = cv2.cvtColor(image_rgb, cv2.COLOR_GRAY2RGB)
+                # 已经是灰度图
+                gray_image = image_rgb
             else:
                 raise ValueError(f"Unsupported image shape: {image_rgb.shape}")
             
-            # 手动创建正确的tensor格式 [1, 3, H, W]
+            # 手动创建正确的tensor格式 [1, 1, H, W] - SuperPoint期望单通道输入
             # 转换为float32并归一化到[0,1]
-            image_float = image_rgb.astype(np.float32) / 255.0
+            image_float = gray_image.astype(np.float32) / 255.0
             
-            # 转换维度顺序 HWC -> CHW
-            image_chw = np.transpose(image_float, (2, 0, 1))
-            
-            # 添加批次维度
-            image_tensor = torch.from_numpy(image_chw).unsqueeze(0)
+            # 添加批次和通道维度: H,W -> 1,1,H,W
+            image_tensor = torch.from_numpy(image_float).unsqueeze(0).unsqueeze(0)
             
             # 确保在正确的设备上
             inp = image_tensor.to(self.device)
             
-            # 验证最终形状
-            if inp.dim() != 4 or inp.shape[1] != 3:
-                raise ValueError(f"Final tensor shape {inp.shape} is invalid, expected [1, 3, H, W]")
+            # 验证最终形状应该是 [1, 1, H, W]
+            if inp.dim() != 4 or inp.shape[1] != 1:
+                raise ValueError(f"Final tensor shape {inp.shape} is invalid, expected [1, 1, H, W]")
             
-            # 提取特征
+            # 提取特征（直接使用SuperPoint而不是Matching）
             with torch.no_grad():
-                pred = self.matcher({'image0': inp})
+                pred = self.superpoint({'image': inp})
             
             # 提取关键点和描述子
-            keypoints = pred['keypoints0'][0].cpu().numpy()
-            scores = pred['scores0'][0].cpu().numpy()
-            descriptors = pred['descriptors0'][0].cpu().numpy()
+            keypoints = pred['keypoints'][0].cpu().numpy()
+            scores = pred['scores'][0].cpu().numpy()
+            descriptors = pred['descriptors'][0].cpu().numpy()
             
             return {
                 'method': 'superglue',

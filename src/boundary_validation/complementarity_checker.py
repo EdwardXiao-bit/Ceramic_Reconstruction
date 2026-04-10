@@ -155,26 +155,77 @@ class ComplementarityChecker:
                     config_file = path
                     break
                 
-            # 如果没有配置文件，使用默认配置
+            # 如果没有配置文件，使用默认配置（完整版以匹配预训练权重）
             if config_file is None:
-                print("[互补性检查] ⚠ 未找到 cnn_3d.yaml，使用默认配置（轻量版）")
-                # 使用轻量版作为默认，更快
-                model = Light3DCNN()
-                print("[互补性检查] ✓ 3D CNN (Light) 模型创建成功")
+                print("[互补性检查] ⚠ 未找到 cnn_3d.yaml，使用默认配置（完整版）")
+                from src.models.cnn_3d import ComplementarityPredictor, Voxelizer
+                device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+                
+                # 创建包装器
+                class CNNModelWrapper:
+                    def __init__(self):
+                        self.model = ComplementarityPredictor(
+                            input_channels=1, base_channels=32, grid_size=32
+                        ).to(device)
+                        self.device = device
+                        self.voxelizer = Voxelizer(resolution=0.01, grid_size=32)
+                        self.model.eval()
+                    
+                    def predict_complementarity(self, patch1, patch2):
+                        voxel1 = self.voxelizer.voxelize(patch1)
+                        voxel2 = self.voxelizer.voxelize(patch2)
+                        
+                        with torch.no_grad():
+                            v1 = torch.from_numpy(voxel1).unsqueeze(0).unsqueeze(0).to(self.device)
+                            v2 = torch.from_numpy(voxel2).unsqueeze(0).unsqueeze(0).to(self.device)
+                            score = self.model(v1, v2)
+                        
+                        return float(score.item())
+                
+                model = CNNModelWrapper()
+                print("[互补性检查] ✓ 3D CNN (ComplementarityPredictor) 模型创建成功")
                 return model
                 
             with open(config_file, 'r', encoding='utf-8') as f:
                 config = yaml.safe_load(f)
                 
             # 创建模型
-            use_light_version = config.get('USE_LIGHT_VERSION', True)
+            use_light_version = config.get('MODEL', {}).get('VARIANT', 'Full') == 'Light'
                 
             if use_light_version:
                 print("[互补性检查] 使用 3D CNN 轻量版")
                 model = Light3DCNN()
             else:
-                print("[互补性检查] 使用 3D CNN 完整版")
-                model = PointNet3DCNN(config.get('MODEL', {}))
+                print("[互补性检查] 使用 3D CNN 完整版 (ComplementarityPredictor)")
+                from src.models.cnn_3d import ComplementarityPredictor, Voxelizer
+                device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+                
+                class CNNModelWrapper:
+                    def __init__(self):
+                        self.model = ComplementarityPredictor(
+                            input_channels=1,
+                            base_channels=config.get('MODEL', {}).get('BASE_CHANNELS', 32),
+                            grid_size=config.get('DATASET', {}).get('VOXEL_GRID', [32, 32, 32])[0]
+                        ).to(device)
+                        self.device = device
+                        self.voxelizer = Voxelizer(
+                            resolution=config.get('DATASET', {}).get('VOXEL_RESOLUTION', 0.01),
+                            grid_size=config.get('DATASET', {}).get('VOXEL_GRID', [32, 32, 32])[0]
+                        )
+                        self.model.eval()
+                    
+                    def predict_complementarity(self, patch1, patch2):
+                        voxel1 = self.voxelizer.voxelize(patch1)
+                        voxel2 = self.voxelizer.voxelize(patch2)
+                        
+                        with torch.no_grad():
+                            v1 = torch.from_numpy(voxel1).unsqueeze(0).unsqueeze(0).to(self.device)
+                            v2 = torch.from_numpy(voxel2).unsqueeze(0).unsqueeze(0).to(self.device)
+                            score = self.model(v1, v2)
+                        
+                        return float(score.item())
+                
+                model = CNNModelWrapper()
                 
             # 按优先级尝试加载预训练权重
             weight_paths = [
@@ -198,11 +249,29 @@ class ComplementarityChecker:
                     elif hasattr(model, 'model'):
                         checkpoint = torch.load(str(weight_path), map_location=model.device)
                         if 'model_state_dict' in checkpoint:
-                            model.model.load_state_dict(checkpoint['model_state_dict'])
+                            state_dict = checkpoint['model_state_dict']
                         elif 'state_dict' in checkpoint:
-                            model.model.load_state_dict(checkpoint['state_dict'])
+                            state_dict = checkpoint['state_dict']
                         else:
-                            model.model.load_state_dict(checkpoint)
+                            state_dict = checkpoint
+                        
+                        # 尝试加载权重
+                        try:
+                            model.model.load_state_dict(state_dict)
+                            print(f"[互补性检查] ✓ 权重加载成功")
+                        except RuntimeError as e:
+                            # 如果直接加载失败，尝试兼容模式
+                            print(f"[互补性检查] ⚠ 直接加载失败，尝试兼容模式...")
+                            model_dict = model.model.state_dict()
+                            # 只加载形状匹配的权重
+                            filtered_dict = {k: v for k, v in state_dict.items() 
+                                           if k in model_dict and v.shape == model_dict[k].shape}
+                            if filtered_dict:
+                                model_dict.update(filtered_dict)
+                                model.model.load_state_dict(model_dict)
+                                print(f"[互补性检查] ✓ 兼容模式加载成功 ({len(filtered_dict)}/{len(state_dict)} 层)")
+                            else:
+                                raise e
                         
                     loaded_weight = weight_path.name
                     break

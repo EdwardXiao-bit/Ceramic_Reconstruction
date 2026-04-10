@@ -1,0 +1,77 @@
+# 3D CNN 模型配置 (Breaking Bad 数据集 - 完整版)
+MODEL:
+  NAME: "CNN3D"
+  TYPE: "Classification"
+  VARIANT: "Full"  # 使用完整版以匹配预训练权重
+  BASE_CHANNELS: 32
+  
+  # 网络结构 (轻量版)
+  CONV_LAYERS:
+    - CHANNELS: [1, 32, 64]
+      KERNEL_SIZE: [3, 3, 3]
+      STRIDE: [2, 2, 2]
+      PADDING: [1, 1, 1]
+    - CHANNELS: [64, 128, 128]
+      KERNEL_SIZE: [3, 3, 3]
+      STRIDE: [2, 2, 2]
+      PADDING: [1, 1, 1]
+    - CHANNELS: [128, 256, 256]
+      KERNEL_SIZE: [3, 3, 3]
+      STRIDE: [2, 2, 2]
+      PADDING: [1, 1, 1]
+      
+  # 全局池化
+  GLOBAL_POOL: "Average"
+  
+  # 分类头
+  CLASSIFIER:
+    LAYERS: [256, 128]
+    NUM_CLASSES: 40
+    DROPOUT: 0.5
+    
+# 数据集配置
+DATASET:
+  NAME: "BreakingBad"
+  ROOT: "data/breaking_bad"
+  CATEGORY: "Bowl"
+  
+  # 体素网格大小
+  VOXEL_GRID: [32, 32, 32]
+  
+  # 归一化
+  NORMALIZE: true
+  
+# 训练配置
+TRAIN:
+  BATCH_SIZE: 8
+  NUM_EPOCHS: 50
+  LR: 0.001
+  LR_SCHEDULER: "CosineAnnealingLR"
+  T_MAX: 50
+  
+  # 优化器
+  OPTIMIZER: "Adam"
+  WEIGHT_DECAY: 0.0001
+  
+  # 损失函数
+  LOSS: "CrossEntropy"
+  
+# 验证配置
+VAL:
+  BATCH_SIZE: 8
+  
+# 推理配置
+TEST:
+  VOXEL_GRID: [32, 32, 32]
+  
+# 设备配置
+DEVICE:
+  CUDA: false
+  GPU_ID: 0
+  
+# 日志和检查点
+LOGGING:
+  LOG_DIR: "logs/cnn3d"
+  CHECKPOINT_DIR: "pretrained_weights/breaking_bad"
+  SAVE_FREQ: 5
+  BEST_MODEL_NAME: "cnn3d_breaking_bad_best.pth"

@@ -31,6 +31,7 @@ class TextureExtractor:
     def extract_with_materials(self, obj_file_path: str) -> Optional[Dict]:
         """
         从OBJ文件提取完整的材质和纹理信息
+        支持自动关联同名纹理图片（.jpg/.png）
         """
         obj_path = Path(obj_file_path)
         if not obj_path.exists():
@@ -38,9 +39,42 @@ class TextureExtractor:
         
         # 查找对应的MTL文件
         mtl_path = self._find_mtl_file(obj_path)
+        
+        # 如果没有MTL文件，尝试直接加载同名纹理图片
         if not mtl_path:
-            print(f"[纹理提取] 未找到 {obj_path.name} 的MTL文件")
-            return None
+            print(f"[纹理提取] 未找到 {obj_path.name} 的MTL文件，尝试自动关联纹理图片")
+            texture_file = self._find_texture_file(obj_path)
+            if texture_file:
+                print(f"[纹理提取] ✓ 成功关联纹理: {texture_file.name}")
+                # 创建简化的材质信息
+                materials = {
+                    'auto_detected': {
+                        'diffuse_color': [0.8, 0.8, 0.8],
+                        'texture_map': str(texture_file),
+                        'ambient_color': [0.2, 0.2, 0.2],
+                        'specular_color': [1.0, 1.0, 1.0]
+                    }
+                }
+                
+                # 加载OBJ网格
+                try:
+                    mesh = o3d.io.read_triangle_mesh(str(obj_path))
+                    if not mesh.has_triangle_normals():
+                        mesh.compute_vertex_normals()
+                except Exception as e:
+                    print(f"[纹理提取] 网格加载失败: {e}")
+                    return None
+                
+                result = {
+                    'mesh': mesh,
+                    'materials': materials,
+                    'texture_coordinates': self._extract_uv_coordinates(mesh),
+                    'vertex_colors': None
+                }
+                return result
+            else:
+                print(f"[纹理提取] ✗ 未找到 {obj_path.name} 的纹理图片")
+                return None
         
         print(f"[纹理提取] 发现MTL文件: {mtl_path.name}")
         
@@ -49,6 +83,16 @@ class TextureExtractor:
         if not materials:
             print(f"[纹理提取] MTL文件解析失败")
             return None
+        
+        # 如果MTL中没有纹理引用，尝试自动关联
+        has_texture = any(mat.get('texture_map') for mat in materials.values())
+        if not has_texture:
+            texture_file = self._find_texture_file(obj_path)
+            if texture_file:
+                print(f"[纹理提取] MTL中无纹理引用，自动关联: {texture_file.name}")
+                # 为第一个材质添加纹理引用
+                first_mat_name = list(materials.keys())[0]
+                materials[first_mat_name]['texture_map'] = str(texture_file)
         
         # 加载OBJ网格
         try:
@@ -80,6 +124,23 @@ class TextureExtractor:
         for mtl_path in mtl_candidates:
             if mtl_path.exists():
                 return mtl_path
+        return None
+    
+    def _find_texture_file(self, obj_path: Path) -> Optional[Path]:
+        """根据OBJ文件名自动查找纹理图片（方案B：自动关联）"""
+        texture_candidates = [
+            obj_path.with_suffix('.jpg'),
+            obj_path.with_suffix('.jpeg'),
+            obj_path.with_suffix('.png'),
+            obj_path.parent / f"{obj_path.stem}.jpg",
+            obj_path.parent / f"{obj_path.stem}.jpeg",
+            obj_path.parent / f"{obj_path.stem}.png"
+        ]
+        
+        for tex_path in texture_candidates:
+            if tex_path.exists():
+                print(f"[纹理提取] 自动发现纹理文件: {tex_path.name}")
+                return tex_path
         return None
     
     def _parse_mtl_file(self, mtl_path: Path) -> Dict:
