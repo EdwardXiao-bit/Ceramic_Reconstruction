@@ -1,0 +1,92 @@
+# D3Feat 模型配置 (Breaking Bad 数据集)
+MODEL:
+  NAME: "D3Feat"
+  TYPE: "KeypointDetection"
+  
+  # 骨干网络
+  BACKBONE:
+    PLANES: [16, 32, 64, 128]
+    LAYERS: [1, 1, 1, 1]
+  
+  # 编码器配置（匹配预训练权重）
+  ENCODER:
+    INPUT_DIM: 3
+    FEATURE_DIM: 256
+    SA_LAYERS:
+      C1: 64
+      NPOINT1: 1024
+      RADIUS1: 0.1
+      NSAMPLE1: 32
+      C2: 128
+      NPOINT2: 256
+      RADIUS2: 0.2
+      NSAMPLE2: 32
+      C3: 256
+      NPOINT3: 64
+      RADIUS3: 0.4
+      NSAMPLE3: 32
+    
+  # 特征提取
+  FEATURE:
+    OUTPUT_DIM: 256
+    RADIUS: 0.05
+    
+  # 关键点检测头
+  KEYPOINT_HEAD:
+    SALIENCY_DIM: 1
+    TEMPERATURE: 0.1
+    
+# 数据集配置
+DATASET:
+  NAME: "BreakingBad"
+  ROOT: "data/breaking_bad"
+  CATEGORY: "Bowl"
+  
+  # 体素化参数
+  VOXEL_SIZE: 0.005
+  
+  # 数据增强
+  AUGMENTATION:
+    ROTATION: true
+    NOISE: true
+    NOISE_STD: 0.001
+    
+# 训练配置
+TRAIN:
+  BATCH_SIZE: 4
+  NUM_EPOCHS: 50
+  LR: 0.001
+  LR_SCHEDULER: "StepLR"
+  STEP_SIZE: 20
+  GAMMA: 0.1
+  
+  # 优化器
+  OPTIMIZER: "Adam"
+  WEIGHT_DECAY: 0.0001
+  
+  # 损失函数权重
+  LOSS:
+    DESCRIPTOR_WEIGHT: 1.0
+    SALIENCY_WEIGHT: 0.1
+    
+# 验证配置
+VAL:
+  BATCH_SIZE: 4
+  
+# 推理配置
+TEST:
+  VOXEL_SIZE: 0.005
+  MAX_KEYPOINTS: 5000
+  NMS_RADIUS: 0.02
+  
+# 设备配置
+DEVICE:
+  CUDA: false
+  GPU_ID: 0
+  
+# 日志和检查点
+LOGGING:
+  LOG_DIR: "logs/d3feat"
+  CHECKPOINT_DIR: "pretrained_weights/breaking_bad"
+  SAVE_FREQ: 5
+  BEST_MODEL_NAME: "d3feat_breaking_bad_best.pth"

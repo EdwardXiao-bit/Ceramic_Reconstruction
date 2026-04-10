@@ -5,3 +5,8 @@ matplotlib
 pyyaml
 tqdm
 scikit-learn
+opencv-python
+faiss-cpu
+trimesh
+torch
+torchvision

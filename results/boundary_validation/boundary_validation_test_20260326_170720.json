@@ -1,0 +1,2352 @@
+{
+  "test_info": {
+    "timestamp": "20260326_170720",
+    "test_pairs": [
+      [
+        2,
+        3
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        0,
+        3
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        2,
+        4
+      ],
+      [
+        0,
+        4
+      ]
+    ],
+    "total_tests": 10,
+    "successful_tests": 10,
+    "failed_tests": 0
+  },
+  "detailed_results": [
+    {
+      "pair": [
+        2,
+        3
+      ],
+      "result": {
+        "fragment_ids": [
+          2,
+          3
+        ],
+        "processing_time": 1.7347733974456787,
+        "success": true,
+        "error_message": null,
+        "boundary_regions": {
+          "fragment1_points": 3631,
+          "fragment2_points": 2757,
+          "boundary1_confidence": 1.0,
+          "boundary2_confidence": 1.0
+        },
+        "intermediate_results": {
+          "feature_matching": {
+            "matches_count": 0,
+            "overlap_score": 0.0,
+            "inlier_ratio": 0.0,
+            "boundary_complementarity_score": 0.04981896691615557,
+            "initial_transformation": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          },
+          "complementarity_check": {
+            "normal_complementarity_score": 0.0,
+            "shape_complementarity_score": 0.0,
+            "average_normal_angle": 90.0,
+            "reverse_normal_ratio": 0.0,
+            "normal_similarity_stats": {
+              "min_similarity": 0.0,
+              "max_similarity": 0.0,
+              "mean_similarity": 0.0
+            },
+            "shape_similarity_stats": {
+              "min_similarity": 0.0,
+              "max_similarity": 0.0,
+              "mean_similarity": 0.0
+            }
+          },
+          "local_alignment": {
+            "fitness_score": 0.0,
+            "rmse": 0.0,
+            "iterations_used": 30,
+            "convergence_status": "failed",
+            "refined_transformation": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "alignment_error": 1.0
+          },
+          "collision_detection": {
+            "collision_score": 0.0,
+            "penetration_depth": 0.0,
+            "collision_points_count": 0,
+            "safety_margin": 0.6591849329145077,
+            "collision_volumes": {
+              "sdf_volume": 0.0
+            },
+            "detailed_analysis": {
+              "sdf_analysis": {
+                "penetration_points": 0,
+                "total_points": 2000,
+                "penetration_ratio": 0.0,
+                "avg_penetration_depth": 0.0
+              }
+            }
+          }
+        },
+        "final_scores": {
+          "feature_score": 0.04981896691615557,
+          "normal_score": 0.0,
+          "shape_score": 0.0,
+          "alignment_score": 0.3,
+          "collision_penalty": 1.0,
+          "total_score": 0.1724547417290389,
+          "component_scores": {
+            "feature_score": 0.04981896691615557,
+            "normal_score": 0.0,
+            "shape_score": 0.0,
+            "alignment_score": 0.3,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.0722203495489141,
+            "normal": 0.0,
+            "shape": 0.0,
+            "alignment": 0.34791736891915714,
+            "collision": 0.5798622815319286
+          },
+          "validation_status": "invalid_match",
+          "confidence_level": 0.24437384082160207
+        },
+        "detailed_report": {
+          "summary": {
+            "total_score": 0.1724547417290389,
+            "validation_status": "invalid_match",
+            "confidence_level": 0.24437384082160207
+          },
+          "component_scores": {
+            "feature_score": 0.04981896691615557,
+            "normal_score": 0.0,
+            "shape_score": 0.0,
+            "alignment_score": 0.3,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.0722203495489141,
+            "normal": 0.0,
+            "shape": 0.0,
+            "alignment": 0.34791736891915714,
+            "collision": 0.5798622815319286
+          },
+          "detailed_analysis": {
+            "component_details": {
+              "feature_matching": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "特征匹配不足"
+                ]
+              },
+              "normal_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "法向互补性弱"
+                ]
+              },
+              "shape_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "形状匹配度低"
+                ]
+              },
+              "alignment_accuracy": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "对齐精度不足"
+                ]
+              },
+              "collision_avoidance": {
+                "quality": "excellent",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "碰撞风险较高"
+                ]
+              }
+            },
+            "balance_analysis": {
+              "score_variance": 0.14561593615505472,
+              "score_range": 1.0,
+              "most_critical_component": "normal_score"
+            }
+          },
+          "recommendations": [
+            "整体匹配质量较低，建议重新考虑碎片配对",
+            "特征匹配度不足，建议检查边界特征提取参数",
+            "法向互补性较差，建议调整碎片相对姿态",
+            "形状匹配度低，可能需要更精确的几何处理",
+            "对齐精度不足，建议使用更高精度的对齐算法",
+            "验证结果不确定性较高，建议多次验证或人工确认"
+          ],
+          "quality_assessment": {
+            "quality_level": "poor",
+            "quality_description": "较差匹配",
+            "stability": "unstable",
+            "stability_description": "不稳定",
+            "reliability": "low"
+          }
+        }
+      }
+    },
+    {
+      "pair": [
+        0,
+        2
+      ],
+      "result": {
+        "fragment_ids": [
+          0,
+          2
+        ],
+        "processing_time": 0.895606517791748,
+        "success": true,
+        "error_message": null,
+        "boundary_regions": {
+          "fragment1_points": 3322,
+          "fragment2_points": 3631,
+          "boundary1_confidence": 1.0,
+          "boundary2_confidence": 1.0
+        },
+        "intermediate_results": {
+          "feature_matching": {
+            "matches_count": 1,
+            "overlap_score": 0.0,
+            "inlier_ratio": 0.01,
+            "boundary_complementarity_score": 0.05591070406733524,
+            "initial_transformation": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          },
+          "complementarity_check": {
+            "normal_complementarity_score": 0.0,
+            "shape_complementarity_score": 0.0021194465458393096,
+            "average_normal_angle": 58.20573144939381,
+            "reverse_normal_ratio": 0.0,
+            "normal_similarity_stats": {
+              "min_similarity": 0.5268707758311169,
+              "max_similarity": 0.5268707758311169,
+              "mean_similarity": 0.5268707758311169
+            },
+            "shape_similarity_stats": {
+              "min_similarity": 0.005298616364598274,
+              "max_similarity": 0.005298616364598274,
+              "mean_similarity": 0.005298616364598274
+            }
+          },
+          "local_alignment": {
+            "fitness_score": 0.0,
+            "rmse": 0.0,
+            "iterations_used": 30,
+            "convergence_status": "failed",
+            "refined_transformation": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "alignment_error": 1.0
+          },
+          "collision_detection": {
+            "collision_score": 0.0,
+            "penetration_depth": 0.0,
+            "collision_points_count": 0,
+            "safety_margin": 1.2613675203460597,
+            "collision_volumes": {
+              "sdf_volume": 0.0
+            },
+            "detailed_analysis": {
+              "sdf_analysis": {
+                "penetration_points": 0,
+                "total_points": 2000,
+                "penetration_ratio": 0.0,
+                "avg_penetration_depth": 0.0
+              }
+            }
+          }
+        },
+        "final_scores": {
+          "feature_score": 0.05591070406733524,
+          "normal_score": 0.0,
+          "shape_score": 0.0021194465458393096,
+          "alignment_score": 0.3,
+          "collision_penalty": 1.0,
+          "total_score": 0.17450753765329363,
+          "component_scores": {
+            "feature_score": 0.05591070406733524,
+            "normal_score": 0.0,
+            "shape_score": 0.0021194465458393096,
+            "alignment_score": 0.3,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.08009783534167011,
+            "normal": 0.0,
+            "shape": 0.003036325213140883,
+            "alignment": 0.34382468979194586,
+            "collision": 0.5730411496532432
+          },
+          "validation_status": "invalid_match",
+          "confidence_level": 0.24962097725455687
+        },
+        "detailed_report": {
+          "summary": {
+            "total_score": 0.17450753765329363,
+            "validation_status": "invalid_match",
+            "confidence_level": 0.24962097725455687
+          },
+          "component_scores": {
+            "feature_score": 0.05591070406733524,
+            "normal_score": 0.0,
+            "shape_score": 0.0021194465458393096,
+            "alignment_score": 0.3,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.08009783534167011,
+            "normal": 0.0,
+            "shape": 0.003036325213140883,
+            "alignment": 0.34382468979194586,
+            "collision": 0.5730411496532432
+          },
+          "detailed_analysis": {
+            "component_details": {
+              "feature_matching": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "特征匹配不足"
+                ]
+              },
+              "normal_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "法向互补性弱"
+                ]
+              },
+              "shape_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "形状匹配度低"
+                ]
+              },
+              "alignment_accuracy": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "对齐精度不足"
+                ]
+              },
+              "collision_avoidance": {
+                "quality": "excellent",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "碰撞风险较高"
+                ]
+              }
+            },
+            "balance_analysis": {
+              "score_variance": 0.1448562641776155,
+              "score_range": 1.0,
+              "most_critical_component": "normal_score"
+            }
+          },
+          "recommendations": [
+            "整体匹配质量较低，建议重新考虑碎片配对",
+            "特征匹配度不足，建议检查边界特征提取参数",
+            "法向互补性较差，建议调整碎片相对姿态",
+            "形状匹配度低，可能需要更精确的几何处理",
+            "对齐精度不足，建议使用更高精度的对齐算法",
+            "验证结果不确定性较高，建议多次验证或人工确认"
+          ],
+          "quality_assessment": {
+            "quality_level": "poor",
+            "quality_description": "较差匹配",
+            "stability": "unstable",
+            "stability_description": "不稳定",
+            "reliability": "low"
+          }
+        }
+      }
+    },
+    {
+      "pair": [
+        3,
+        4
+      ],
+      "result": {
+        "fragment_ids": [
+          3,
+          4
+        ],
+        "processing_time": 0.6027302742004395,
+        "success": true,
+        "error_message": null,
+        "boundary_regions": {
+          "fragment1_points": 2757,
+          "fragment2_points": 895,
+          "boundary1_confidence": 1.0,
+          "boundary2_confidence": 1.0
+        },
+        "intermediate_results": {
+          "feature_matching": {
+            "matches_count": 0,
+            "overlap_score": 0.0,
+            "inlier_ratio": 0.0,
+            "boundary_complementarity_score": 0.02243688379236124,
+            "initial_transformation": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          },
+          "complementarity_check": {
+            "normal_complementarity_score": 0.0,
+            "shape_complementarity_score": 0.0,
+            "average_normal_angle": 90.0,
+            "reverse_normal_ratio": 0.0,
+            "normal_similarity_stats": {
+              "min_similarity": 0.0,
+              "max_similarity": 0.0,
+              "mean_similarity": 0.0
+            },
+            "shape_similarity_stats": {
+              "min_similarity": 0.0,
+              "max_similarity": 0.0,
+              "mean_similarity": 0.0
+            }
+          },
+          "local_alignment": {
+            "fitness_score": 0.0,
+            "rmse": 0.0,
+            "iterations_used": 30,
+            "convergence_status": "failed",
+            "refined_transformation": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "alignment_error": 1.0
+          },
+          "collision_detection": {
+            "collision_score": 0.0,
+            "penetration_depth": 0.0,
+            "collision_points_count": 0,
+            "safety_margin": 0.28606543248215627,
+            "collision_volumes": {
+              "sdf_volume": 0.0
+            },
+            "detailed_analysis": {
+              "sdf_analysis": {
+                "penetration_points": 0,
+                "total_points": 2000,
+                "penetration_ratio": 0.0,
+                "avg_penetration_depth": 0.0
+              }
+            }
+          }
+        },
+        "final_scores": {
+          "feature_score": 0.02243688379236124,
+          "normal_score": 0.0,
+          "shape_score": 0.0,
+          "alignment_score": 0.3,
+          "collision_penalty": 1.0,
+          "total_score": 0.16560922094809033,
+          "component_scores": {
+            "feature_score": 0.02243688379236124,
+            "normal_score": 0.0,
+            "shape_score": 0.0,
+            "alignment_score": 0.3,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.033870221210982585,
+            "normal": 0.0,
+            "shape": 0.0,
+            "alignment": 0.3622986670458815,
+            "collision": 0.6038311117431359
+          },
+          "validation_status": "invalid_match",
+          "confidence_level": 0.2252770312525557
+        },
+        "detailed_report": {
+          "summary": {
+            "total_score": 0.16560922094809033,
+            "validation_status": "invalid_match",
+            "confidence_level": 0.2252770312525557
+          },
+          "component_scores": {
+            "feature_score": 0.02243688379236124,
+            "normal_score": 0.0,
+            "shape_score": 0.0,
+            "alignment_score": 0.3,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.033870221210982585,
+            "normal": 0.0,
+            "shape": 0.0,
+            "alignment": 0.3622986670458815,
+            "collision": 0.6038311117431359
+          },
+          "detailed_analysis": {
+            "component_details": {
+              "feature_matching": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "特征匹配不足"
+                ]
+              },
+              "normal_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "法向互补性弱"
+                ]
+              },
+              "shape_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "形状匹配度低"
+                ]
+              },
+              "alignment_accuracy": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "对齐精度不足"
+                ]
+              },
+              "collision_avoidance": {
+                "quality": "excellent",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "碰撞风险较高"
+                ]
+              }
+            },
+            "balance_analysis": {
+              "score_variance": 0.14814711028628433,
+              "score_range": 1.0,
+              "most_critical_component": "normal_score"
+            }
+          },
+          "recommendations": [
+            "整体匹配质量较低，建议重新考虑碎片配对",
+            "特征匹配度不足，建议检查边界特征提取参数",
+            "法向互补性较差，建议调整碎片相对姿态",
+            "形状匹配度低，可能需要更精确的几何处理",
+            "对齐精度不足，建议使用更高精度的对齐算法",
+            "验证结果不确定性较高，建议多次验证或人工确认"
+          ],
+          "quality_assessment": {
+            "quality_level": "poor",
+            "quality_description": "较差匹配",
+            "stability": "unstable",
+            "stability_description": "不稳定",
+            "reliability": "low"
+          }
+        }
+      }
+    },
+    {
+      "pair": [
+        0,
+        1
+      ],
+      "result": {
+        "fragment_ids": [
+          0,
+          1
+        ],
+        "processing_time": 0.9763579368591309,
+        "success": true,
+        "error_message": null,
+        "boundary_regions": {
+          "fragment1_points": 3322,
+          "fragment2_points": 4357,
+          "boundary1_confidence": 1.0,
+          "boundary2_confidence": 1.0
+        },
+        "intermediate_results": {
+          "feature_matching": {
+            "matches_count": 0,
+            "overlap_score": 0.0,
+            "inlier_ratio": 0.0,
+            "boundary_complementarity_score": 0.033620915585863435,
+            "initial_transformation": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          },
+          "complementarity_check": {
+            "normal_complementarity_score": 0.0,
+            "shape_complementarity_score": 0.0,
+            "average_normal_angle": 90.0,
+            "reverse_normal_ratio": 0.0,
+            "normal_similarity_stats": {
+              "min_similarity": 0.0,
+              "max_similarity": 0.0,
+              "mean_similarity": 0.0
+            },
+            "shape_similarity_stats": {
+              "min_similarity": 0.0,
+              "max_similarity": 0.0,
+              "mean_similarity": 0.0
+            }
+          },
+          "local_alignment": {
+            "fitness_score": 0.0,
+            "rmse": 0.0,
+            "iterations_used": 30,
+            "convergence_status": "failed",
+            "refined_transformation": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "alignment_error": 1.0
+          },
+          "collision_detection": {
+            "collision_score": 0.0,
+            "penetration_depth": 0.0,
+            "collision_points_count": 0,
+            "safety_margin": 0.8655981171180381,
+            "collision_volumes": {
+              "sdf_volume": 0.0
+            },
+            "detailed_analysis": {
+              "sdf_analysis": {
+                "penetration_points": 0,
+                "total_points": 2000,
+                "penetration_ratio": 0.0,
+                "avg_penetration_depth": 0.0
+              }
+            }
+          }
+        },
+        "final_scores": {
+          "feature_score": 0.033620915585863435,
+          "normal_score": 0.0,
+          "shape_score": 0.0,
+          "alignment_score": 0.3,
+          "collision_penalty": 1.0,
+          "total_score": 0.16840522889646586,
+          "component_scores": {
+            "feature_score": 0.033620915585863435,
+            "normal_score": 0.0,
+            "shape_score": 0.0,
+            "alignment_score": 0.3,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.04991073585745561,
+            "normal": 0.0,
+            "shape": 0.0,
+            "alignment": 0.3562834740534541,
+            "collision": 0.5938057900890903
+          },
+          "validation_status": "invalid_match",
+          "confidence_level": 0.23334993298712078
+        },
+        "detailed_report": {
+          "summary": {
+            "total_score": 0.16840522889646586,
+            "validation_status": "invalid_match",
+            "confidence_level": 0.23334993298712078
+          },
+          "component_scores": {
+            "feature_score": 0.033620915585863435,
+            "normal_score": 0.0,
+            "shape_score": 0.0,
+            "alignment_score": 0.3,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.04991073585745561,
+            "normal": 0.0,
+            "shape": 0.0,
+            "alignment": 0.3562834740534541,
+            "collision": 0.5938057900890903
+          },
+          "detailed_analysis": {
+            "component_details": {
+              "feature_matching": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "特征匹配不足"
+                ]
+              },
+              "normal_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "法向互补性弱"
+                ]
+              },
+              "shape_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "形状匹配度低"
+                ]
+              },
+              "alignment_accuracy": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "对齐精度不足"
+                ]
+              },
+              "collision_avoidance": {
+                "quality": "excellent",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "碰撞风险较高"
+                ]
+              }
+            },
+            "balance_analysis": {
+              "score_variance": 0.14708428333344328,
+              "score_range": 1.0,
+              "most_critical_component": "normal_score"
+            }
+          },
+          "recommendations": [
+            "整体匹配质量较低，建议重新考虑碎片配对",
+            "特征匹配度不足，建议检查边界特征提取参数",
+            "法向互补性较差，建议调整碎片相对姿态",
+            "形状匹配度低，可能需要更精确的几何处理",
+            "对齐精度不足，建议使用更高精度的对齐算法",
+            "验证结果不确定性较高，建议多次验证或人工确认"
+          ],
+          "quality_assessment": {
+            "quality_level": "poor",
+            "quality_description": "较差匹配",
+            "stability": "unstable",
+            "stability_description": "不稳定",
+            "reliability": "low"
+          }
+        }
+      }
+    },
+    {
+      "pair": [
+        1,
+        2
+      ],
+      "result": {
+        "fragment_ids": [
+          1,
+          2
+        ],
+        "processing_time": 1.1110508441925049,
+        "success": true,
+        "error_message": null,
+        "boundary_regions": {
+          "fragment1_points": 4357,
+          "fragment2_points": 3631,
+          "boundary1_confidence": 1.0,
+          "boundary2_confidence": 1.0
+        },
+        "intermediate_results": {
+          "feature_matching": {
+            "matches_count": 2,
+            "overlap_score": 0.0,
+            "inlier_ratio": 0.02,
+            "boundary_complementarity_score": 0.046425166281050305,
+            "initial_transformation": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          },
+          "complementarity_check": {
+            "normal_complementarity_score": 0.0,
+            "shape_complementarity_score": 0.03276029489934445,
+            "average_normal_angle": 61.2473885629461,
+            "reverse_normal_ratio": 0.0,
+            "normal_similarity_stats": {
+              "min_similarity": 0.09917296789197821,
+              "max_similarity": 0.7860044641437939,
+              "mean_similarity": 0.4425887160178861
+            },
+            "shape_similarity_stats": {
+              "min_similarity": 0.003762258216738701,
+              "max_similarity": 0.16003921627998352,
+              "mean_similarity": 0.08190073724836111
+            }
+          },
+          "local_alignment": {
+            "fitness_score": 0.0,
+            "rmse": 0.0,
+            "iterations_used": 30,
+            "convergence_status": "failed",
+            "refined_transformation": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "alignment_error": 1.0
+          },
+          "collision_detection": {
+            "collision_score": 0.0,
+            "penetration_depth": 0.0,
+            "collision_points_count": 0,
+            "safety_margin": 0.5267312627366392,
+            "collision_volumes": {
+              "sdf_volume": 0.0
+            },
+            "detailed_analysis": {
+              "sdf_analysis": {
+                "penetration_points": 0,
+                "total_points": 2000,
+                "penetration_ratio": 0.0,
+                "avg_penetration_depth": 0.0
+              }
+            }
+          }
+        },
+        "final_scores": {
+          "feature_score": 0.046425166281050305,
+          "normal_score": 0.0,
+          "shape_score": 0.03276029489934445,
+          "alignment_score": 0.3,
+          "collision_penalty": 1.0,
+          "total_score": 0.17979636529509868,
+          "component_scores": {
+            "feature_score": 0.046425166281050305,
+            "normal_score": 0.0,
+            "shape_score": 0.03276029489934445,
+            "alignment_score": 0.3,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.0645524260249268,
+            "normal": 0.0,
+            "shape": 0.045551942673556244,
+            "alignment": 0.33371086173806885,
+            "collision": 0.5561847695634482
+          },
+          "validation_status": "invalid_match",
+          "confidence_level": 0.2610443415943548
+        },
+        "detailed_report": {
+          "summary": {
+            "total_score": 0.17979636529509868,
+            "validation_status": "invalid_match",
+            "confidence_level": 0.2610443415943548
+          },
+          "component_scores": {
+            "feature_score": 0.046425166281050305,
+            "normal_score": 0.0,
+            "shape_score": 0.03276029489934445,
+            "alignment_score": 0.3,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.0645524260249268,
+            "normal": 0.0,
+            "shape": 0.045551942673556244,
+            "alignment": 0.33371086173806885,
+            "collision": 0.5561847695634482
+          },
+          "detailed_analysis": {
+            "component_details": {
+              "feature_matching": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "特征匹配不足"
+                ]
+              },
+              "normal_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "法向互补性弱"
+                ]
+              },
+              "shape_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "形状匹配度低"
+                ]
+              },
+              "alignment_accuracy": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "对齐精度不足"
+                ]
+              },
+              "collision_avoidance": {
+                "quality": "excellent",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "碰撞风险较高"
+                ]
+              }
+            },
+            "balance_analysis": {
+              "score_variance": 0.1425596051439679,
+              "score_range": 1.0,
+              "most_critical_component": "normal_score"
+            }
+          },
+          "recommendations": [
+            "整体匹配质量较低，建议重新考虑碎片配对",
+            "特征匹配度不足，建议检查边界特征提取参数",
+            "法向互补性较差，建议调整碎片相对姿态",
+            "形状匹配度低，可能需要更精确的几何处理",
+            "对齐精度不足，建议使用更高精度的对齐算法",
+            "验证结果不确定性较高，建议多次验证或人工确认"
+          ],
+          "quality_assessment": {
+            "quality_level": "poor",
+            "quality_description": "较差匹配",
+            "stability": "unstable",
+            "stability_description": "不稳定",
+            "reliability": "low"
+          }
+        }
+      }
+    },
+    {
+      "pair": [
+        0,
+        3
+      ],
+      "result": {
+        "fragment_ids": [
+          0,
+          3
+        ],
+        "processing_time": 0.7850630283355713,
+        "success": true,
+        "error_message": null,
+        "boundary_regions": {
+          "fragment1_points": 3322,
+          "fragment2_points": 2757,
+          "boundary1_confidence": 1.0,
+          "boundary2_confidence": 1.0
+        },
+        "intermediate_results": {
+          "feature_matching": {
+            "matches_count": 0,
+            "overlap_score": 0.0,
+            "inlier_ratio": 0.0,
+            "boundary_complementarity_score": 0.039692369214643926,
+            "initial_transformation": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          },
+          "complementarity_check": {
+            "normal_complementarity_score": 0.0,
+            "shape_complementarity_score": 0.0,
+            "average_normal_angle": 90.0,
+            "reverse_normal_ratio": 0.0,
+            "normal_similarity_stats": {
+              "min_similarity": 0.0,
+              "max_similarity": 0.0,
+              "mean_similarity": 0.0
+            },
+            "shape_similarity_stats": {
+              "min_similarity": 0.0,
+              "max_similarity": 0.0,
+              "mean_similarity": 0.0
+            }
+          },
+          "local_alignment": {
+            "fitness_score": 0.0,
+            "rmse": 0.0,
+            "iterations_used": 30,
+            "convergence_status": "failed",
+            "refined_transformation": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "alignment_error": 1.0
+          },
+          "collision_detection": {
+            "collision_score": 0.0,
+            "penetration_depth": 0.0,
+            "collision_points_count": 0,
+            "safety_margin": 1.4524185586745333,
+            "collision_volumes": {
+              "sdf_volume": 0.0
+            },
+            "detailed_analysis": {
+              "sdf_analysis": {
+                "penetration_points": 0,
+                "total_points": 2000,
+                "penetration_ratio": 0.0,
+                "avg_penetration_depth": 0.0
+              }
+            }
+          }
+        },
+        "final_scores": {
+          "feature_score": 0.039692369214643926,
+          "normal_score": 0.0,
+          "shape_score": 0.0,
+          "alignment_score": 0.3,
+          "collision_penalty": 1.0,
+          "total_score": 0.16992309230366098,
+          "component_scores": {
+            "feature_score": 0.039692369214643926,
+            "normal_score": 0.0,
+            "shape_score": 0.0,
+            "alignment_score": 0.3,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.05839755014537944,
+            "normal": 0.0,
+            "shape": 0.0,
+            "alignment": 0.3531009186954827,
+            "collision": 0.5885015311591378
+          },
+          "validation_status": "invalid_match",
+          "confidence_level": 0.23757290864654446
+        },
+        "detailed_report": {
+          "summary": {
+            "total_score": 0.16992309230366098,
+            "validation_status": "invalid_match",
+            "confidence_level": 0.23757290864654446
+          },
+          "component_scores": {
+            "feature_score": 0.039692369214643926,
+            "normal_score": 0.0,
+            "shape_score": 0.0,
+            "alignment_score": 0.3,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.05839755014537944,
+            "normal": 0.0,
+            "shape": 0.0,
+            "alignment": 0.3531009186954827,
+            "collision": 0.5885015311591378
+          },
+          "detailed_analysis": {
+            "component_details": {
+              "feature_matching": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "特征匹配不足"
+                ]
+              },
+              "normal_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "法向互补性弱"
+                ]
+              },
+              "shape_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "形状匹配度低"
+                ]
+              },
+              "alignment_accuracy": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "对齐精度不足"
+                ]
+              },
+              "collision_avoidance": {
+                "quality": "excellent",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "碰撞风险较高"
+                ]
+              }
+            },
+            "balance_analysis": {
+              "score_variance": 0.1465240710694965,
+              "score_range": 1.0,
+              "most_critical_component": "normal_score"
+            }
+          },
+          "recommendations": [
+            "整体匹配质量较低，建议重新考虑碎片配对",
+            "特征匹配度不足，建议检查边界特征提取参数",
+            "法向互补性较差，建议调整碎片相对姿态",
+            "形状匹配度低，可能需要更精确的几何处理",
+            "对齐精度不足，建议使用更高精度的对齐算法",
+            "验证结果不确定性较高，建议多次验证或人工确认"
+          ],
+          "quality_assessment": {
+            "quality_level": "poor",
+            "quality_description": "较差匹配",
+            "stability": "unstable",
+            "stability_description": "不稳定",
+            "reliability": "low"
+          }
+        }
+      }
+    },
+    {
+      "pair": [
+        1,
+        3
+      ],
+      "result": {
+        "fragment_ids": [
+          1,
+          3
+        ],
+        "processing_time": 0.9310905933380127,
+        "success": true,
+        "error_message": null,
+        "boundary_regions": {
+          "fragment1_points": 4357,
+          "fragment2_points": 2757,
+          "boundary1_confidence": 1.0,
+          "boundary2_confidence": 1.0
+        },
+        "intermediate_results": {
+          "feature_matching": {
+            "matches_count": 1,
+            "overlap_score": 0.0,
+            "inlier_ratio": 0.01,
+            "boundary_complementarity_score": 0.03436608169158121,
+            "initial_transformation": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          },
+          "complementarity_check": {
+            "normal_complementarity_score": 0.0,
+            "shape_complementarity_score": 0.0,
+            "average_normal_angle": 41.87771175795881,
+            "reverse_normal_ratio": 0.0,
+            "normal_similarity_stats": {
+              "min_similarity": 0.7445712789152422,
+              "max_similarity": 0.7445712789152422,
+              "mean_similarity": 0.7445712789152422
+            },
+            "shape_similarity_stats": {
+              "min_similarity": 0.0,
+              "max_similarity": 0.0,
+              "mean_similarity": 0.0
+            }
+          },
+          "local_alignment": {
+            "fitness_score": 0.0,
+            "rmse": 0.0,
+            "iterations_used": 30,
+            "convergence_status": "failed",
+            "refined_transformation": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "alignment_error": 1.0
+          },
+          "collision_detection": {
+            "collision_score": 0.0,
+            "penetration_depth": 0.0,
+            "collision_points_count": 0,
+            "safety_margin": 1.5871928343686692,
+            "collision_volumes": {
+              "sdf_volume": 0.0
+            },
+            "detailed_analysis": {
+              "sdf_analysis": {
+                "penetration_points": 0,
+                "total_points": 2000,
+                "penetration_ratio": 0.0,
+                "avg_penetration_depth": 0.0
+              }
+            }
+          }
+        },
+        "final_scores": {
+          "feature_score": 0.03436608169158121,
+          "normal_score": 0.0,
+          "shape_score": 0.0,
+          "alignment_score": 0.3,
+          "collision_penalty": 1.0,
+          "total_score": 0.16859152042289532,
+          "component_scores": {
+            "feature_score": 0.03436608169158121,
+            "normal_score": 0.0,
+            "shape_score": 0.0,
+            "alignment_score": 0.3,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.050960572639384916,
+            "normal": 0.0,
+            "shape": 0.0,
+            "alignment": 0.3558897852602306,
+            "collision": 0.5931496421003843
+          },
+          "validation_status": "invalid_match",
+          "confidence_level": 0.23387419713737131
+        },
+        "detailed_report": {
+          "summary": {
+            "total_score": 0.16859152042289532,
+            "validation_status": "invalid_match",
+            "confidence_level": 0.23387419713737131
+          },
+          "component_scores": {
+            "feature_score": 0.03436608169158121,
+            "normal_score": 0.0,
+            "shape_score": 0.0,
+            "alignment_score": 0.3,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.050960572639384916,
+            "normal": 0.0,
+            "shape": 0.0,
+            "alignment": 0.3558897852602306,
+            "collision": 0.5931496421003843
+          },
+          "detailed_analysis": {
+            "component_details": {
+              "feature_matching": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "特征匹配不足"
+                ]
+              },
+              "normal_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "法向互补性弱"
+                ]
+              },
+              "shape_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "形状匹配度低"
+                ]
+              },
+              "alignment_accuracy": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "对齐精度不足"
+                ]
+              },
+              "collision_avoidance": {
+                "quality": "excellent",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "碰撞风险较高"
+                ]
+              }
+            },
+            "balance_analysis": {
+              "score_variance": 0.1470148919154087,
+              "score_range": 1.0,
+              "most_critical_component": "normal_score"
+            }
+          },
+          "recommendations": [
+            "整体匹配质量较低，建议重新考虑碎片配对",
+            "特征匹配度不足，建议检查边界特征提取参数",
+            "法向互补性较差，建议调整碎片相对姿态",
+            "形状匹配度低，可能需要更精确的几何处理",
+            "对齐精度不足，建议使用更高精度的对齐算法",
+            "验证结果不确定性较高，建议多次验证或人工确认"
+          ],
+          "quality_assessment": {
+            "quality_level": "poor",
+            "quality_description": "较差匹配",
+            "stability": "unstable",
+            "stability_description": "不稳定",
+            "reliability": "low"
+          }
+        }
+      }
+    },
+    {
+      "pair": [
+        1,
+        4
+      ],
+      "result": {
+        "fragment_ids": [
+          1,
+          4
+        ],
+        "processing_time": 0.6648907661437988,
+        "success": true,
+        "error_message": null,
+        "boundary_regions": {
+          "fragment1_points": 4357,
+          "fragment2_points": 895,
+          "boundary1_confidence": 1.0,
+          "boundary2_confidence": 1.0
+        },
+        "intermediate_results": {
+          "feature_matching": {
+            "matches_count": 0,
+            "overlap_score": 0.0,
+            "inlier_ratio": 0.0,
+            "boundary_complementarity_score": 0.022550911907693382,
+            "initial_transformation": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          },
+          "complementarity_check": {
+            "normal_complementarity_score": 0.0,
+            "shape_complementarity_score": 0.0,
+            "average_normal_angle": 90.0,
+            "reverse_normal_ratio": 0.0,
+            "normal_similarity_stats": {
+              "min_similarity": 0.0,
+              "max_similarity": 0.0,
+              "mean_similarity": 0.0
+            },
+            "shape_similarity_stats": {
+              "min_similarity": 0.0,
+              "max_similarity": 0.0,
+              "mean_similarity": 0.0
+            }
+          },
+          "local_alignment": {
+            "fitness_score": 0.0,
+            "rmse": 0.0,
+            "iterations_used": 30,
+            "convergence_status": "failed",
+            "refined_transformation": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "alignment_error": 1.0
+          },
+          "collision_detection": {
+            "collision_score": 0.0,
+            "penetration_depth": 0.0,
+            "collision_points_count": 0,
+            "safety_margin": 1.8191388255074645,
+            "collision_volumes": {
+              "sdf_volume": 0.0
+            },
+            "detailed_analysis": {
+              "sdf_analysis": {
+                "penetration_points": 0,
+                "total_points": 2000,
+                "penetration_ratio": 0.0,
+                "avg_penetration_depth": 0.0
+              }
+            }
+          }
+        },
+        "final_scores": {
+          "feature_score": 0.022550911907693382,
+          "normal_score": 0.0,
+          "shape_score": 0.0,
+          "alignment_score": 0.3,
+          "collision_penalty": 1.0,
+          "total_score": 0.16563772797692333,
+          "component_scores": {
+            "feature_score": 0.022550911907693382,
+            "normal_score": 0.0,
+            "shape_score": 0.0,
+            "alignment_score": 0.3,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.034036496671270414,
+            "normal": 0.0,
+            "shape": 0.0,
+            "alignment": 0.3622363137482736,
+            "collision": 0.6037271895804561
+          },
+          "validation_status": "invalid_match",
+          "confidence_level": 0.22536129767464974
+        },
+        "detailed_report": {
+          "summary": {
+            "total_score": 0.16563772797692333,
+            "validation_status": "invalid_match",
+            "confidence_level": 0.22536129767464974
+          },
+          "component_scores": {
+            "feature_score": 0.022550911907693382,
+            "normal_score": 0.0,
+            "shape_score": 0.0,
+            "alignment_score": 0.3,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.034036496671270414,
+            "normal": 0.0,
+            "shape": 0.0,
+            "alignment": 0.3622363137482736,
+            "collision": 0.6037271895804561
+          },
+          "detailed_analysis": {
+            "component_details": {
+              "feature_matching": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "特征匹配不足"
+                ]
+              },
+              "normal_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "法向互补性弱"
+                ]
+              },
+              "shape_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "形状匹配度低"
+                ]
+              },
+              "alignment_accuracy": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "对齐精度不足"
+                ]
+              },
+              "collision_avoidance": {
+                "quality": "excellent",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "碰撞风险较高"
+                ]
+              }
+            },
+            "balance_analysis": {
+              "score_variance": 0.14813607214205887,
+              "score_range": 1.0,
+              "most_critical_component": "normal_score"
+            }
+          },
+          "recommendations": [
+            "整体匹配质量较低，建议重新考虑碎片配对",
+            "特征匹配度不足，建议检查边界特征提取参数",
+            "法向互补性较差，建议调整碎片相对姿态",
+            "形状匹配度低，可能需要更精确的几何处理",
+            "对齐精度不足，建议使用更高精度的对齐算法",
+            "验证结果不确定性较高，建议多次验证或人工确认"
+          ],
+          "quality_assessment": {
+            "quality_level": "poor",
+            "quality_description": "较差匹配",
+            "stability": "unstable",
+            "stability_description": "不稳定",
+            "reliability": "low"
+          }
+        }
+      }
+    },
+    {
+      "pair": [
+        2,
+        4
+      ],
+      "result": {
+        "fragment_ids": [
+          2,
+          4
+        ],
+        "processing_time": 0.6198673248291016,
+        "success": true,
+        "error_message": null,
+        "boundary_regions": {
+          "fragment1_points": 3631,
+          "fragment2_points": 895,
+          "boundary1_confidence": 1.0,
+          "boundary2_confidence": 1.0
+        },
+        "intermediate_results": {
+          "feature_matching": {
+            "matches_count": 1,
+            "overlap_score": 0.0,
+            "inlier_ratio": 0.01,
+            "boundary_complementarity_score": 0.03367942466603181,
+            "initial_transformation": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          },
+          "complementarity_check": {
+            "normal_complementarity_score": 0.0,
+            "shape_complementarity_score": 0.0,
+            "average_normal_angle": 44.218269713672484,
+            "reverse_normal_ratio": 0.0,
+            "normal_similarity_stats": {
+              "min_similarity": 0.7166882685022571,
+              "max_similarity": 0.7166882685022571,
+              "mean_similarity": 0.7166882685022571
+            },
+            "shape_similarity_stats": {
+              "min_similarity": 0.0,
+              "max_similarity": 0.0,
+              "mean_similarity": 0.0
+            }
+          },
+          "local_alignment": {
+            "fitness_score": 0.0,
+            "rmse": 0.0,
+            "iterations_used": 30,
+            "convergence_status": "failed",
+            "refined_transformation": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "alignment_error": 1.0
+          },
+          "collision_detection": {
+            "collision_score": 0.0,
+            "penetration_depth": 0.0,
+            "collision_points_count": 0,
+            "safety_margin": 1.0480670238169938,
+            "collision_volumes": {
+              "sdf_volume": 0.0
+            },
+            "detailed_analysis": {
+              "sdf_analysis": {
+                "penetration_points": 0,
+                "total_points": 2000,
+                "penetration_ratio": 0.0,
+                "avg_penetration_depth": 0.0
+              }
+            }
+          }
+        },
+        "final_scores": {
+          "feature_score": 0.03367942466603181,
+          "normal_score": 0.0,
+          "shape_score": 0.0,
+          "alignment_score": 0.3,
+          "collision_penalty": 1.0,
+          "total_score": 0.16841985616650795,
+          "component_scores": {
+            "feature_score": 0.03367942466603181,
+            "normal_score": 0.0,
+            "shape_score": 0.0,
+            "alignment_score": 0.3,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.049993251141264954,
+            "normal": 0.0,
+            "shape": 0.0,
+            "alignment": 0.3562525308220256,
+            "collision": 0.5937542180367095
+          },
+          "validation_status": "invalid_match",
+          "confidence_level": 0.23339115803800706
+        },
+        "detailed_report": {
+          "summary": {
+            "total_score": 0.16841985616650795,
+            "validation_status": "invalid_match",
+            "confidence_level": 0.23339115803800706
+          },
+          "component_scores": {
+            "feature_score": 0.03367942466603181,
+            "normal_score": 0.0,
+            "shape_score": 0.0,
+            "alignment_score": 0.3,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.049993251141264954,
+            "normal": 0.0,
+            "shape": 0.0,
+            "alignment": 0.3562525308220256,
+            "collision": 0.5937542180367095
+          },
+          "detailed_analysis": {
+            "component_details": {
+              "feature_matching": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "特征匹配不足"
+                ]
+              },
+              "normal_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "法向互补性弱"
+                ]
+              },
+              "shape_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "形状匹配度低"
+                ]
+              },
+              "alignment_accuracy": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "对齐精度不足"
+                ]
+              },
+              "collision_avoidance": {
+                "quality": "excellent",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "碰撞风险较高"
+                ]
+              }
+            },
+            "balance_analysis": {
+              "score_variance": 0.14707882841806627,
+              "score_range": 1.0,
+              "most_critical_component": "normal_score"
+            }
+          },
+          "recommendations": [
+            "整体匹配质量较低，建议重新考虑碎片配对",
+            "特征匹配度不足，建议检查边界特征提取参数",
+            "法向互补性较差，建议调整碎片相对姿态",
+            "形状匹配度低，可能需要更精确的几何处理",
+            "对齐精度不足，建议使用更高精度的对齐算法",
+            "验证结果不确定性较高，建议多次验证或人工确认"
+          ],
+          "quality_assessment": {
+            "quality_level": "poor",
+            "quality_description": "较差匹配",
+            "stability": "unstable",
+            "stability_description": "不稳定",
+            "reliability": "low"
+          }
+        }
+      }
+    },
+    {
+      "pair": [
+        0,
+        4
+      ],
+      "result": {
+        "fragment_ids": [
+          0,
+          4
+        ],
+        "processing_time": 0.6368770599365234,
+        "success": true,
+        "error_message": null,
+        "boundary_regions": {
+          "fragment1_points": 3322,
+          "fragment2_points": 895,
+          "boundary1_confidence": 1.0,
+          "boundary2_confidence": 1.0
+        },
+        "intermediate_results": {
+          "feature_matching": {
+            "matches_count": 0,
+            "overlap_score": 0.0,
+            "inlier_ratio": 0.0,
+            "boundary_complementarity_score": 0.02316518721811959,
+            "initial_transformation": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          },
+          "complementarity_check": {
+            "normal_complementarity_score": 0.0,
+            "shape_complementarity_score": 0.0,
+            "average_normal_angle": 90.0,
+            "reverse_normal_ratio": 0.0,
+            "normal_similarity_stats": {
+              "min_similarity": 0.0,
+              "max_similarity": 0.0,
+              "mean_similarity": 0.0
+            },
+            "shape_similarity_stats": {
+              "min_similarity": 0.0,
+              "max_similarity": 0.0,
+              "mean_similarity": 0.0
+            }
+          },
+          "local_alignment": {
+            "fitness_score": 0.0,
+            "rmse": 0.0,
+            "iterations_used": 30,
+            "convergence_status": "failed",
+            "refined_transformation": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "alignment_error": 1.0
+          },
+          "collision_detection": {
+            "collision_score": 0.0,
+            "penetration_depth": 0.0,
+            "collision_points_count": 0,
+            "safety_margin": 1.1826255102702095,
+            "collision_volumes": {
+              "sdf_volume": 0.0
+            },
+            "detailed_analysis": {
+              "sdf_analysis": {
+                "penetration_points": 0,
+                "total_points": 2000,
+                "penetration_ratio": 0.0,
+                "avg_penetration_depth": 0.0
+              }
+            }
+          }
+        },
+        "final_scores": {
+          "feature_score": 0.02316518721811959,
+          "normal_score": 0.0,
+          "shape_score": 0.0,
+          "alignment_score": 0.3,
+          "collision_penalty": 1.0,
+          "total_score": 0.16579129680452992,
+          "component_scores": {
+            "feature_score": 0.02316518721811959,
+            "normal_score": 0.0,
+            "shape_score": 0.0,
+            "alignment_score": 0.3,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.03493124739447518,
+            "normal": 0.0,
+            "shape": 0.0,
+            "alignment": 0.3619007822270717,
+            "collision": 0.6031679703784529
+          },
+          "validation_status": "invalid_match",
+          "confidence_level": 0.22581454327616443
+        },
+        "detailed_report": {
+          "summary": {
+            "total_score": 0.16579129680452992,
+            "validation_status": "invalid_match",
+            "confidence_level": 0.22581454327616443
+          },
+          "component_scores": {
+            "feature_score": 0.02316518721811959,
+            "normal_score": 0.0,
+            "shape_score": 0.0,
+            "alignment_score": 0.3,
+            "collision_penalty": 1.0
+          },
+          "weighted_contributions": {
+            "feature": 0.03493124739447518,
+            "normal": 0.0,
+            "shape": 0.0,
+            "alignment": 0.3619007822270717,
+            "collision": 0.6031679703784529
+          },
+          "detailed_analysis": {
+            "component_details": {
+              "feature_matching": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "特征匹配不足"
+                ]
+              },
+              "normal_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "法向互补性弱"
+                ]
+              },
+              "shape_complementarity": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "形状匹配度低"
+                ]
+              },
+              "alignment_accuracy": {
+                "quality": "poor",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "对齐精度不足"
+                ]
+              },
+              "collision_avoidance": {
+                "quality": "excellent",
+                "strengths": [],
+                "weaknesses": [
+                  "表现较差",
+                  "碰撞风险较高"
+                ]
+              }
+            },
+            "balance_analysis": {
+              "score_variance": 0.14807668067313168,
+              "score_range": 1.0,
+              "most_critical_component": "normal_score"
+            }
+          },
+          "recommendations": [
+            "整体匹配质量较低，建议重新考虑碎片配对",
+            "特征匹配度不足，建议检查边界特征提取参数",
+            "法向互补性较差，建议调整碎片相对姿态",
+            "形状匹配度低，可能需要更精确的几何处理",
+            "对齐精度不足，建议使用更高精度的对齐算法",
+            "验证结果不确定性较高，建议多次验证或人工确认"
+          ],
+          "quality_assessment": {
+            "quality_level": "poor",
+            "quality_description": "较差匹配",
+            "stability": "unstable",
+            "stability_description": "不稳定",
+            "reliability": "low"
+          }
+        }
+      }
+    }
+  ]
+}

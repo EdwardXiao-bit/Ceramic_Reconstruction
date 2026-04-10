@@ -1,0 +1,45 @@
+{
+  "status": "success",
+  "total_fragments": 3,
+  "valid_fragments": 2,
+  "feature_types": {
+    "geometry": {
+      "count": 2,
+      "dimension": 128
+    },
+    "fpfh": {
+      "count": 2,
+      "dimension": 33
+    }
+  },
+  "parameters": {
+    "top_m_geo": 50,
+    "top_m_fpfh": 50,
+    "top_m_texture": 30,
+    "top_k": 10,
+    "alpha": 0.5,
+    "beta": 0.2,
+    "gamma": 0.3
+  },
+  "pair_details": {
+    "1-2": {
+      "geo_similarity": 0.9946141839027405,
+      "fpfh_similarity": 0.9954780340194702,
+      "texture_similarity": 0.0,
+      "total_similarity": 0.9948609982218062,
+      "weights": {
+        "geo": 0.7142857142857143,
+        "fpfh": 0.28571428571428575,
+        "texture": 0.0
+      }
+    }
+  },
+  "final_matches": 1,
+  "threshold_applied": 0.0,
+  "similarity_stats": {
+    "mean": 0.9948609982218062,
+    "max": 0.9948609982218062,
+    "min": 0.9948609982218062,
+    "std": 0.0
+  }
+}
