@@ -55,8 +55,15 @@ class PointNetSetAbstraction(nn.Module):
         
         # 简单降采样（使用最远点采样的简化版本）
         if self.npoint >= N or self.npoint is None:
+            # 不降采样，但仍然要应用 MLP 进行特征提取
             new_xyz = xyz
-            new_features = features
+            new_features = self.mlp(features)
+            
+            if self.shortcut is not None:
+                shortcut = self.shortcut(features)
+                new_features = self.relu(new_features + shortcut)
+            else:
+                new_features = self.relu(new_features)
         else:
             # 使用随机采样作为简化
             indices = torch.randperm(N, device=device)[:self.npoint]
@@ -211,9 +218,20 @@ class D3FeatEncoder(nn.Module):
         features = points.transpose(1, 2)  # [B, 3, N]
         
         # SA 层
-        l1_xyz, l1_features = self.sa1(xyz, features)
-        l2_xyz, l2_features = self.sa2(l1_xyz, l1_features)
-        l3_xyz, l3_features = self.sa3(l2_xyz, l2_features)
+        try:
+            l1_xyz, l1_features = self.sa1(xyz, features)
+            l2_xyz, l2_features = self.sa2(l1_xyz, l1_features)
+            l3_xyz, l3_features = self.sa3(l2_xyz, l2_features)
+        except RuntimeError as e:
+            print(f"\n[D3FeatEncoder Debug]")
+            print(f"  Input shape: {points.shape}")
+            print(f"  Features shape: {features.shape}")
+            if 'l1_features' in locals():
+                print(f"  L1 features shape: {l1_features.shape}")
+            if 'l2_features' in locals():
+                print(f"  L2 features shape: {l2_features.shape}")
+            print(f"  Error: {e}\n")
+            raise
         
         # FP 层
         l2_features = self.fp1(l2_xyz, l3_xyz, l2_features, l3_features)
@@ -240,13 +258,32 @@ class D3Feat(nn.Module):
         super(D3Feat, self).__init__()
         self.config = config
         
-        # 编码器
-        self.encoder = D3FeatEncoder(config.get('ENCODER', {}))
+        # 编码器 - 支持两种配置格式：
+        # 1. 直接传入 ENCODER 配置（包含 INPUT_DIM, FEATURE_DIM, SA_LAYERS）
+        # 2. 传入完整 MODEL 配置（需要从 config['ENCODER'] 提取）
+        if 'INPUT_DIM' in config or 'SA_LAYERS' in config:
+            # 直接是 ENCODER 配置
+            encoder_config = config
+        else:
+            # 完整 MODEL 配置
+            encoder_config = config.get('ENCODER', {})
+        
+        self.encoder = D3FeatEncoder(encoder_config)
         
         # 可选：关键点检测头（用于显著性预测）
-        if config.get('KEYPOINT_HEAD', False):
+        keypoint_head_enabled = config.get('KEYPOINT_HEAD', False)
+        if keypoint_head_enabled and 'ENCODER' in config:
+            # 从 ENCODER 配置中获取 FEATURE_DIM
+            feature_dim = config['ENCODER'].get('FEATURE_DIM', 256)
+        elif keypoint_head_enabled:
+            # 直接使用 config 中的 FEATURE_DIM
+            feature_dim = config.get('FEATURE_DIM', 256)
+        else:
+            feature_dim = None
+        
+        if keypoint_head_enabled and feature_dim is not None:
             self.keypoint_head = nn.Sequential(
-                nn.Linear(config['ENCODER'].get('FEATURE_DIM', 256), 128),
+                nn.Linear(feature_dim, 128),
                 nn.ReLU(inplace=True),
                 nn.Linear(128, 1)
             )

@@ -87,7 +87,7 @@ class FeatureMatcher:
             
             # 如果没有配置文件，使用默认配置
             if config_file is None:
-                print("[特征匹配] ⚠ 未找到 d3feat.yaml，使用默认配置")
+                print("[特征匹配] [警告] 未找到 d3feat.yaml，使用默认配置")
                 config = {
                     'INPUT_DIM': 3,
                     'FEATURE_DIM': 256,
@@ -100,14 +100,39 @@ class FeatureMatcher:
                 }
             else:
                 with open(config_file, 'r', encoding='utf-8') as f:
-                    config = yaml.safe_load(f)
+                    yaml_config = yaml.safe_load(f)
+                    # 提取 ENCODER 配置
+                    config = yaml_config.get('MODEL', {}).get('ENCODER', {})
+                    if not config:
+                        # 如果没有 ENCODER 字段，尝试直接使用 MODEL 配置
+                        config = yaml_config.get('MODEL', yaml_config)
+                    # 确保包含 KEYPOINT_HEAD 配置
+                    if 'KEYPOINT_HEAD' not in config:
+                        config['KEYPOINT_HEAD'] = False
             
             # 创建模型
             device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+            
+            # 调试输出：检查配置内容
+            print(f"[特征匹配] D3Feat配置类型: {type(config)}")
+            print(f"[特征匹配] D3Feat配置键: {list(config.keys()) if isinstance(config, dict) else 'N/A'}")
+            if isinstance(config, dict) and 'SA_LAYERS' in config:
+                print(f"[特征匹配] SA_LAYERS.C1: {config['SA_LAYERS'].get('C1', 'N/A')}")
+                print(f"[特征匹配] INPUT_DIM: {config.get('INPUT_DIM', 'N/A')}")
+            
             model = D3Feat(config).to(device)
+            
+            # 调试输出：检查模型第一层的权重形状
+            sa1_weight = model.encoder.sa1.mlp[0].weight.shape
+            print(f"[特征匹配] 模型SA1第一层权重形状: {sa1_weight}")
+            print(f"[特征匹配] 期望: torch.Size([16, 3, 1])")
             
             # 按优先级尝试加载预训练权重
             weight_paths = [
+                # Breaking Bad 数据集预训练权重（最高优先级）
+                Path('pretrained_weights/breaking_bad/d3feat_breaking_bad_best.pth'),
+                Path(__file__).parent.parent.parent / 'pretrained_weights' / 'breaking_bad' / 'd3feat_breaking_bad_best.pth',
+                # 通用 D3Feat 权重
                 Path('models/weights/d3feat_3dmatch.pth'),
                 Path(__file__).parent.parent.parent / 'models' / 'weights' / 'd3feat_3dmatch.pth',
                 Path('pretrained_weights/d3feat/d3feat_best.pth'),
@@ -132,15 +157,15 @@ class FeatureMatcher:
                     break
             
             if loaded_weight:
-                print(f"[特征匹配] ✓ D3Feat 模型加载成功 (权重：{loaded_weight})")
+                print(f"[特征匹配] [成功] D3Feat 模型加载成功 (权重：{loaded_weight})")
             else:
-                print("[特征匹配] ⚠ 警告：未找到 D3Feat 预训练权重，使用随机初始化")
+                print("[特征匹配] [警告] 未找到 D3Feat 预训练权重，使用随机初始化")
             
             model.eval()
             return model
             
         except Exception as e:
-            print(f"[特征匹配] ⚠ D3Feat 加载失败 ({e})，降级到 Mock 模式")
+            print(f"[特征匹配] [错误] D3Feat 加载失败 ({e})，降级到 Mock 模式")
             import traceback
             traceback.print_exc()
             return self._create_mock_d3feat()
@@ -251,12 +276,20 @@ class FeatureMatcher:
         # 使用D3Feat进行匹配
         if self.d3feat_model is not None and self.config['d3feat_enabled']:
             try:
+                # 转换为 torch tensor
+                points1_tensor = torch.from_numpy(points1).float().unsqueeze(0)  # [1, N, 3]
+                points2_tensor = torch.from_numpy(points2).float().unsqueeze(0)  # [1, M, 3]
+                
                 # 提取特征
-                feat1 = self.d3feat_model.extract_features(points1)
-                feat2 = self.d3feat_model.extract_features(points2)
+                feat1 = self.d3feat_model.extract_features(points1_tensor)  # [1, N, D]
+                feat2 = self.d3feat_model.extract_features(points2_tensor)  # [1, M, D]
+                
+                # 转换为 numpy
+                feat1_np = feat1.squeeze(0).cpu().numpy()
+                feat2_np = feat2.squeeze(0).cpu().numpy()
                 
                 # 最近邻匹配
-                d3feat_matches, d3feat_scores = self._nearest_neighbor_matching(feat1, feat2)
+                d3feat_matches, d3feat_scores = self._nearest_neighbor_matching(feat1_np, feat2_np)
                 matches_list.append(d3feat_matches)
                 scores_list.append(d3feat_scores)
                 print(f"[特征匹配] D3Feat匹配: {len(d3feat_matches)} 对")
@@ -300,8 +333,8 @@ class FeatureMatcher:
             return np.array([]).reshape(0, 2), np.array([])
             
         # 构建匹配对
-        query_indices = np.where(good_matches)[0]
-        train_indices = indices[good_matches, 0]
+        query_indices = np.where(good_matches)[0].astype(np.int64)
+        train_indices = indices[good_matches, 0].astype(np.int64)
         matches = np.column_stack([query_indices, train_indices])
         
         # 计算匹配得分（基于距离的倒数）
@@ -377,6 +410,9 @@ class FeatureMatcher:
         if len(matches) == 0:
             return 0.0
             
+        # 确保matches是整数类型
+        matches = matches.astype(np.int64)
+        
         # 获取匹配点坐标
         matched_points1 = points1[matches[:, 0]]
         matched_points2 = points2[matches[:, 1]]
@@ -397,6 +433,9 @@ class FeatureMatcher:
         """
         if len(matches) == 0:
             return 0.0, np.array([]).reshape(0, 2)
+        
+        # 确保matches是整数类型
+        matches = matches.astype(np.int64)
             
         # 使用RANSAC估计变换并识别内点
         matched_points1 = points1[matches[:, 0]]
@@ -446,6 +485,9 @@ class FeatureMatcher:
         """
         if len(matches) == 0:
             return 0.0
+        
+        # 确保matches是整数类型
+        matches = matches.astype(np.int64)
             
         # 获取匹配点的法向量
         normals1 = boundary1.normals[matches[:, 0]]
@@ -474,6 +516,9 @@ class FeatureMatcher:
         """
         if len(matches) < 3:
             return np.eye(4)
+        
+        # 确保matches是整数类型
+        matches = matches.astype(np.int64)
             
         matched_points1 = points1[matches[:, 0]]
         matched_points2 = points2[matches[:, 1]]
